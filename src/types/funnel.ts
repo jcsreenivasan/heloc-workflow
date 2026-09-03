@@ -30,6 +30,7 @@ export type FunnelStep =
   | 'rates';
 
 // When loan purpose is pre-selected from the landing page, skip 'loan-purpose' step
+// loading comes BEFORE lead-capture: user sees "Calculating..." then is asked for contact info
 export const STEP_ORDER_WITH_PURPOSE: FunnelStep[] = [
   'property-type',
   'residency-type',
@@ -38,8 +39,8 @@ export const STEP_ORDER_WITH_PURPOSE: FunnelStep[] = [
   'financials',
   'credit-score',
   'military',
-  'lead-capture',
   'loading',
+  'lead-capture',
   'rates',
 ];
 
@@ -52,8 +53,8 @@ export const STEP_ORDER: FunnelStep[] = [
   'financials',
   'credit-score',
   'military',
-  'lead-capture',
   'loading',
+  'lead-capture',
   'rates',
 ];
 

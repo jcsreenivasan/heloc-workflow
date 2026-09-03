@@ -119,33 +119,20 @@ export function FunnelLayout({
                 </AnimatePresence>
               </div>
 
-              {/* Center — logo or step name */}
-              <div className="flex-1 flex items-center justify-center gap-2 min-w-0">
-                {isRates ? (
+              {/* Center — logo */}
+              <div className="flex-1 flex items-center justify-center gap-2.5 min-w-0">
+                <img
+                  src="/texas-united-logo.webp"
+                  alt="Texas United Mortgage"
+                  className="h-7 w-auto object-contain flex-shrink-0"
+                  style={isRates ? { filter: 'brightness(0) invert(1)' } : {}}
+                />
+                {isQuestionStep && (
                   <>
-                    <div className="w-6 h-6 rounded-md bg-white/20 flex items-center justify-center flex-shrink-0">
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="white">
-                        <path d="M3 12L12 3L21 12V20C21 20.5523 20.5523 21 20 21H15V15H9V21H4C3.44772 21 3 20.5523 3 20V12Z"/>
-                      </svg>
-                    </div>
-                    <span className="text-white font-bold text-sm">Texas United Mortgage</span>
-                  </>
-                ) : (
-                  <>
-                    <div className="w-6 h-6 rounded-md bg-[#233B86] flex items-center justify-center flex-shrink-0">
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="white">
-                        <path d="M3 12L12 3L21 12V20C21 20.5523 20.5523 21 20 21H15V15H9V21H4C3.44772 21 3 20.5523 3 20V12Z"/>
-                      </svg>
-                    </div>
-                    <span className="font-bold text-gray-800 text-sm truncate">Texas United</span>
-                    {isQuestionStep && (
-                      <span className="text-gray-300 text-sm font-light hidden sm:inline">·</span>
-                    )}
-                    {isQuestionStep && (
-                      <span className="text-gray-400 text-sm font-medium hidden sm:inline truncate">
-                        {STEP_LABELS[currentStep]}
-                      </span>
-                    )}
+                    <span className="text-gray-200 text-sm hidden sm:inline">|</span>
+                    <span className="text-gray-400 text-sm font-medium hidden sm:inline truncate">
+                      {STEP_LABELS[currentStep]}
+                    </span>
                   </>
                 )}
               </div>

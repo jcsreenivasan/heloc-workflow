@@ -106,14 +106,11 @@ export default function App() {
       {/* Nav */}
       <nav className="border-b border-gray-100 bg-white/95 backdrop-blur-sm sticky top-0 z-40">
         <div className="max-w-6xl mx-auto px-5 sm:px-8 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: '#233B86' }}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                <path d="M3 12L12 3L21 12V20C21 20.5523 20.5523 21 20 21H15V15H9V21H4C3.44772 21 3 20.5523 3 20V12Z" fill="white"/>
-              </svg>
-            </div>
-            <span className="font-bold text-[#233B86] text-sm">Texas United Mortgage</span>
-          </div>
+          <img
+            src="/texas-united-logo.webp"
+            alt="Texas United Mortgage"
+            className="h-9 w-auto object-contain"
+          />
           <a href="tel:+18005551234" className="text-sm font-semibold text-[#233B86] hover:text-[#EA2523] transition-colors hidden sm:block">
             (800) 555-1234
           </a>

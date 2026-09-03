@@ -7,9 +7,9 @@ interface LoadingScreenProps {
 }
 
 const STEPS = [
-  'Fetching your preferences...',
-  'Analyzing your scenario...',
-  'Finding your best rates...',
+  'Reviewing your loan preferences...',
+  'Analyzing your financial profile...',
+  'Locking in your best rates...',
 ];
 
 export function LoadingScreen({ onComplete }: LoadingScreenProps) {
@@ -21,75 +21,122 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
     STEPS.forEach((_, i) => {
       timers.push(setTimeout(() => {
         setCompletedSteps(prev => [...prev, i]);
-        if (i === STEPS.length - 1) timers.push(setTimeout(onComplete, 500));
-      }, 750 + i * 750));
+        if (i === STEPS.length - 1) timers.push(setTimeout(onComplete, 600));
+      }, 700 + i * 750));
     });
     return () => timers.forEach(clearTimeout);
   }, [onComplete]);
 
   useEffect(() => {
-    const id = setInterval(() => setDots(p => p.length >= 3 ? '' : p + '.'), 400);
+    const id = setInterval(() => setDots(p => p.length >= 3 ? '' : p + '.'), 380);
     return () => clearInterval(id);
   }, []);
 
   return (
-    <div className="flex flex-col items-center justify-center py-14 px-6 bg-[#233B86]">
+    <div
+      className="flex flex-col items-center justify-center px-6 py-16"
+      style={{ background: 'linear-gradient(160deg, #1A2B63 0%, #233B86 60%, #2D4BAA 100%)' }}
+    >
+      {/* Logo */}
+      <motion.div
+        initial={{ opacity: 0, y: -12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
+        className="mb-10"
+      >
+        <img
+          src="/texas-united-logo.webp"
+          alt="Texas United Mortgage"
+          className="h-10 w-auto object-contain"
+          style={{ filter: 'brightness(0) invert(1)' }}
+        />
+      </motion.div>
+
       {/* Spinner */}
       <motion.div
         animate={{ rotate: 360 }}
-        transition={{ duration: 1.4, repeat: Infinity, ease: 'linear' }}
-        className="w-14 h-14 border-4 border-white/20 border-t-white rounded-full mb-8"
+        transition={{ duration: 1.3, repeat: Infinity, ease: 'linear' }}
+        className="w-16 h-16 rounded-full mb-8"
+        style={{
+          border: '3px solid rgba(255,255,255,0.15)',
+          borderTopColor: '#EA2523',
+          borderRightColor: 'rgba(255,255,255,0.5)',
+        }}
       />
 
-      <h3 className="text-lg font-bold text-white mb-1 text-center">
+      <motion.h3
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.2 }}
+        className="text-xl font-bold text-white mb-2 text-center"
+      >
         Calculating your rates{dots}
-      </h3>
-      <p className="text-white/50 text-sm mb-8 text-center">Just a moment</p>
+      </motion.h3>
+      <motion.p
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.3 }}
+        className="text-white/50 text-sm mb-10 text-center"
+      >
+        Comparing today's live market rates for your scenario
+      </motion.p>
 
       {/* Checklist */}
-      <div className="w-full max-w-xs space-y-3.5">
+      <div className="w-full max-w-xs space-y-4">
         {STEPS.map((step, i) => {
           const done = completedSteps.includes(i);
           const active = completedSteps.length === i;
           return (
             <motion.div
               key={step}
-              initial={{ opacity: 0, x: -16 }}
+              initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: i * 0.12 }}
-              className="flex items-center gap-3"
+              transition={{ delay: 0.1 + i * 0.1 }}
+              className="flex items-center gap-3.5"
             >
               <div className="w-6 h-6 flex-shrink-0">
                 {done ? (
                   <motion.div
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
-                    transition={{ type: 'spring', stiffness: 400, damping: 20 }}
-                    className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center"
+                    transition={{ type: 'spring', stiffness: 420, damping: 18 }}
+                    className="w-6 h-6 bg-emerald-500 rounded-full flex items-center justify-center shadow-lg shadow-emerald-500/40"
                   >
                     <Check size={13} className="text-white" strokeWidth={3} />
                   </motion.div>
                 ) : (
-                  <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
-                    active ? 'border-white' : 'border-white/25'
+                  <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${
+                    active ? 'border-white' : 'border-white/20'
                   }`}>
                     {active && (
                       <motion.div
-                        animate={{ scale: [0.5, 1, 0.5] }}
-                        transition={{ repeat: Infinity, duration: 0.9 }}
+                        animate={{ scale: [0.5, 1.1, 0.5] }}
+                        transition={{ repeat: Infinity, duration: 1, ease: 'easeInOut' }}
                         className="w-2 h-2 rounded-full bg-white"
                       />
                     )}
                   </div>
                 )}
               </div>
-              <span className={`text-sm font-medium ${done ? 'text-green-400' : active ? 'text-white' : 'text-white/35'}`}>
+              <span className={`text-sm font-medium transition-colors ${
+                done ? 'text-emerald-400' : active ? 'text-white' : 'text-white/30'
+              }`}>
                 {step}
               </span>
             </motion.div>
           );
         })}
       </div>
+
+      {/* Bottom note */}
+      <motion.p
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.8 }}
+        className="text-white/30 text-xs mt-12 text-center"
+      >
+        No credit check · Takes seconds · 100% free
+      </motion.p>
     </div>
   );
 }
