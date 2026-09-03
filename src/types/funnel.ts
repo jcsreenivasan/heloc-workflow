@@ -29,6 +29,20 @@ export type FunnelStep =
   | 'loading'
   | 'rates';
 
+// When loan purpose is pre-selected from the landing page, skip 'loan-purpose' step
+export const STEP_ORDER_WITH_PURPOSE: FunnelStep[] = [
+  'property-type',
+  'residency-type',
+  'timeline',
+  'location',
+  'financials',
+  'credit-score',
+  'military',
+  'lead-capture',
+  'loading',
+  'rates',
+];
+
 export const STEP_ORDER: FunnelStep[] = [
   'loan-purpose',
   'property-type',
@@ -41,6 +55,16 @@ export const STEP_ORDER: FunnelStep[] = [
   'lead-capture',
   'loading',
   'rates',
+];
+
+export const QUESTION_STEPS_WITH_PURPOSE: FunnelStep[] = [
+  'property-type',
+  'residency-type',
+  'timeline',
+  'location',
+  'financials',
+  'credit-score',
+  'military',
 ];
 
 export const QUESTION_STEPS: FunnelStep[] = [

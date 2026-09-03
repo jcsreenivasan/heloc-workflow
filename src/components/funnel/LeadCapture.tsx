@@ -22,120 +22,77 @@ export function LeadCapture({ data, onChange, onSubmit }: LeadCaptureProps) {
 
   const validate = () => {
     const e: Record<string, string> = {};
-    if (!data.lead.name.trim()) e.name = 'Full name is required';
+    if (!data.lead.name.trim()) e.name = 'Name is required';
     if (!data.lead.email.trim()) e.email = 'Email is required';
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.lead.email)) e.email = 'Enter a valid email address';
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.lead.email)) e.email = 'Enter a valid email';
     const digits = data.lead.phone.replace(/\D/g, '');
-    if (!digits) e.phone = 'Phone number is required';
-    else if (digits.length !== 10) e.phone = 'Enter a 10-digit phone number';
+    if (!digits) e.phone = 'Phone is required';
+    else if (digits.length !== 10) e.phone = 'Enter a 10-digit number';
     return e;
   };
 
   const handleSubmit = () => {
     const e = validate();
-    if (Object.keys(e).length > 0) {
-      setErrors(e);
-      return;
-    }
+    if (Object.keys(e).length > 0) { setErrors(e); return; }
     setSubmitting(true);
-    setTimeout(() => {
-      onSubmit();
-    }, 800);
+    setTimeout(onSubmit, 700);
   };
 
-  const handlePhoneChange = (raw: string) => {
-    const formatted = formatPhone(raw);
-    onChange({ lead: { ...data.lead, phone: formatted } });
-    if (errors.phone) setErrors(prev => ({ ...prev, phone: '' }));
-  };
+  const field = (key: 'name' | 'email' | 'phone') => ({
+    hasError: !!errors[key],
+    className: `w-full px-3.5 py-3 border-2 rounded-xl text-gray-800 font-medium text-sm focus:outline-none transition-colors ${
+      errors[key] ? 'border-red-400 bg-red-50/50' : 'border-gray-200 focus:border-[#233B86]'
+    }`,
+  });
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-full px-4 py-8 relative">
-      {/* Blurred rate preview background */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-1/4 left-1/4 w-64 h-32 bg-secondary rounded-2xl" />
-          <div className="absolute top-1/3 right-1/4 w-64 h-32 bg-primary rounded-2xl" />
-          <div className="absolute bottom-1/4 left-1/3 w-48 h-24 bg-secondary/50 rounded-xl" />
-        </div>
-        <div className="absolute inset-0" style={{ backdropFilter: 'blur(2px)' }} />
-      </div>
-
-      <motion.div
-        initial={{ opacity: 0, y: 30, scale: 0.96 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-        className="relative w-full max-w-md glass rounded-3xl shadow-2xl border border-white/60 p-8"
-      >
+    <div className="px-5 py-6">
+      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
         {/* Header */}
         <div className="text-center mb-6">
-          <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ delay: 0.2, type: 'spring', stiffness: 300 }}
-            className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4"
-            style={{ backgroundColor: '#233B86' }}
-          >
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
-              <path d="M12 2L2 7L12 12L22 7L12 2Z" fill="white" />
-              <path d="M2 17L12 22L22 17" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-              <path d="M2 12L12 17L22 12" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3 bg-[#233B86]">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+              <path d="M3 12L12 3L21 12V20C21 20.5523 20.5523 21 20 21H15V15H9V21H4C3.44772 21 3 20.5523 3 20V12Z" fill="white"/>
             </svg>
-          </motion.div>
-          <h2 className="text-2xl font-bold mb-1" style={{ color: '#233B86' }}>
-            Unlock Your Personalized Rates
-          </h2>
-          <p className="text-gray-500 text-sm">
-            No SSN required · 100% free · No hard credit pull
-          </p>
+          </div>
+          <h2 className="text-xl font-bold text-gray-900 mb-1">Unlock Your Personalized Rates</h2>
+          <p className="text-sm text-gray-500">No SSN required · No hard credit pull · 100% free</p>
         </div>
 
         {/* Form */}
-        <div className="space-y-4">
+        <div className="space-y-3.5">
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1.5">Full Name</label>
+            <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase tracking-wide">Full Name</label>
             <input
               type="text"
               placeholder="Jane Smith"
               value={data.lead.name}
-              onChange={e => {
-                onChange({ lead: { ...data.lead, name: e.target.value } });
-                if (errors.name) setErrors(prev => ({ ...prev, name: '' }));
-              }}
-              className={`w-full px-4 py-3 border-2 rounded-xl font-medium text-gray-800 focus:outline-none transition-all ${
-                errors.name ? 'border-red-400 bg-red-50' : 'border-gray-200 focus:border-secondary'
-              }`}
+              onChange={e => { onChange({ lead: { ...data.lead, name: e.target.value } }); setErrors(p => ({ ...p, name: '' })); }}
+              className={field('name').className}
             />
             {errors.name && <p className="text-xs text-red-500 mt-1">{errors.name}</p>}
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1.5">Email Address</label>
+            <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase tracking-wide">Email Address</label>
             <input
               type="email"
               placeholder="jane@example.com"
               value={data.lead.email}
-              onChange={e => {
-                onChange({ lead: { ...data.lead, email: e.target.value } });
-                if (errors.email) setErrors(prev => ({ ...prev, email: '' }));
-              }}
-              className={`w-full px-4 py-3 border-2 rounded-xl font-medium text-gray-800 focus:outline-none transition-all ${
-                errors.email ? 'border-red-400 bg-red-50' : 'border-gray-200 focus:border-secondary'
-              }`}
+              onChange={e => { onChange({ lead: { ...data.lead, email: e.target.value } }); setErrors(p => ({ ...p, email: '' })); }}
+              className={field('email').className}
             />
             {errors.email && <p className="text-xs text-red-500 mt-1">{errors.email}</p>}
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1.5">Phone Number</label>
+            <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase tracking-wide">Phone Number</label>
             <input
               type="tel"
               placeholder="(555) 000-0000"
               value={data.lead.phone}
-              onChange={e => handlePhoneChange(e.target.value)}
-              className={`w-full px-4 py-3 border-2 rounded-xl font-medium text-gray-800 focus:outline-none transition-all ${
-                errors.phone ? 'border-red-400 bg-red-50' : 'border-gray-200 focus:border-secondary'
-              }`}
+              onChange={e => { onChange({ lead: { ...data.lead, phone: formatPhone(e.target.value) } }); setErrors(p => ({ ...p, phone: '' })); }}
+              className={field('phone').className}
             />
             {errors.phone && <p className="text-xs text-red-500 mt-1">{errors.phone}</p>}
           </div>
@@ -145,32 +102,19 @@ export function LeadCapture({ data, onChange, onSubmit }: LeadCaptureProps) {
             disabled={submitting}
             whileHover={!submitting ? { scale: 1.02 } : {}}
             whileTap={!submitting ? { scale: 0.98 } : {}}
-            className="w-full py-4 rounded-xl font-bold text-white text-base flex items-center justify-center gap-2 shadow-lg transition-all mt-2"
-            style={{ backgroundColor: '#EA2523', boxShadow: '0 8px 32px rgba(234, 37, 35, 0.35)' }}
+            className="w-full py-3.5 rounded-xl font-bold text-white text-sm flex items-center justify-center gap-2 bg-[#EA2523] shadow-lg shadow-[#EA2523]/25 hover:bg-[#C41E1C] transition-colors mt-1"
           >
             {submitting ? (
-              <>
-                <Loader2 size={20} className="animate-spin" />
-                Preparing your rates...
-              </>
+              <><Loader2 size={17} className="animate-spin" /> Preparing your rates...</>
             ) : (
-              <>
-                See My Rates
-                <ChevronRight size={20} />
-              </>
+              <>See My Rates <ChevronRight size={17} /></>
             )}
           </motion.button>
         </div>
 
-        {/* Trust indicators */}
-        <div className="flex items-center justify-center gap-2 mt-4 text-gray-400">
-          <Lock size={14} />
-          <span className="text-xs">Your information is 100% secure and never shared</span>
-        </div>
-
-        {/* Progress indicator */}
-        <div className="mt-4 pt-4 border-t border-gray-100 text-center">
-          <p className="text-xs text-gray-400">Almost there! Complete this step to see your personalized rates.</p>
+        <div className="flex items-center justify-center gap-1.5 mt-4 text-gray-400">
+          <Lock size={12} />
+          <span className="text-xs">Your information is secure and never sold</span>
         </div>
       </motion.div>
     </div>

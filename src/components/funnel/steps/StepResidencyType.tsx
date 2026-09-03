@@ -1,6 +1,5 @@
 import { motion } from 'framer-motion';
 import { MapPin, Palmtree, Key } from 'lucide-react';
-import { ChoiceCard } from '../../ui/ChoiceCard';
 import type { FunnelData } from '../../../types/funnel';
 
 interface StepResidencyTypeProps {
@@ -8,61 +7,63 @@ interface StepResidencyTypeProps {
   onSelect: (value: 'primary' | 'second-home' | 'rental') => void;
 }
 
-const containerVariants = {
-  hidden: { opacity: 0 },
-  show: { opacity: 1, transition: { staggerChildren: 0.08, delayChildren: 0.05 } },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
-  show: { opacity: 1, y: 0 },
-};
+const options = [
+  { icon: MapPin,    label: 'Primary Home',        desc: 'My main residence',        value: 'primary' as const },
+  { icon: Palmtree,  label: 'Second Home',          desc: 'Vacation or seasonal',     value: 'second-home' as const },
+  { icon: Key,       label: 'Investment / Rental',  desc: 'Generate rental income',   value: 'rental' as const },
+];
 
 export function StepResidencyType({ data, onSelect }: StepResidencyTypeProps) {
   return (
-    <div className="flex flex-col items-center justify-center min-h-full px-4 py-8">
-      <motion.div
-        variants={containerVariants}
-        initial="hidden"
-        animate="show"
-        className="w-full max-w-2xl"
-      >
-        <motion.div variants={itemVariants} className="text-center mb-8">
-          <span className="inline-block px-3 py-1 rounded-full text-xs font-semibold mb-4 text-white" style={{ backgroundColor: '#EA2523' }}>
-            Step 3 of 8
-          </span>
-          <h1 className="text-2xl sm:text-3xl font-bold mb-3" style={{ color: '#233B86' }}>
-            How will you use this property?
-          </h1>
-          <p className="text-gray-500 text-base">
-            Occupancy type affects your interest rate and loan requirements.
-          </p>
-        </motion.div>
+    <div className="px-5 py-6">
+      <div className="mb-6">
+        <h2 className="text-xl font-bold text-gray-900 mb-1">How will you use this property?</h2>
+        <p className="text-sm text-gray-500">Occupancy affects your rate and down payment requirements.</p>
+      </div>
 
-        <motion.div variants={itemVariants} className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <ChoiceCard
-            icon={MapPin}
-            label="Primary Home"
-            description="My main residence"
-            selected={data.residencyType === 'primary'}
-            onClick={() => onSelect('primary')}
-          />
-          <ChoiceCard
-            icon={Palmtree}
-            label="Second Home"
-            description="Vacation or seasonal"
-            selected={data.residencyType === 'second-home'}
-            onClick={() => onSelect('second-home')}
-          />
-          <ChoiceCard
-            icon={Key}
-            label="Investment / Rental"
-            description="Generate rental income"
-            selected={data.residencyType === 'rental'}
-            onClick={() => onSelect('rental')}
-          />
-        </motion.div>
-      </motion.div>
+      <div className="flex flex-col gap-3">
+        {options.map((opt, i) => {
+          const selected = data.residencyType === opt.value;
+          const Icon = opt.icon;
+          return (
+            <motion.button
+              key={opt.value}
+              initial={{ opacity: 0, x: -12 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: i * 0.07 }}
+              onClick={() => onSelect(opt.value)}
+              whileHover={{ x: 3 }}
+              whileTap={{ scale: 0.98 }}
+              className={`flex items-center gap-4 p-4 rounded-xl border-2 text-left transition-all cursor-pointer ${
+                selected
+                  ? 'border-[#EA2523] bg-[#EA2523]/5'
+                  : 'border-gray-100 bg-gray-50 hover:border-gray-200 hover:bg-white'
+              }`}
+            >
+              <div className={`w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 ${
+                selected ? 'bg-[#EA2523]/10' : 'bg-white'
+              }`}>
+                <Icon size={20} className={selected ? 'text-[#EA2523]' : 'text-[#233B86]'} />
+              </div>
+              <div className="flex-1">
+                <p className={`text-sm font-semibold ${selected ? 'text-[#EA2523]' : 'text-gray-800'}`}>{opt.label}</p>
+                <p className="text-xs text-gray-400 mt-0.5">{opt.desc}</p>
+              </div>
+              {selected && (
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  className="w-5 h-5 bg-[#EA2523] rounded-full flex items-center justify-center flex-shrink-0"
+                >
+                  <svg className="w-2.5 h-2.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                </motion.div>
+              )}
+            </motion.button>
+          );
+        })}
+      </div>
     </div>
   );
 }

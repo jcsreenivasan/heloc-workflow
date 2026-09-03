@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { ChevronRight, TrendingDown } from 'lucide-react';
+import { ChevronRight } from 'lucide-react';
 import { SliderInput } from '../../ui/SliderInput';
 import type { FunnelData } from '../../../types/funnel';
 import { getLTVStatus } from '../../../utils/rateCalculator';
@@ -10,25 +10,14 @@ interface StepFinancialsProps {
   onNext: () => void;
 }
 
-function formatCurrency(value: number): string {
-  if (value >= 1000000) return `$${(value / 1000000).toFixed(1)}M`;
-  if (value >= 1000) return `$${(value / 1000).toFixed(0)}K`;
-  return `$${value}`;
+function fmt(v: number): string {
+  if (v >= 1000000) return `$${(v / 1000000).toFixed(1)}M`;
+  return `$${(v / 1000).toFixed(0)}K`;
 }
 
-function formatCurrencyFull(value: number): string {
-  return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(value);
+function fmtFull(v: number): string {
+  return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(v);
 }
-
-const containerVariants = {
-  hidden: { opacity: 0 },
-  show: { opacity: 1, transition: { staggerChildren: 0.08, delayChildren: 0.05 } },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
-  show: { opacity: 1, y: 0 },
-};
 
 export function StepFinancials({ data, onChange, onNext }: StepFinancialsProps) {
   const maxDown = Math.round(data.propertyValue * 0.95 / 1000) * 1000;
@@ -40,86 +29,70 @@ export function StepFinancials({ data, onChange, onNext }: StepFinancialsProps) 
 
   const handlePropertyValueChange = (val: number) => {
     const newMax = Math.round(val * 0.95 / 1000) * 1000;
-    onChange({
-      propertyValue: val,
-      downPayment: Math.min(data.downPayment, newMax),
-    });
+    onChange({ propertyValue: val, downPayment: Math.min(data.downPayment, newMax) });
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-full px-4 py-8">
-      <motion.div
-        variants={containerVariants}
-        initial="hidden"
-        animate="show"
-        className="w-full max-w-lg"
-      >
-        <motion.div variants={itemVariants} className="text-center mb-8">
-          <span className="inline-block px-3 py-1 rounded-full text-xs font-semibold mb-4 text-white" style={{ backgroundColor: '#EA2523' }}>
-            Step 6 of 8
-          </span>
-          <h1 className="text-2xl sm:text-3xl font-bold mb-3" style={{ color: '#233B86' }}>
-            Property value & down payment
-          </h1>
-          <p className="text-gray-500 text-base">
-            These numbers directly affect your rate and monthly payment.
-          </p>
-        </motion.div>
+    <div className="px-5 py-6">
+      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
+        <div className="mb-5">
+          <h2 className="text-xl font-bold text-gray-900 mb-1">Property value & down payment</h2>
+          <p className="text-sm text-gray-500">These figures directly affect your rate and monthly payment.</p>
+        </div>
 
-        <motion.div variants={itemVariants} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-8">
-          {/* LTV Badge */}
-          <div className="flex items-center justify-between p-3 rounded-xl border" style={{ borderColor: ltvStatus.color + '40', backgroundColor: ltvStatus.color + '10' }}>
-            <div className="flex items-center gap-2">
-              <TrendingDown size={18} style={{ color: ltvStatus.color }} />
-              <span className="text-sm font-semibold" style={{ color: ltvStatus.color }}>
-                LTV: {ltv.toFixed(0)}%
-              </span>
+        {/* LTV badge */}
+        <div
+          className="flex items-center justify-between px-4 py-2.5 rounded-xl mb-6 border"
+          style={{ borderColor: `${ltvStatus.color}30`, backgroundColor: `${ltvStatus.color}0D` }}
+        >
+          <span className="text-xs font-semibold" style={{ color: ltvStatus.color }}>
+            LTV {ltv.toFixed(0)}% — {ltvStatus.label}
+          </span>
+          <span className="text-xs text-gray-500 font-medium">Loan: {fmtFull(loanAmount)}</span>
+        </div>
+
+        <div className="space-y-8">
+          <div>
+            <div className="flex justify-between items-baseline mb-1">
+              <span className="text-sm font-semibold text-gray-700">Property Value</span>
+              <span className="text-base font-bold text-[#233B86]">{fmtFull(data.propertyValue)}</span>
             </div>
-            <div className="flex items-center gap-3 text-sm text-gray-600">
-              <span className="px-2 py-0.5 rounded-full text-xs font-bold text-white" style={{ backgroundColor: ltvStatus.color }}>
-                {ltvStatus.label}
-              </span>
-              <span>Loan: {formatCurrencyFull(loanAmount)}</span>
-            </div>
+            <SliderInput
+              value={data.propertyValue}
+              min={100000}
+              max={2000000}
+              step={5000}
+              onChange={handlePropertyValueChange}
+              formatValue={fmt}
+              color="#233B86"
+            />
           </div>
 
-          {/* Property Value */}
-          <SliderInput
-            label="Estimated Property Value"
-            sublabel={formatCurrencyFull(data.propertyValue)}
-            value={data.propertyValue}
-            min={100000}
-            max={2000000}
-            step={5000}
-            onChange={handlePropertyValueChange}
-            formatValue={formatCurrency}
-            color="#233B86"
-          />
+          <div>
+            <div className="flex justify-between items-baseline mb-1">
+              <span className="text-sm font-semibold text-gray-700">Down Payment ({downPct}%)</span>
+              <span className="text-base font-bold text-[#EA2523]">{fmtFull(cappedDown)}</span>
+            </div>
+            <SliderInput
+              value={cappedDown}
+              min={0}
+              max={maxDown}
+              step={1000}
+              onChange={val => onChange({ downPayment: val })}
+              formatValue={fmt}
+              color="#EA2523"
+            />
+          </div>
+        </div>
 
-          {/* Down Payment */}
-          <SliderInput
-            label={`Down Payment (${downPct}%)`}
-            sublabel={formatCurrencyFull(cappedDown)}
-            value={cappedDown}
-            min={0}
-            max={maxDown}
-            step={1000}
-            onChange={val => onChange({ downPayment: val })}
-            formatValue={formatCurrency}
-            color="#EA2523"
-          />
-
-          <motion.button
-            onClick={onNext}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            className="w-full py-3.5 rounded-xl font-bold text-white flex items-center justify-center gap-2 shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all"
-            style={{ backgroundColor: '#EA2523' }}
-          >
-            Continue
-            <ChevronRight size={20} />
-          </motion.button>
-        </motion.div>
+        <motion.button
+          onClick={onNext}
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          className="w-full mt-8 py-3.5 rounded-xl font-bold text-white text-sm flex items-center justify-center gap-2 bg-[#EA2523] shadow-lg shadow-[#EA2523]/25 hover:bg-[#C41E1C] transition-colors"
+        >
+          Continue <ChevronRight size={18} />
+        </motion.button>
       </motion.div>
     </div>
   );

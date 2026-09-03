@@ -1,6 +1,5 @@
 import { motion } from 'framer-motion';
 import { House, Building2, Building, Layers } from 'lucide-react';
-import { ChoiceCard } from '../../ui/ChoiceCard';
 import type { FunnelData } from '../../../types/funnel';
 
 interface StepPropertyTypeProps {
@@ -8,68 +7,64 @@ interface StepPropertyTypeProps {
   onSelect: (value: 'single-family' | 'townhome' | 'condo' | 'multi-unit') => void;
 }
 
-const containerVariants = {
-  hidden: { opacity: 0 },
-  show: { opacity: 1, transition: { staggerChildren: 0.08, delayChildren: 0.05 } },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
-  show: { opacity: 1, y: 0 },
-};
+const options = [
+  { icon: House,     label: 'Single Family',  desc: 'Detached home',        value: 'single-family' as const },
+  { icon: Building2, label: 'Townhome',        desc: 'Attached multi-floor', value: 'townhome' as const },
+  { icon: Building,  label: 'Condo',           desc: 'Unit in a building',   value: 'condo' as const },
+  { icon: Layers,    label: 'Multi-Unit',      desc: '2–4 unit property',    value: 'multi-unit' as const },
+];
 
 export function StepPropertyType({ data, onSelect }: StepPropertyTypeProps) {
   return (
-    <div className="flex flex-col items-center justify-center min-h-full px-4 py-8">
-      <motion.div
-        variants={containerVariants}
-        initial="hidden"
-        animate="show"
-        className="w-full max-w-2xl"
-      >
-        <motion.div variants={itemVariants} className="text-center mb-8">
-          <span className="inline-block px-3 py-1 rounded-full text-xs font-semibold mb-4 text-white" style={{ backgroundColor: '#EA2523' }}>
-            Step 2 of 8
-          </span>
-          <h1 className="text-2xl sm:text-3xl font-bold mb-3" style={{ color: '#233B86' }}>
-            What type of property?
-          </h1>
-          <p className="text-gray-500 text-base">
-            Different property types can affect your mortgage rate and terms.
-          </p>
-        </motion.div>
+    <div className="px-5 py-6">
+      <div className="mb-6">
+        <h2 className="text-xl font-bold text-gray-900 mb-1">What type of property?</h2>
+        <p className="text-sm text-gray-500">Property type can affect your rate and loan options.</p>
+      </div>
 
-        <motion.div variants={itemVariants} className="grid grid-cols-2 sm:grid-cols-2 gap-4">
-          <ChoiceCard
-            icon={House}
-            label="Single Family"
-            description="Detached home"
-            selected={data.propertyType === 'single-family'}
-            onClick={() => onSelect('single-family')}
-          />
-          <ChoiceCard
-            icon={Building2}
-            label="Townhome"
-            description="Attached multi-floor"
-            selected={data.propertyType === 'townhome'}
-            onClick={() => onSelect('townhome')}
-          />
-          <ChoiceCard
-            icon={Building}
-            label="Condo"
-            description="Unit in a building"
-            selected={data.propertyType === 'condo'}
-            onClick={() => onSelect('condo')}
-          />
-          <ChoiceCard
-            icon={Layers}
-            label="Multi-Unit"
-            description="2–4 unit property"
-            selected={data.propertyType === 'multi-unit'}
-            onClick={() => onSelect('multi-unit')}
-          />
-        </motion.div>
-      </motion.div>
+      <div className="grid grid-cols-2 gap-3">
+        {options.map((opt, i) => {
+          const selected = data.propertyType === opt.value;
+          const Icon = opt.icon;
+          return (
+            <motion.button
+              key={opt.value}
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.06 }}
+              onClick={() => onSelect(opt.value)}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.97 }}
+              className={`relative flex flex-col items-center gap-2.5 p-5 rounded-xl border-2 text-center transition-all cursor-pointer ${
+                selected
+                  ? 'border-[#EA2523] bg-[#EA2523]/5'
+                  : 'border-gray-100 bg-gray-50 hover:border-gray-200 hover:bg-white'
+              }`}
+            >
+              {selected && (
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  className="absolute top-2.5 right-2.5 w-5 h-5 bg-[#EA2523] rounded-full flex items-center justify-center"
+                >
+                  <svg className="w-2.5 h-2.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                </motion.div>
+              )}
+              <div className={`w-11 h-11 rounded-xl flex items-center justify-center ${
+                selected ? 'bg-[#EA2523]/10' : 'bg-white'
+              }`}>
+                <Icon size={22} className={selected ? 'text-[#EA2523]' : 'text-[#233B86]'} />
+              </div>
+              <div>
+                <p className={`text-sm font-semibold ${selected ? 'text-[#EA2523]' : 'text-gray-800'}`}>{opt.label}</p>
+                <p className="text-xs text-gray-400 mt-0.5">{opt.desc}</p>
+              </div>
+            </motion.button>
+          );
+        })}
+      </div>
     </div>
   );
 }
