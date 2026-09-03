@@ -16,27 +16,20 @@ interface FunnelLayoutProps {
 }
 
 const slideVariants = {
-  enter: (direction: 'forward' | 'backward') => ({
-    x: direction === 'forward' ? 48 : -48,
-    opacity: 0,
-  }),
+  enter: (dir: 'forward' | 'backward') => ({ x: dir === 'forward' ? 56 : -56, opacity: 0 }),
   center: { x: 0, opacity: 1 },
-  exit: (direction: 'forward' | 'backward') => ({
-    x: direction === 'forward' ? -48 : 48,
-    opacity: 0,
-  }),
+  exit:  (dir: 'forward' | 'backward') => ({ x: dir === 'forward' ? -56 : 56, opacity: 0 }),
 };
 
-// Step labels for header
 const STEP_LABELS: Partial<Record<FunnelStep, string>> = {
-  'property-type': 'Property Type',
+  'property-type':  'Property Type',
   'residency-type': 'Occupancy',
-  'timeline': 'Timeline',
-  'location': 'Location',
-  'financials': 'Financials',
-  'credit-score': 'Credit Score',
-  'military': 'VA Eligibility',
-  'lead-capture': 'Almost Done',
+  'timeline':       'Timeline',
+  'location':       'Location',
+  'financials':     'Your Finances',
+  'credit-score':   'Credit Score',
+  'military':       'VA Eligibility',
+  'lead-capture':   'Almost There',
 };
 
 export function FunnelLayout({
@@ -50,141 +43,168 @@ export function FunnelLayout({
   onClose,
   direction,
 }: FunnelLayoutProps) {
-  // Lock body scroll while modal is open
   useEffect(() => {
     document.body.style.overflow = 'hidden';
     return () => { document.body.style.overflow = ''; };
   }, []);
 
   const isLoading = currentStep === 'loading';
-  const isRates = currentStep === 'rates';
-  const showTopBar = !isLoading;
+  const isRates   = currentStep === 'rates';
 
   return (
-    /* Backdrop */
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
-      {/* Dark overlay */}
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center sm:p-6">
+      {/* Backdrop */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         onClick={isLoading ? undefined : onClose}
-        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+        className="absolute inset-0 bg-black/55 backdrop-blur-[3px]"
       />
 
-      {/* Modal card */}
+      {/* Modal */}
       <motion.div
-        initial={{ opacity: 0, scale: 0.96, y: 12 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.96, y: 12 }}
-        transition={{ type: 'spring', stiffness: 320, damping: 32 }}
-        className={`relative w-full flex flex-col bg-white shadow-2xl overflow-hidden z-10 ${
-          isRates
-            ? 'max-w-4xl rounded-2xl'
-            : 'max-w-lg rounded-2xl'
-        }`}
-        style={{ maxHeight: 'min(90vh, 780px)' }}
+        initial={{ opacity: 0, y: 32, scale: 0.97 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        exit={{ opacity: 0, y: 32, scale: 0.97 }}
+        transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+        className={`relative z-10 w-full flex flex-col bg-white overflow-hidden
+          shadow-[0_32px_80px_rgba(0,0,0,0.28)]
+          rounded-t-3xl sm:rounded-2xl
+          ${isRates ? 'sm:max-w-3xl' : 'sm:max-w-[620px]'}
+        `}
+        style={{ maxHeight: 'min(93vh, 860px)' }}
         onClick={e => e.stopPropagation()}
       >
-        {/* Modal header */}
-        {showTopBar && (
-          <div className={`flex-shrink-0 ${isRates ? 'bg-[#233B86]' : 'bg-white border-b border-gray-100'}`}>
-            <div className="flex items-center justify-between px-5 py-4">
-              {/* Left: back or logo */}
-              <div className="w-8">
-                <AnimatePresence>
+
+        {/* ── TOP CHROME ───────────────────────────────────── */}
+        {!isLoading && (
+          <div
+            className={`flex-shrink-0 ${isRates ? 'bg-[#1A2B63]' : 'bg-white'}`}
+          >
+            {/* Drag handle on mobile */}
+            {!isRates && (
+              <div className="flex justify-center pt-3 pb-1 sm:hidden">
+                <div className="w-10 h-1 rounded-full bg-gray-200" />
+              </div>
+            )}
+
+            {/* Header row */}
+            <div className="flex items-center px-5 py-3.5 gap-3">
+              {/* Left */}
+              <div className="w-9 flex-shrink-0">
+                <AnimatePresence mode="wait">
                   {canGoBack && !isRates ? (
                     <motion.button
                       key="back"
-                      initial={{ opacity: 0, x: -6 }}
+                      initial={{ opacity: 0, x: -8 }}
                       animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: -6 }}
+                      exit={{ opacity: 0, x: -8 }}
                       onClick={onBack}
-                      className="w-8 h-8 flex items-center justify-center rounded-lg text-gray-400 hover:text-[#233B86] hover:bg-gray-50 transition-colors"
+                      className="w-9 h-9 flex items-center justify-center rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-500 hover:text-gray-800 transition-colors"
                     >
-                      <ArrowLeft size={18} />
+                      <ArrowLeft size={17} />
                     </motion.button>
                   ) : isRates ? (
-                    <div className="flex items-center gap-2">
-                      <div className="w-2 h-2 rounded-full bg-[#EA2523] animate-pulse" />
-                      <span className="text-white/70 text-xs font-medium">Live Rates</span>
-                    </div>
-                  ) : null}
+                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex items-center gap-1.5">
+                      <span className="relative flex w-2 h-2">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#EA2523] opacity-75" />
+                        <span className="relative inline-flex rounded-full h-2 w-2 bg-[#EA2523]" />
+                      </span>
+                      <span className="text-white/70 text-xs font-semibold tracking-wide">LIVE</span>
+                    </motion.div>
+                  ) : (
+                    <div className="w-9" />
+                  )}
                 </AnimatePresence>
               </div>
 
-              {/* Center: logo or step label */}
-              <div className="flex-1 text-center">
+              {/* Center — logo or step name */}
+              <div className="flex-1 flex items-center justify-center gap-2 min-w-0">
                 {isRates ? (
-                  <div className="flex items-center justify-center gap-2">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                      <path d="M3 12L12 3L21 12V20C21 20.5523 20.5523 21 20 21H15V15H9V21H4C3.44772 21 3 20.5523 3 20V12Z" fill="white"/>
-                    </svg>
-                    <span className="text-white font-bold text-sm">Texas United Mortgage</span>
-                  </div>
-                ) : isQuestionStep ? (
-                  <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                    {STEP_LABELS[currentStep] || ''}
-                  </span>
-                ) : (
-                  <div className="flex items-center justify-center gap-1.5">
-                    <div className="w-6 h-6 rounded-md flex items-center justify-center" style={{ backgroundColor: '#233B86' }}>
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
-                        <path d="M3 12L12 3L21 12V20C21 20.5523 20.5523 21 20 21H15V15H9V21H4C3.44772 21 3 20.5523 3 20V12Z" fill="white"/>
+                  <>
+                    <div className="w-6 h-6 rounded-md bg-white/20 flex items-center justify-center flex-shrink-0">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="white">
+                        <path d="M3 12L12 3L21 12V20C21 20.5523 20.5523 21 20 21H15V15H9V21H4C3.44772 21 3 20.5523 3 20V12Z"/>
                       </svg>
                     </div>
-                    <span className="font-bold text-sm text-gray-700">Texas United</span>
-                  </div>
+                    <span className="text-white font-bold text-sm">Texas United Mortgage</span>
+                  </>
+                ) : (
+                  <>
+                    <div className="w-6 h-6 rounded-md bg-[#233B86] flex items-center justify-center flex-shrink-0">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="white">
+                        <path d="M3 12L12 3L21 12V20C21 20.5523 20.5523 21 20 21H15V15H9V21H4C3.44772 21 3 20.5523 3 20V12Z"/>
+                      </svg>
+                    </div>
+                    <span className="font-bold text-gray-800 text-sm truncate">Texas United</span>
+                    {isQuestionStep && (
+                      <span className="text-gray-300 text-sm font-light hidden sm:inline">·</span>
+                    )}
+                    {isQuestionStep && (
+                      <span className="text-gray-400 text-sm font-medium hidden sm:inline truncate">
+                        {STEP_LABELS[currentStep]}
+                      </span>
+                    )}
+                  </>
                 )}
               </div>
 
-              {/* Right: close */}
-              <div className="w-8 flex justify-end">
+              {/* Right — close */}
+              <div className="w-9 flex-shrink-0 flex justify-end">
                 {!isLoading && (
                   <button
                     onClick={onClose}
-                    className={`w-8 h-8 flex items-center justify-center rounded-lg transition-colors ${
+                    className={`w-9 h-9 flex items-center justify-center rounded-xl transition-colors ${
                       isRates
                         ? 'text-white/50 hover:text-white hover:bg-white/10'
-                        : 'text-gray-400 hover:text-gray-600 hover:bg-gray-50'
+                        : 'text-gray-400 hover:text-gray-700 hover:bg-gray-100'
                     }`}
                   >
-                    <X size={18} />
+                    <X size={17} />
                   </button>
                 )}
               </div>
             </div>
 
-            {/* Progress bar (question steps only) */}
+            {/* Progress track */}
             {isQuestionStep && (
               <div className="px-5 pb-4">
-                {/* Step dots */}
-                <div className="flex items-center gap-1 mb-2">
-                  {Array.from({ length: totalQuestions }).map((_, i) => (
-                    <motion.div
-                      key={i}
-                      animate={{
-                        backgroundColor: i < currentQuestionIndex
-                          ? '#233B86'
-                          : i === currentQuestionIndex
-                          ? '#EA2523'
-                          : '#E5E7EB',
-                        width: i === currentQuestionIndex ? 24 : 8,
-                      }}
-                      transition={{ duration: 0.25 }}
-                      className="h-1.5 rounded-full"
-                    />
-                  ))}
-                  <span className="ml-auto text-xs text-gray-400 tabular-nums">
-                    {currentQuestionIndex + 1}/{totalQuestions}
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-xs font-semibold text-gray-400 uppercase tracking-widest">
+                    {STEP_LABELS[currentStep]}
                   </span>
+                  <span className="text-xs font-bold text-[#EA2523] tabular-nums">
+                    {currentQuestionIndex + 1} / {totalQuestions}
+                  </span>
+                </div>
+                {/* Segmented bar */}
+                <div className="flex gap-1">
+                  {Array.from({ length: totalQuestions }).map((_, i) => (
+                    <div key={i} className="flex-1 h-1 rounded-full bg-gray-100 overflow-hidden">
+                      <motion.div
+                        className="h-full rounded-full"
+                        initial={{ width: 0 }}
+                        animate={{
+                          width: i < currentQuestionIndex ? '100%'
+                            : i === currentQuestionIndex ? '100%'
+                            : '0%',
+                          backgroundColor: i < currentQuestionIndex ? '#233B86' : '#EA2523',
+                        }}
+                        transition={{ duration: 0.35, ease: 'easeInOut' }}
+                      />
+                    </div>
+                  ))}
                 </div>
               </div>
             )}
+
+            {/* Divider (non-rates) */}
+            {!isRates && <div className="h-px bg-gray-100" />}
           </div>
         )}
 
-        {/* Scrollable content */}
+        {/* ── CONTENT ──────────────────────────────────────── */}
         <div className="flex-1 overflow-y-auto overscroll-contain">
           <AnimatePresence mode="wait" custom={direction}>
             <motion.div
@@ -194,33 +214,38 @@ export function FunnelLayout({
               initial="enter"
               animate="center"
               exit="exit"
-              transition={{ type: 'spring', stiffness: 340, damping: 34 }}
+              transition={{ type: 'spring', stiffness: 340, damping: 32 }}
             >
               {children}
             </motion.div>
           </AnimatePresence>
         </div>
 
-        {/* Trust footer (only on question + lead steps) */}
+        {/* ── TRUST FOOTER ─────────────────────────────────── */}
         {(isQuestionStep || currentStep === 'lead-capture') && (
-          <div className="flex-shrink-0 border-t border-gray-50 bg-gray-50/80 px-5 py-2.5">
-            <div className="flex items-center justify-center gap-4 text-xs text-gray-400">
-              <span className="flex items-center gap-1">
-                <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                Google 4.9
+          <div className="flex-shrink-0 bg-gray-50 border-t border-gray-100 px-5 py-3">
+            <div className="flex items-center justify-center gap-3 sm:gap-5 flex-wrap">
+              {[
+                { label: 'Google', score: '4.9' },
+                { label: 'Zillow', score: '5.0' },
+                { label: 'Yelp', score: '4.7' },
+              ].map((r, i) => (
+                <span key={r.label} className="flex items-center gap-1.5 text-xs text-gray-500">
+                  {i > 0 && <span className="text-gray-300 text-xs mr-1 hidden sm:inline">·</span>}
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="#F59E0B">
+                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                  </svg>
+                  <span className="font-semibold text-gray-600">{r.score}</span>
+                  <span className="text-gray-400">{r.label}</span>
+                </span>
+              ))}
+              <span className="text-gray-300 hidden sm:inline text-xs">·</span>
+              <span className="text-xs text-gray-400 flex items-center gap-1">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#10B981" strokeWidth="2.5">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                </svg>
+                No credit pull · Free
               </span>
-              <span className="text-gray-200">·</span>
-              <span className="flex items-center gap-1">
-                <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                Zillow 5.0
-              </span>
-              <span className="text-gray-200">·</span>
-              <span className="flex items-center gap-1">
-                <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                Yelp 4.7
-              </span>
-              <span className="text-gray-200">·</span>
-              <span>No credit pull · Free</span>
             </div>
           </div>
         )}
