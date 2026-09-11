@@ -7,9 +7,9 @@ interface LoadingScreenProps {
 }
 
 const STEPS = [
-  'Reviewing your loan preferences...',
+  'Reviewing your home equity position...',
   'Analyzing your financial profile...',
-  'Locking in your best rates...',
+  'Calculating your best HELOC options...',
 ];
 
 export function LoadingScreen({ onComplete }: LoadingScreenProps) {
@@ -70,7 +70,7 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
         transition={{ delay: 0.2 }}
         className="text-xl font-bold text-white mb-2 text-center"
       >
-        Calculating your rates{dots}
+        Calculating your options{dots}
       </motion.h3>
       <motion.p
         initial={{ opacity: 0 }}
@@ -78,7 +78,7 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
         transition={{ delay: 0.3 }}
         className="text-white/50 text-sm mb-10 text-center"
       >
-        Comparing today's live market rates for your scenario
+        Comparing today's live HELOC rates for your scenario
       </motion.p>
 
       {/* Checklist */}
@@ -128,7 +128,6 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
         })}
       </div>
 
-      {/* Bottom note */}
       <motion.p
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}

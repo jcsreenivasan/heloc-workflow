@@ -22,14 +22,11 @@ const slideVariants = {
 };
 
 const STEP_LABELS: Partial<Record<FunnelStep, string>> = {
-  'property-type':  'Property Type',
-  'residency-type': 'Occupancy',
-  'timeline':       'Timeline',
-  'location':       'Location',
-  'financials':     'Your Finances',
-  'credit-score':   'Credit Score',
-  'military':       'VA Eligibility',
-  'lead-capture':   'Almost There',
+  'step1':        'Your Property',
+  'step2':        'Financial Profile',
+  'step3':        'Loan Details',
+  'lead-capture': 'Almost There',
+  'disqualified': 'Not Eligible',
 };
 
 export function FunnelLayout({
@@ -79,10 +76,8 @@ export function FunnelLayout({
 
         {/* ── TOP CHROME ───────────────────────────────────── */}
         {!isLoading && (
-          <div
-            className={`flex-shrink-0 ${isRates ? 'bg-[#1A2B63]' : 'bg-white'}`}
-          >
-            {/* Drag handle on mobile */}
+          <div className={`flex-shrink-0 ${isRates ? 'bg-[#1A2B63]' : 'bg-white'}`}>
+            {/* Drag handle (mobile) */}
             {!isRates && (
               <div className="flex justify-center pt-3 pb-1 sm:hidden">
                 <div className="w-10 h-1 rounded-full bg-gray-200" />
@@ -154,7 +149,7 @@ export function FunnelLayout({
               </div>
             </div>
 
-            {/* Progress track */}
+            {/* Progress track — only on question steps */}
             {isQuestionStep && (
               <div className="px-5 pb-4">
                 <div className="flex items-center justify-between mb-2">
@@ -162,23 +157,21 @@ export function FunnelLayout({
                     {STEP_LABELS[currentStep]}
                   </span>
                   <span className="text-xs font-bold text-[#EA2523] tabular-nums">
-                    {currentQuestionIndex + 1} / {totalQuestions}
+                    Step {currentQuestionIndex + 1} of {totalQuestions}
                   </span>
                 </div>
                 {/* Segmented bar */}
-                <div className="flex gap-1">
+                <div className="flex gap-1.5">
                   {Array.from({ length: totalQuestions }).map((_, i) => (
-                    <div key={i} className="flex-1 h-1 rounded-full bg-gray-100 overflow-hidden">
+                    <div key={i} className="flex-1 h-1.5 rounded-full bg-gray-100 overflow-hidden">
                       <motion.div
                         className="h-full rounded-full"
                         initial={{ width: 0 }}
                         animate={{
-                          width: i < currentQuestionIndex ? '100%'
-                            : i === currentQuestionIndex ? '100%'
-                            : '0%',
+                          width: i <= currentQuestionIndex ? '100%' : '0%',
                           backgroundColor: i < currentQuestionIndex ? '#233B86' : '#EA2523',
                         }}
-                        transition={{ duration: 0.35, ease: 'easeInOut' }}
+                        transition={{ duration: 0.4, ease: 'easeInOut' }}
                       />
                     </div>
                   ))}
@@ -186,7 +179,7 @@ export function FunnelLayout({
               </div>
             )}
 
-            {/* Divider (non-rates) */}
+            {/* Divider */}
             {!isRates && <div className="h-px bg-gray-100" />}
           </div>
         )}
@@ -220,7 +213,7 @@ export function FunnelLayout({
                 <span key={r.label} className="flex items-center gap-1.5 text-xs text-gray-500">
                   {i > 0 && <span className="text-gray-300 text-xs mr-1 hidden sm:inline">·</span>}
                   <svg width="10" height="10" viewBox="0 0 24 24" fill="#F59E0B">
-                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
                   </svg>
                   <span className="font-semibold text-gray-600">{r.score}</span>
                   <span className="text-gray-400">{r.label}</span>
@@ -229,7 +222,7 @@ export function FunnelLayout({
               <span className="text-gray-300 hidden sm:inline text-xs">·</span>
               <span className="text-xs text-gray-400 flex items-center gap-1">
                 <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#10B981" strokeWidth="2.5">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                 </svg>
                 No credit pull · Free
               </span>

@@ -1,14 +1,25 @@
+export type HomeValue = '<200k' | '200k-400k' | '400k-600k' | '600k-1m' | '1m+';
+export type MortgageBalance = 'none' | '<50k' | '50k-100k' | '100k-200k' | '200k-300k' | '300k+';
+export type CreditBand = 'excellent' | 'good' | 'fair' | 'poor';
+export type UseOfFunds =
+  | 'home-improvement'
+  | 'debt-consolidation'
+  | 'major-purchase'
+  | 'emergency-fund'
+  | 'other';
+export type BorrowAmount = '<25k' | '25k-50k' | '50k-100k' | '100k-150k' | '150k+';
+export type EmploymentStatus = 'employed' | 'self-employed' | 'retired' | 'other';
+export type PropertyType = 'single-family' | 'condo' | 'multi-family' | 'manufactured';
+
 export interface FunnelData {
-  loanPurpose: 'purchase' | 'refinance' | null;
-  propertyType: 'single-family' | 'townhome' | 'condo' | 'multi-unit' | null;
-  residencyType: 'primary' | 'second-home' | 'rental' | null;
-  timeline: 'now' | '30-days' | '2-4-months' | 'researching' | null;
-  state: string;
-  zip: string;
-  propertyValue: number;
-  downPayment: number;
-  creditScore: number;
-  military: boolean | null;
+  ownsHome: boolean | null;
+  propertyType: PropertyType | null;
+  homeValue: HomeValue | null;
+  mortgageBalance: MortgageBalance | null;
+  creditBand: CreditBand | null;
+  useOfFunds: UseOfFunds | null;
+  borrowAmount: BorrowAmount | null;
+  employmentStatus: EmploymentStatus | null;
   lead: {
     name: string;
     email: string;
@@ -16,77 +27,35 @@ export interface FunnelData {
   };
 }
 
-export type FunnelStep =
-  | 'loan-purpose'
-  | 'property-type'
-  | 'residency-type'
-  | 'timeline'
-  | 'location'
-  | 'financials'
-  | 'credit-score'
-  | 'military'
-  | 'lead-capture'
-  | 'loading'
-  | 'rates';
-
-// When loan purpose is pre-selected from the landing page, skip 'loan-purpose' step
-// loading comes BEFORE lead-capture: user sees "Calculating..." then is asked for contact info
-export const STEP_ORDER_WITH_PURPOSE: FunnelStep[] = [
-  'property-type',
-  'residency-type',
-  'timeline',
-  'location',
-  'financials',
-  'credit-score',
-  'military',
-  'loading',
-  'lead-capture',
-  'rates',
-];
-
-export const STEP_ORDER: FunnelStep[] = [
-  'loan-purpose',
-  'property-type',
-  'residency-type',
-  'timeline',
-  'location',
-  'financials',
-  'credit-score',
-  'military',
-  'loading',
-  'lead-capture',
-  'rates',
-];
-
-export const QUESTION_STEPS_WITH_PURPOSE: FunnelStep[] = [
-  'property-type',
-  'residency-type',
-  'timeline',
-  'location',
-  'financials',
-  'credit-score',
-  'military',
-];
-
-export const QUESTION_STEPS: FunnelStep[] = [
-  'loan-purpose',
-  'property-type',
-  'residency-type',
-  'timeline',
-  'location',
-  'financials',
-  'credit-score',
-  'military',
-];
-
 export interface RateData {
-  term: string;
+  type: 'heloc' | 'home-equity-loan';
+  label: string;
+  badge?: string;
   interestRate: number;
   apr: number;
   monthlyPayment: number;
   loanAmount: number;
-  label: string;
-  badge?: string;
-  isPMI?: boolean;
-  isVA?: boolean;
+  drawPeriod?: string;
+  repaymentPeriod: string;
+  isVariableRate: boolean;
 }
+
+export type FunnelStep =
+  | 'step1'
+  | 'step2'
+  | 'step3'
+  | 'disqualified'
+  | 'lead-capture'
+  | 'loading'
+  | 'rates';
+
+export const STEP_ORDER: FunnelStep[] = [
+  'step1',
+  'step2',
+  'step3',
+  'lead-capture',
+  'loading',
+  'rates',
+];
+
+export const QUESTION_STEPS: FunnelStep[] = ['step1', 'step2', 'step3'];

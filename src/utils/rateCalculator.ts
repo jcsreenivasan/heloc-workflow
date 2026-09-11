@@ -1,93 +1,136 @@
-import type { FunnelData, RateData } from '../types/funnel';
+import type { FunnelData, RateData, HomeValue, MortgageBalance, BorrowAmount, CreditBand } from '../types/funnel';
 
-function calculateMonthlyPayment(principal: number, annualRate: number, termYears: number): number {
-  const monthlyRate = annualRate / 100 / 12;
-  const numPayments = termYears * 12;
-  if (monthlyRate === 0) return principal / numPayments;
-  return (principal * monthlyRate * Math.pow(1 + monthlyRate, numPayments)) /
-    (Math.pow(1 + monthlyRate, numPayments) - 1);
+const PRIME_RATE = 8.5;
+
+export function homeValueMidpoint(val: HomeValue): number {
+  const map: Record<HomeValue, number> = {
+    '<200k': 150000,
+    '200k-400k': 300000,
+    '400k-600k': 500000,
+    '600k-1m': 800000,
+    '1m+': 1250000,
+  };
+  return map[val];
 }
 
-export function calculateRates(data: FunnelData): RateData[] {
-  const loanAmount = data.propertyValue - data.downPayment;
-  const ltv = (loanAmount / data.propertyValue) * 100;
-
-  let adjustment30 = 0;
-  let adjustment15 = 0;
-
-  // Credit score adjustments
-  if (data.creditScore >= 740) {
-    adjustment30 -= 0.25;
-    adjustment15 -= 0.25;
-  } else if (data.creditScore < 620) {
-    adjustment30 += 0.75;
-    adjustment15 += 0.75;
-  } else if (data.creditScore < 670) {
-    adjustment30 += 0.375;
-    adjustment15 += 0.375;
-  }
-
-  // LTV adjustment (PMI threshold)
-  const isPMI = ltv > 80;
-  if (isPMI) {
-    adjustment30 += 0.25;
-    adjustment15 += 0.25;
-  }
-
-  // VA benefit
-  const isVA = data.military === true;
-  if (isVA) {
-    adjustment30 -= 0.125;
-    adjustment15 -= 0.125;
-  }
-
-  // Rental property
-  if (data.residencyType === 'rental') {
-    adjustment30 += 0.5;
-    adjustment15 += 0.5;
-  }
-
-  const base30 = 6.75 + adjustment30;
-  const base15 = 6.10 + adjustment15;
-
-  const apr30 = base30 + 0.12; // Typical APR spread
-  const apr15 = base15 + 0.10;
-
-  return [
-    {
-      term: '30-Year Fixed',
-      interestRate: Math.max(base30, 3.0),
-      apr: Math.max(apr30, 3.12),
-      monthlyPayment: calculateMonthlyPayment(loanAmount, Math.max(base30, 3.0), 30),
-      loanAmount,
-      label: '30-Year Fixed',
-      badge: 'Most Popular',
-      isPMI,
-      isVA,
-    },
-    {
-      term: '15-Year Fixed',
-      interestRate: Math.max(base15, 2.5),
-      apr: Math.max(apr15, 2.6),
-      monthlyPayment: calculateMonthlyPayment(loanAmount, Math.max(base15, 2.5), 15),
-      loanAmount,
-      label: '15-Year Fixed',
-      badge: 'Best Value',
-      isPMI,
-      isVA,
-    },
-  ];
+export function mortgageBalanceMidpoint(val: MortgageBalance): number {
+  const map: Record<MortgageBalance, number> = {
+    'none': 0,
+    '<50k': 35000,
+    '50k-100k': 75000,
+    '100k-200k': 150000,
+    '200k-300k': 250000,
+    '300k+': 350000,
+  };
+  return map[val];
 }
 
-export function getCreditScoreLabel(score: number): { label: string; color: string } {
-  if (score >= 740) return { label: 'Excellent', color: '#16a34a' };
-  if (score >= 670) return { label: 'Good', color: '#ca8a04' };
-  if (score >= 580) return { label: 'Fair', color: '#ea580c' };
-  return { label: 'Poor', color: '#dc2626' };
+export function borrowAmountMidpoint(val: BorrowAmount): number {
+  const map: Record<BorrowAmount, number> = {
+    '<25k': 20000,
+    '25k-50k': 37500,
+    '50k-100k': 75000,
+    '100k-150k': 125000,
+    '150k+': 175000,
+  };
+  return map[val];
 }
 
-export function getLTVStatus(ltv: number): { label: string; color: string } {
-  if (ltv <= 80) return { label: 'No PMI', color: '#16a34a' };
-  if (ltv <= 90) return { label: 'PMI Required', color: '#ea580c' };
-  return { label: 'High LTV', color: '#dc2626' };
+function helocSpread(creditBand: CreditBand): number {
+  const map: Record<CreditBand, number> = {
+    excellent: 0.25,
+    good: 0.75,
+    fair: 1.5,
+    poor: 2.75,
+  };
+  return map[creditBand];
+}
+
+function homeEquityLoanRate(creditBand: CreditBand): number {
+  const map: Record<CreditBand, number> = {
+    excellent: 8.99,
+    good: 9.49,
+    fair: 10.24,
+    poor: 11.49,
+  };
+  return map[creditBand];
+}
+
+function calcMonthlyPayment(principal: number, annualRate: number, termYears: number): number {
+  const r = annualRate / 100 / 12;
+  const n = termYears * 12;
+  if (r === 0) return principal / n;
+  return (principal * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+}
+
+export interface RateCalculationResult {
+  rates: RateData[];
+  equity: number;
+  maxLineAmount: number;
+  homeVal: number;
+  mortgageAmt: number;
+  requestedAmt: number;
+}
+
+export function calculateRates(data: FunnelData): RateCalculationResult {
+  const homeVal = homeValueMidpoint(data.homeValue!);
+  const mortgageAmt = mortgageBalanceMidpoint(data.mortgageBalance!);
+  const requestedAmt = borrowAmountMidpoint(data.borrowAmount!);
+  const creditBand = data.creditBand!;
+
+  const equity = homeVal - mortgageAmt;
+  const maxCLTV = homeVal * 0.85;
+  const maxLineAmount = Math.max(0, maxCLTV - mortgageAmt);
+  const loanAmount = Math.min(requestedAmt, maxLineAmount);
+
+  const helocRate = PRIME_RATE + helocSpread(creditBand);
+  const helRate = homeEquityLoanRate(creditBand);
+
+  // HELOC: interest-only during draw period
+  const helocMonthly = (loanAmount * (helocRate / 100)) / 12;
+  // Home Equity Loan: fully amortized over 10 years
+  const helMonthly = calcMonthlyPayment(loanAmount, helRate, 10);
+
+  return {
+    equity,
+    maxLineAmount,
+    homeVal,
+    mortgageAmt,
+    requestedAmt,
+    rates: [
+      {
+        type: 'heloc',
+        label: 'HELOC',
+        badge: 'Most Flexible',
+        interestRate: helocRate,
+        apr: helocRate + 0.05,
+        monthlyPayment: helocMonthly,
+        loanAmount,
+        drawPeriod: '10 years',
+        repaymentPeriod: '20 years',
+        isVariableRate: true,
+      },
+      {
+        type: 'home-equity-loan',
+        label: 'Home Equity Loan',
+        badge: 'Fixed Rate',
+        interestRate: helRate,
+        apr: helRate + 0.12,
+        monthlyPayment: helMonthly,
+        loanAmount,
+        repaymentPeriod: '10 years',
+        isVariableRate: false,
+      },
+    ],
+  };
+}
+
+export function creditBandLabel(band: CreditBand): string {
+  const map: Record<CreditBand, string> = {
+    excellent: 'Excellent (720+)',
+    good: 'Good (660–719)',
+    fair: 'Fair (600–659)',
+    poor: 'Poor (below 600)',
+  };
+  return map[band];
 }
