@@ -3,7 +3,7 @@
 ## Project Overview
 High-conversion HELOC (Home Equity Line of Credit) lead funnel for Texas United's website. Collects 8 answers across 3 multi-question steps with progressive reveal within each step. Non-homeowners are disqualified immediately. Results gated behind lead-capture form, then reveals personalized HELOC rate cards with PDF download. Frontend-only (v1 — no backend; form data stays in React state).
 
-**Preview URL (Client Share):** https://heloc-workflow-7qeeqgt1g-jcsreenivasans-projects.vercel.app
+**Live URL (Production — share with clients):** https://heloc-workflow.vercel.app
 **GitHub (active working repo):** https://github.com/jcsreenivasan/heloc-workflow
 **GitHub (original source — mortgage funnel):** https://github.com/jcsreenivasan/Texasunited-funnel
 **Vercel Team:** jcsreenivasans-projects
@@ -172,7 +172,8 @@ src/
 | 2026-09-11 | Rebuilt as HELOC-specific 3-step funnel | Client requirement: HELOC flow with 8 questions in 3 steps |
 | 2026-09-11 | Multi-question steps with progressive reveal | Reduces page transitions; faster feel |
 | 2026-09-11 | Added disqualification for non-homeowners | HELOCs require homeownership — eliminates bad leads |
-| 2026-09-11 | Renamed Vercel project to `heloc-workflow` | Cleaner preview URL for client sharing |
+| 2026-09-11 | Renamed Vercel project to `heloc-workflow` | Cleaner URL for client sharing |
+| 2026-09-11 | Deployed to production (not preview) | Preview URLs require Vercel login; production is public |
 | 2026-09-11 | HELOC rate model: Prime + spread + HEL fixed | Matches real HELOC product structure |
 
 ---
