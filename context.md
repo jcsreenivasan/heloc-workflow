@@ -3,8 +3,10 @@
 ## Project Overview
 High-conversion mortgage lead funnel for Texas United's website. Collects 7 answers from the user (loan purpose is pre-selected via landing page buttons), gates results behind a lead-capture form, then reveals personalized live rate cards with PDF download. Frontend-only (v1 — no backend; form data stays in React state).
 
-**Live URL:** https://texasunited-funnel.vercel.app
-**GitHub:** https://github.com/jcsreenivasan/Texasunited-funnel
+**Live URL (Production):** https://texasunited-funnel.vercel.app
+**Preview URL (Client Share):** https://texasunited-funnel-hyuy5zba5-jcsreenivasans-projects.vercel.app
+**GitHub (active working repo):** https://github.com/jcsreenivasan/heloc-workflow
+**GitHub (original source):** https://github.com/jcsreenivasan/Texasunited-funnel
 **Vercel Team:** jcsreenivasans-projects
 
 ---
@@ -118,7 +120,9 @@ src/
 
 ## Deployment
 - **Vercel** (connected to GitHub — auto-deploys on push to `main`)
-- To redeploy manually: `~/.local/bin/vercel --yes --prod --scope jcsreenivasans-projects`
+- **Active repo:** https://github.com/jcsreenivasan/heloc-workflow (all new work goes here)
+- Preview deploy: `~/.local/bin/vercel --yes --scope jcsreenivasans-projects`
+- Production deploy: `~/.local/bin/vercel --yes --prod --scope jcsreenivasans-projects`
 
 ---
 
@@ -134,6 +138,8 @@ src/
 | 2026-09-03 | LTV badge removed from Financials step | Too technical for early funnel step |
 | 2026-09-03 | Added editable inputs to Financials | Users want to type exact values |
 | 2026-09-03 | Step-specific accent colors introduced | "Too dull" feedback — add visual variety |
+| 2026-09-11 | Cloned to new repo `heloc-workflow` | Separate working repo for client iteration |
+| 2026-09-11 | Preview URL deployed for client sharing | Client review before production push |
 
 ---
 
