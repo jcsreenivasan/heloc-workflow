@@ -77,13 +77,11 @@ export function FunnelLayout({
 
         {/* ── TOP CHROME ───────────────────────────────────── */}
         {!isLoading && (
-          <div className={`flex-shrink-0 ${isRates ? 'bg-[#1A2B63]' : 'bg-white'}`}>
+          <div className="flex-shrink-0 bg-white">
             {/* Drag handle (mobile) */}
-            {!isRates && (
-              <div className="flex justify-center pt-3 pb-1 sm:hidden">
-                <div className="w-10 h-1 rounded-full bg-gray-200" />
-              </div>
-            )}
+            <div className="flex justify-center pt-3 pb-1 sm:hidden">
+              <div className="w-10 h-1 rounded-full bg-gray-200" />
+            </div>
 
             {/* Header row */}
             <div className="flex items-center px-5 py-3.5 gap-3">
@@ -107,7 +105,7 @@ export function FunnelLayout({
                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#EA2523] opacity-75" />
                         <span className="relative inline-flex rounded-full h-2 w-2 bg-[#EA2523]" />
                       </span>
-                      <span className="text-white/70 text-xs font-semibold tracking-wide">LIVE</span>
+                      <span className="text-[#EA2523] text-xs font-semibold tracking-wide">LIVE</span>
                     </motion.div>
                   ) : (
                     <div className="w-9" />
@@ -121,7 +119,6 @@ export function FunnelLayout({
                   src="/texas-united-logo.webp"
                   alt="Texas United Mortgage"
                   className="h-7 w-auto object-contain flex-shrink-0"
-                  style={isRates ? { filter: 'brightness(0) invert(1)' } : {}}
                 />
               </div>
 
@@ -130,12 +127,8 @@ export function FunnelLayout({
                 {!isLoading && (
                   <button
                     onClick={onClose}
-                    className={`w-9 h-9 flex items-center justify-center rounded-xl transition-colors ${
-                      isRates
-                        ? 'text-white/50 hover:text-white hover:bg-white/10'
-                        : 'hover:text-gray-700 hover:bg-gray-100'
-                    }`}
-                    style={isRates ? {} : { color: '#757575' }}
+                    className="w-9 h-9 flex items-center justify-center rounded-xl transition-colors hover:text-gray-700 hover:bg-gray-100"
+                    style={{ color: '#757575' }}
                   >
                     <X size={17} />
                   </button>
@@ -174,7 +167,7 @@ export function FunnelLayout({
             )}
 
             {/* Divider */}
-            {!isRates && <div className="h-px bg-gray-100" />}
+            <div className="h-px bg-gray-100" />
           </div>
         )}
 

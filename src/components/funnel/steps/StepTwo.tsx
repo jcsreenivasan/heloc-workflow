@@ -45,11 +45,11 @@ export function StepTwo({ data, onChange, onNext }: StepTwoProps) {
       <div className="flex items-start justify-between mb-4">
         <div>
           <p className="text-[11px] font-bold uppercase tracking-widest mb-1" style={{ color: '#757575' }}>Your Score</p>
-          <p className="text-7xl font-black leading-none" style={{ color: active.color }}>{score}</p>
+          <p className="text-5xl font-black leading-none" style={{ color: active.color }}>{score}</p>
         </div>
         <div className="text-right mt-1">
           <p className="text-xl font-bold" style={{ color: active.color }}>{active.label}</p>
-          <p className="text-sm mt-1 leading-relaxed max-w-[180px]" style={{ color: '#757575' }}>{BAND_MESSAGES[active.label]}</p>
+          <p className="text-sm mt-1 leading-relaxed max-w-[180px] text-gray-900">{BAND_MESSAGES[active.label]}</p>
         </div>
       </div>
 

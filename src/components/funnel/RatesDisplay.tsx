@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Download, Phone, Check, ChevronDown, ChevronUp, TrendingDown } from 'lucide-react';
+import { Check, ChevronDown, ChevronUp } from 'lucide-react';
 import type { FunnelData, RateData } from '../../types/funnel';
 import { calculateRates, creditScoreLabel } from '../../utils/rateCalculator';
-import { generateRatePDF } from '../../utils/pdfGenerator';
 
 interface RatesDisplayProps {
   data: FunnelData;
@@ -54,29 +53,16 @@ function ConfettiEffect() {
 
 function HELOCRateCard({
   rate,
-  data,
   index,
-  allRates,
 }: {
   rate: RateData;
-  data: FunnelData;
   index: number;
-  allRates: RateData[];
 }) {
-  const [downloading, setDownloading] = useState(false);
   const rateAnim = useCountUp(rate.interestRate);
   const paymentAnim = useCountUp(rate.monthlyPayment);
 
   const isHeloc = rate.type === 'heloc';
   const isPrimary = index === 0;
-
-  const handleDownload = () => {
-    setDownloading(true);
-    setTimeout(() => {
-      generateRatePDF(data, allRates);
-      setDownloading(false);
-    }, 400);
-  };
 
   return (
     <motion.div
@@ -84,25 +70,19 @@ function HELOCRateCard({
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.25 + index * 0.12, type: 'spring', stiffness: 280, damping: 26 }}
       className={`bg-white rounded-xl border-2 overflow-hidden ${
-        isPrimary ? 'border-[#233B86]' : 'border-gray-200'
+        isPrimary ? 'border-[#EA2523]' : 'border-gray-200'
       }`}
     >
       {/* Header */}
-      <div className={`px-4 py-3 flex items-center justify-between ${
-        isPrimary ? 'bg-[#233B86]' : 'bg-gray-50 border-b border-gray-100'
-      }`}>
+      <div className="px-4 py-3 flex items-center justify-between bg-gray-50 border-b border-gray-100">
         <div>
-          <p className={`text-sm font-bold ${isPrimary ? 'text-white' : 'text-gray-800'}`}>
-            {rate.label}
-          </p>
-          <p className={`text-xs mt-0.5 ${isPrimary ? 'text-white/60' : 'text-gray-400'}`}>
+          <p className="text-sm font-bold text-gray-800">{rate.label}</p>
+          <p className="text-xs mt-0.5" style={{ color: '#757575' }}>
             {rate.isVariableRate ? 'Variable rate · Interest-only draw' : 'Fixed rate · Fully amortized'}
           </p>
         </div>
         {rate.badge && (
-          <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${
-            isPrimary ? 'bg-[#EA2523] text-white' : 'bg-[#233B86] text-white'
-          }`}>
+          <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-[#EA2523] text-white">
             {rate.badge}
           </span>
         )}
@@ -112,7 +92,7 @@ function HELOCRateCard({
         {/* Rate + payment */}
         <div className="flex items-end justify-between mb-4 pb-4 border-b border-gray-100">
           <div>
-            <p className="text-xs text-gray-400 mb-0.5">
+            <p className="text-xs mb-0.5" style={{ color: '#757575' }}>
               {rate.isVariableRate ? 'Current Rate (Variable)' : 'Interest Rate (Fixed)'}
             </p>
             <p className="text-3xl font-black text-[#233B86]">
@@ -120,12 +100,12 @@ function HELOCRateCard({
             </p>
           </div>
           <div className="text-right">
-            <p className="text-xs text-gray-400 mb-0.5">
+            <p className="text-xs mb-0.5" style={{ color: '#757575' }}>
               {isHeloc ? 'Est. Interest-Only' : 'Est. Monthly'}
             </p>
             <p className="text-xl font-bold text-[#EA2523]">
               {fmtCurrency(paymentAnim)}
-              <span className="text-xs text-gray-400 font-normal">/mo</span>
+              <span className="text-xs font-normal" style={{ color: '#757575' }}>/mo</span>
             </p>
           </div>
         </div>
@@ -141,55 +121,20 @@ function HELOCRateCard({
             { label: 'Repayment', value: rate.repaymentPeriod },
           ].map(item => (
             <div key={item.label} className="bg-gray-50 rounded-lg px-3 py-2">
-              <p className="text-xs text-gray-400">{item.label}</p>
+              <p className="text-xs" style={{ color: '#757575' }}>{item.label}</p>
               <p className="text-sm font-bold text-gray-800 mt-0.5">{item.value}</p>
             </div>
           ))}
         </div>
 
-        {/* Variable rate note */}
-        {isHeloc && (
-          <div className="flex gap-2 p-2.5 bg-blue-50 border border-blue-100 rounded-lg mb-3">
-            <TrendingDown size={13} className="text-blue-600 flex-shrink-0 mt-0.5" />
-            <p className="text-xs text-blue-700">
-              Variable rate tied to Prime Rate (currently 8.50%). Rate may change monthly.
-            </p>
-          </div>
-        )}
-
-        {/* Actions */}
-        <div className="space-y-2">
-          <motion.button
-            onClick={handleDownload}
-            disabled={downloading}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            className="w-full py-2.5 rounded-xl font-bold text-white text-xs flex items-center justify-center gap-1.5 bg-[#EA2523] hover:bg-[#C41E1C] transition-colors"
-          >
-            {downloading ? (
-              <>
-                <motion.div
-                  animate={{ rotate: 360 }}
-                  transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-                  className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full"
-                />
-                Generating PDF...
-              </>
-            ) : (
-              <>
-                <Download size={13} />
-                Download HELOC Estimate
-              </>
-            )}
-          </motion.button>
-          <a
-            href="tel:+18005551234"
-            className="w-full py-2.5 rounded-xl font-semibold border border-[#233B86] text-[#233B86] flex items-center justify-center gap-1.5 hover:bg-[#233B86]/5 transition-colors text-xs"
-          >
-            <Phone size={13} />
-            Talk to a Loan Officer
-          </a>
-        </div>
+        {/* Apply Now */}
+        <motion.button
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          className="w-full py-2.5 rounded-xl font-bold text-white text-sm bg-[#EA2523] hover:bg-[#C41E1C] transition-colors"
+        >
+          Apply Now
+        </motion.button>
       </div>
     </motion.div>
   );
@@ -269,7 +214,7 @@ export function RatesDisplay({ data }: RatesDisplayProps) {
             Live Estimates · Updated Today
           </span>
         </div>
-        <h2 className="text-xl font-black text-[#233B86]">Your Personalized HELOC Options</h2>
+        <h2 className="text-xl font-black text-gray-900">Your Personalized HELOC Options</h2>
         {data.lead.name && (
           <p className="text-sm text-gray-500 mt-0.5">
             Hi {data.lead.name.split(' ')[0]}! Here's your estimated HELOC breakdown:
@@ -288,9 +233,7 @@ export function RatesDisplay({ data }: RatesDisplayProps) {
           <HELOCRateCard
             key={rate.type}
             rate={rate}
-            data={data}
             index={i}
-            allRates={rates}
           />
         ))}
       </div>
