@@ -29,6 +29,13 @@ const STEP_LABELS: Partial<Record<FunnelStep, string>> = {
   'disqualified': 'Not Eligible',
 };
 
+const REVIEW_SOURCES = [
+  { label: 'Google',         score: '4.9', reviews: '2,400+ reviews', logo: '/google-logo.png'     },
+  { label: 'Zillow',         score: '5.0', reviews: '180+ reviews',   logo: '/zillow-logo.png'     },
+  { label: 'Yelp',           score: '4.7', reviews: '90+ reviews',    logo: '/yelp-logo.png'       },
+  { label: 'Experience.com', score: '4.8', reviews: '500+ reviews',   logo: '/experience-logo.png' },
+];
+
 export function FunnelLayout({
   children,
   currentStep,
@@ -50,7 +57,8 @@ export function FunnelLayout({
   const isLeadCapture = currentStep === 'lead-capture';
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center sm:p-6">
+    /* Full-screen on mobile, centered modal on sm+ */
+    <div className="fixed inset-0 z-50 flex items-stretch sm:items-center justify-center sm:p-6">
       {/* Backdrop */}
       <motion.div
         initial={{ opacity: 0 }}
@@ -60,7 +68,7 @@ export function FunnelLayout({
         className="absolute inset-0 bg-black/55 backdrop-blur-[3px]"
       />
 
-      {/* Modal */}
+      {/* Modal — full height on mobile, capped on desktop */}
       <motion.div
         initial={{ opacity: 0, y: 32, scale: 0.97 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -68,21 +76,17 @@ export function FunnelLayout({
         transition={{ type: 'spring', stiffness: 300, damping: 30 }}
         className={`relative z-10 w-full flex flex-col bg-white overflow-hidden
           shadow-[0_32px_80px_rgba(0,0,0,0.28)]
-          rounded-t-3xl sm:rounded-2xl
+          rounded-none sm:rounded-2xl
+          h-full sm:h-auto
+          ${isLeadCapture ? 'sm:max-h-[min(95vh,960px)]' : 'sm:max-h-[min(93vh,860px)]'}
           ${isRates ? 'sm:max-w-3xl' : isLeadCapture ? 'sm:max-w-[900px]' : 'sm:max-w-[700px]'}
         `}
-        style={{ maxHeight: isLeadCapture ? 'min(95vh, 960px)' : 'min(93vh, 860px)' }}
         onClick={e => e.stopPropagation()}
       >
 
         {/* ── TOP CHROME ───────────────────────────────────── */}
         {!isLoading && (
           <div className="flex-shrink-0 bg-white">
-            {/* Drag handle (mobile) */}
-            <div className="flex justify-center pt-3 pb-1 sm:hidden">
-              <div className="w-10 h-1 rounded-full bg-gray-200" />
-            </div>
-
             {/* Header row */}
             <div className="flex items-center px-5 py-3.5 gap-3">
               {/* Left */}
@@ -190,33 +194,29 @@ export function FunnelLayout({
 
         {/* ── TRUST FOOTER ─────────────────────────────────── */}
         {isQuestionStep && (
-          <div className="flex-shrink-0 bg-gray-50 border-t border-gray-100 px-5 py-5">
+          <div className="flex-shrink-0 bg-gray-50 border-t border-gray-100 px-5 py-4">
             <div className="flex items-center justify-between gap-4">
 
-              {/* ── Review sources (left-aligned) ── */}
-              <div className="flex items-center gap-7 flex-wrap">
-                {[
-                  { label: 'Google',         score: '4.9', reviews: '2,400+ reviews', logo: '/google-logo.png'     },
-                  { label: 'Zillow',         score: '5.0', reviews: '180+ reviews',   logo: '/zillow-logo.png'     },
-                  { label: 'Yelp',           score: '4.7', reviews: '90+ reviews',    logo: '/yelp-logo.png'       },
-                  { label: 'Experience.com', score: '4.8', reviews: '500+ reviews',   logo: '/experience-logo.png' },
-                ].map(r => (
-                  <div key={r.label} className="flex flex-col gap-1">
-                    {/* Row 1: logo + star + score */}
-                    <div className="flex items-center gap-2">
-                      <img src={r.logo} alt={r.label} className="h-6 w-auto object-contain" />
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="#F59E0B">
+              {/* Review sources — 2 on mobile, 4 on sm+ */}
+              <div className="flex items-center gap-4 sm:gap-7">
+                {REVIEW_SOURCES.map((r, i) => (
+                  <div key={r.label} className={`flex flex-col gap-0.5 ${i >= 2 ? 'hidden sm:flex' : ''}`}>
+                    <div className="flex items-center gap-1.5">
+                      <img src={r.logo} alt={r.label} className="h-4 sm:h-6 w-auto object-contain" />
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="#F59E0B" className="sm:hidden">
                         <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
                       </svg>
-                      <span className="text-base font-bold text-gray-800">{r.score}</span>
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="#F59E0B" className="hidden sm:block">
+                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                      </svg>
+                      <span className="text-xs sm:text-base font-bold text-gray-800">{r.score}</span>
                     </div>
-                    {/* Row 2: review count */}
-                    <span className="text-sm" style={{ color: '#757575' }}>{r.reviews}</span>
+                    <span className="text-[10px] sm:text-sm" style={{ color: '#757575' }}>{r.reviews}</span>
                   </div>
                 ))}
               </div>
 
-              {/* ── BankingBridge badge (right) ── */}
+              {/* BankingBridge badge */}
               <a
                 href="https://www.bankingbridge.com/"
                 target="_blank"
@@ -226,7 +226,7 @@ export function FunnelLayout({
                 <img
                   src="/bankingbridge-badge.png"
                   alt="Powered by BankingBridge"
-                  className="h-12 w-auto object-contain"
+                  className="h-8 sm:h-12 w-auto object-contain"
                 />
               </a>
 
