@@ -33,10 +33,7 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
   }, []);
 
   return (
-    <div
-      className="flex flex-col items-center justify-center px-6 py-16"
-      style={{ background: 'linear-gradient(160deg, #1A2B63 0%, #233B86 60%, #2D4BAA 100%)' }}
-    >
+    <div className="flex flex-col items-center justify-center px-6 py-16 bg-white">
       {/* Logo */}
       <motion.div
         initial={{ opacity: 0, y: -12 }}
@@ -48,7 +45,6 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
           src="/texas-united-logo.webp"
           alt="Texas United Mortgage"
           className="h-10 w-auto object-contain"
-          style={{ filter: 'brightness(0) invert(1)' }}
         />
       </motion.div>
 
@@ -58,9 +54,9 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
         transition={{ duration: 1.3, repeat: Infinity, ease: 'linear' }}
         className="w-16 h-16 rounded-full mb-8"
         style={{
-          border: '3px solid rgba(255,255,255,0.15)',
+          border: '3px solid rgba(0,0,0,0.08)',
           borderTopColor: '#EA2523',
-          borderRightColor: 'rgba(255,255,255,0.5)',
+          borderRightColor: 'rgba(0,0,0,0.2)',
         }}
       />
 
@@ -68,7 +64,7 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.2 }}
-        className="text-xl font-bold text-white mb-2 text-center"
+        className="text-xl font-bold text-gray-900 mb-2 text-center"
       >
         Calculating your options{dots}
       </motion.h3>
@@ -76,7 +72,8 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.3 }}
-        className="text-white/50 text-sm mb-10 text-center"
+        className="text-sm mb-10 text-center"
+        style={{ color: '#757575' }}
       >
         Comparing today's live HELOC rates for your scenario
       </motion.p>
@@ -100,26 +97,26 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                     transition={{ type: 'spring', stiffness: 420, damping: 18 }}
-                    className="w-6 h-6 bg-emerald-500 rounded-full flex items-center justify-center shadow-lg shadow-emerald-500/40"
+                    className="w-6 h-6 bg-emerald-500 rounded-full flex items-center justify-center shadow-lg shadow-emerald-500/30"
                   >
                     <Check size={13} className="text-white" strokeWidth={3} />
                   </motion.div>
                 ) : (
                   <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${
-                    active ? 'border-white' : 'border-white/20'
+                    active ? 'border-[#233B86]' : 'border-gray-200'
                   }`}>
                     {active && (
                       <motion.div
                         animate={{ scale: [0.5, 1.1, 0.5] }}
                         transition={{ repeat: Infinity, duration: 1, ease: 'easeInOut' }}
-                        className="w-2 h-2 rounded-full bg-white"
+                        className="w-2 h-2 rounded-full bg-[#233B86]"
                       />
                     )}
                   </div>
                 )}
               </div>
               <span className={`text-sm font-medium transition-colors ${
-                done ? 'text-emerald-400' : active ? 'text-white' : 'text-white/30'
+                done ? 'text-emerald-600' : active ? 'text-gray-900' : 'text-gray-300'
               }`}>
                 {step}
               </span>
@@ -132,7 +129,7 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.8 }}
-        className="text-white/30 text-xs mt-12 text-center"
+        className="text-xs mt-12 text-center text-gray-400"
       >
         No credit check · Takes seconds · 100% free
       </motion.p>

@@ -26,7 +26,7 @@ function BorrowSlider({ value, onChange }: { value: number; onChange: (v: number
   return (
     <div className="bg-white border border-gray-200 rounded-2xl px-5 py-4">
       <div className="flex items-baseline justify-between mb-4">
-        <span className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Borrow Amount</span>
+        <span className="text-[11px] font-bold text-[#757575] uppercase tracking-widest">Borrow Amount</span>
         <span className="text-2xl font-black text-[#1E3569]">{fmtCurrency(value)}</span>
       </div>
       <input
@@ -36,8 +36,8 @@ function BorrowSlider({ value, onChange }: { value: number; onChange: (v: number
         style={{ background: `linear-gradient(to right, #1E3569 ${pct}%, #E5E7EB ${pct}%)` }}
       />
       <div className="flex justify-between mt-2.5">
-        <span className="text-xs text-gray-400">$10K</span>
-        <span className="text-xs text-gray-400">$350K</span>
+        <span className="text-xs text-[#757575]">$10K</span>
+        <span className="text-xs text-[#757575]">$350K</span>
       </div>
     </div>
   );
@@ -124,7 +124,7 @@ export function StepThree({ data, onChange, onNext }: StepThreeProps) {
                       : <span className="text-2xl mb-2">{es.icon}</span>
                     }
                     <p className="text-sm font-bold text-gray-900">{es.label}</p>
-                    <p className="text-xs text-gray-400 mt-0.5">{es.sub}</p>
+                    <p className="text-xs text-[#757575] mt-0.5">{es.sub}</p>
                   </motion.button>
                 );
               })}

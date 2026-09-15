@@ -3,7 +3,7 @@ import type { FunnelData, FunnelStep } from '../types/funnel';
 import { STEP_ORDER, QUESTION_STEPS } from '../types/funnel';
 
 const DEFAULT_DATA: FunnelData = {
-  ownsHome: null,
+  ownsHome: true,
   propertyType: null,
   homeValue: 400000,
   mortgageBalance: 150000,

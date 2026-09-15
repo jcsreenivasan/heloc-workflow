@@ -18,7 +18,6 @@ function FunnelModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void
     updateData,
     goNext,
     goBack,
-    disqualify,
     currentQuestionIndex,
     isQuestionStep,
     totalQuestions,
@@ -28,7 +27,7 @@ function FunnelModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void
   const renderStep = () => {
     switch (currentStep) {
       case 'step1':
-        return <StepOne data={data} onChange={updateData} onNext={goNext} onDisqualify={disqualify} />;
+        return <StepOne data={data} onChange={updateData} onNext={goNext} />;
       case 'step2':
         return <StepTwo data={data} onChange={updateData} onNext={goNext} />;
       case 'step3':

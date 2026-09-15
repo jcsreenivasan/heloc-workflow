@@ -28,7 +28,7 @@ function MortgageSlider({ value, onChange }: { value: number; onChange: (v: numb
   return (
     <div className="bg-white border border-gray-200 rounded-2xl px-5 py-4">
       <div className="flex items-baseline justify-between mb-4">
-        <span className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Mortgage Balance</span>
+        <span className="text-[11px] font-bold text-[#757575] uppercase tracking-widest">Mortgage Balance</span>
         <span className="text-2xl font-black text-[#1E3569]">
           {value === 0 ? 'None / Paid Off' : fmtCurrency(value)}
         </span>
@@ -40,8 +40,8 @@ function MortgageSlider({ value, onChange }: { value: number; onChange: (v: numb
         style={{ background: `linear-gradient(to right, #1E3569 ${pct}%, #E5E7EB ${pct}%)` }}
       />
       <div className="flex justify-between mt-2.5">
-        <span className="text-xs text-gray-400">None</span>
-        <span className="text-xs text-gray-400">$700K</span>
+        <span className="text-xs text-[#757575]">None</span>
+        <span className="text-xs text-[#757575]">$700K</span>
       </div>
     </div>
   );
@@ -74,12 +74,12 @@ function CreditScoreSlider({ value, onChange }: { value: number; onChange: (v: n
     <div className="space-y-4">
       <div className="flex items-start justify-between">
         <div>
-          <p className="text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-1">Your Score</p>
+          <p className="text-[11px] font-bold text-[#757575] uppercase tracking-widest mb-1">Your Score</p>
           <p className="text-6xl font-black leading-none" style={{ color: active.color }}>{value}</p>
         </div>
         <div className="text-right mt-1">
           <p className="text-lg font-bold" style={{ color: active.color }}>{active.label}</p>
-          <p className="text-xs text-gray-400 mt-1 leading-relaxed max-w-[160px]">{BAND_MESSAGES[active.label]}</p>
+          <p className="text-xs text-[#757575] mt-1 leading-relaxed max-w-[160px]">{BAND_MESSAGES[active.label]}</p>
         </div>
       </div>
       <input
@@ -98,7 +98,7 @@ function CreditScoreSlider({ value, onChange }: { value: number; onChange: (v: n
               style={isActive ? { borderColor: band.color + '50', backgroundColor: band.color + '15' } : {}}
             >
               <p className="text-xs font-bold" style={{ color: band.color }}>{band.label}</p>
-              <p className="text-[10px] text-gray-400 mt-0.5">{band.range}</p>
+              <p className="text-[10px] text-[#757575] mt-0.5">{band.range}</p>
             </div>
           );
         })}
