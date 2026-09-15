@@ -23,8 +23,8 @@ const slideVariants = {
 
 const STEP_LABELS: Partial<Record<FunnelStep, string>> = {
   'step1':        'Your Property',
-  'step2':        'Financial Profile',
-  'step3':        'Loan Details',
+  'step2':        'Loan Details',
+  'step3':        'Financial Profile',
   'lead-capture': 'Almost There',
   'disqualified': 'Not Eligible',
 };
@@ -103,14 +103,6 @@ export function FunnelLayout({
                     >
                       <ArrowLeft size={17} />
                     </motion.button>
-                  ) : isRates ? (
-                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="hidden sm:flex items-center gap-1.5">
-                      <span className="relative flex w-2 h-2">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#EA2523] opacity-75" />
-                        <span className="relative inline-flex rounded-full h-2 w-2 bg-[#EA2523]" />
-                      </span>
-                      <span className="text-[#EA2523] text-xs font-semibold tracking-wide">LIVE</span>
-                    </motion.div>
                   ) : (
                     <div className="w-9" />
                   )}

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Lock, ArrowRight } from 'lucide-react';
 import type { FunnelData } from '../../types/funnel';
@@ -43,14 +43,17 @@ const inputCls = (hasError?: boolean) =>
   }`;
 
 export function LeadCapture({ data, onChange, onSubmit }: LeadCaptureProps) {
-  const [formStep, setFormStep] = useState<'email' | 'details'>('email');
-  const [emailError, setEmailError] = useState('');
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName]   = useState('');
+  const [formStep, setFormStep] = useState<'email' | 'details' | 'verify'>('email');
+  const [emailError, setEmailError]   = useState('');
+  const [firstName, setFirstName]     = useState('');
+  const [lastName, setLastName]       = useState('');
   const [detailsError, setDetailsError] = useState('');
-  const [consent1, setConsent1] = useState(false);
-  const [consent2, setConsent2] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
+  const [consent1, setConsent1]       = useState(false);
+  const [consent2, setConsent2]       = useState(false);
+  const [code, setCode]               = useState(['', '', '', '', '', '']);
+  const [verifyError, setVerifyError] = useState('');
+  const [submitting, setSubmitting]   = useState(false);
+  const codeRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   const email = data.lead.email;
   const phone = data.lead.phone;
@@ -63,7 +66,7 @@ export function LeadCapture({ data, onChange, onSubmit }: LeadCaptureProps) {
     setFormStep('details');
   };
 
-  // Step 2 → submit
+  // Step 2 → Step 3 (verify)
   const handleDetailsContinue = () => {
     if (!firstName.trim() || !lastName.trim() || !phone.trim()) {
       setDetailsError('Please fill in all fields.');
@@ -75,6 +78,45 @@ export function LeadCapture({ data, onChange, onSubmit }: LeadCaptureProps) {
     }
     setDetailsError('');
     onChange({ lead: { ...data.lead, name: `${firstName.trim()} ${lastName.trim()}` } });
+    setFormStep('verify');
+  };
+
+  // Code digit change
+  const handleCodeChange = (i: number, val: string) => {
+    const v = val.replace(/\D/g, '').slice(-1);
+    const next = [...code];
+    next[i] = v;
+    setCode(next);
+    setVerifyError('');
+    if (v && i < 5) codeRefs.current[i + 1]?.focus();
+  };
+
+  const handleCodeKeyDown = (i: number, e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Backspace' && !code[i] && i > 0) {
+      codeRefs.current[i - 1]?.focus();
+    }
+  };
+
+  const handleCodePaste = (i: number, e: React.ClipboardEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    const pasted = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, 6);
+    if (!pasted) return;
+    const next = [...code];
+    for (let j = 0; j < pasted.length; j++) {
+      if (i + j < 6) next[i + j] = pasted[j];
+    }
+    setCode(next);
+    const focusIdx = Math.min(i + pasted.length, 5);
+    codeRefs.current[focusIdx]?.focus();
+  };
+
+  // Step 3 → submit
+  const handleVerify = () => {
+    if (code.some(d => !d)) {
+      setVerifyError('Please enter the complete 6-digit code.');
+      return;
+    }
+    setVerifyError('');
     setSubmitting(true);
     setTimeout(onSubmit, 600);
   };
@@ -150,7 +192,7 @@ export function LeadCapture({ data, onChange, onSubmit }: LeadCaptureProps) {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.2, type: 'spring', stiffness: 260, damping: 24 }}
-              className="bg-white rounded-2xl shadow-xl px-6 py-5 w-full max-w-[320px] border border-gray-100"
+              className="bg-white rounded-2xl shadow-xl px-6 py-5 w-full max-w-[400px] border border-gray-100"
             >
               {/* Lock icon */}
               <div className="flex justify-center mb-3">
@@ -239,7 +281,7 @@ export function LeadCapture({ data, onChange, onSubmit }: LeadCaptureProps) {
                     </div>
 
                     {/* Consent checkboxes */}
-                    <div className="space-y-2 mb-3">
+                    <div className="space-y-2.5 mb-3">
                       <label className="flex items-start gap-2 cursor-pointer">
                         <input
                           type="checkbox"
@@ -247,8 +289,8 @@ export function LeadCapture({ data, onChange, onSubmit }: LeadCaptureProps) {
                           onChange={e => { setConsent1(e.target.checked); setDetailsError(''); }}
                           className="mt-0.5 flex-shrink-0 accent-[#EA2523]"
                         />
-                        <span className="text-[11px] leading-tight" style={{ color: '#757575' }}>
-                          I agree to receive calls, texts &amp; emails from Texas United Mortgage regarding my loan inquiry.
+                        <span className="text-[10px] leading-snug" style={{ color: '#757575' }}>
+                          I agree to receive text messages regarding mortgage rate updates, loan information, and related services. Message and data rates may apply. Reply STOP to unsubscribe.
                         </span>
                       </label>
                       <label className="flex items-start gap-2 cursor-pointer">
@@ -258,16 +300,71 @@ export function LeadCapture({ data, onChange, onSubmit }: LeadCaptureProps) {
                           onChange={e => { setConsent2(e.target.checked); setDetailsError(''); }}
                           className="mt-0.5 flex-shrink-0 accent-[#EA2523]"
                         />
-                        <span className="text-[11px] leading-tight" style={{ color: '#757575' }}>
-                          I agree to the <span className="text-[#233B86] font-semibold">Terms of Service</span> and <span className="text-[#233B86] font-semibold">Privacy Policy</span>.
+                        <span className="text-[10px] leading-snug" style={{ color: '#757575' }}>
+                          By checking this box and submitting the form you are consenting to be contacted by SMS text message from USA Mortgage (our message frequency may vary). Message &amp; data rates apply. Reply STOP to unsubscribe from further messaging. Reply HELP for more information. See our Privacy Policy https://www.usamortgage.com/privacy-policy/. Text opt-in data is not shared or sold to third parties for promotional or marketing purposes; third party sharing for promotional or marketing purposes excludes SMS opt-in.. You are not required to provide this consent as a condition of purchasing goods or services. FiveStar Mortgage FAKE NMLS #18810000.
                         </span>
                       </label>
+                      <p className="text-[10px] pl-5" style={{ color: '#757575' }}>
+                        <a href="#" className="text-[#233B86] hover:underline">Privacy Policy</a>
+                        {' | '}
+                        <a href="#" className="text-[#233B86] hover:underline">Terms and Conditions</a>
+                      </p>
                     </div>
 
                     {detailsError && <p className="text-xs text-red-500 mb-2">{detailsError}</p>}
 
                     <motion.button
                       onClick={handleDetailsContinue}
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.97 }}
+                      className="w-full py-2.5 rounded-xl font-bold text-sm text-white bg-[#EA2523] hover:bg-[#C41E1C] transition-colors flex items-center justify-center gap-2"
+                    >
+                      See My HELOC Rates
+                      <ArrowRight size={15} />
+                    </motion.button>
+                  </motion.div>
+                )}
+
+                {/* ── Step 3: 6-digit verification ── */}
+                {formStep === 'verify' && (
+                  <motion.div
+                    key="verify"
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -20 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <p className="text-sm font-bold text-gray-900 text-center mb-1">
+                      Verify your phone number
+                    </p>
+                    <p className="text-xs text-center mb-4" style={{ color: '#757575' }}>
+                      Enter the 6-digit code sent to {phone || 'your phone'}
+                    </p>
+
+                    {/* Digit inputs */}
+                    <div className="flex gap-2 justify-center mb-4">
+                      {code.map((d, i) => (
+                        <input
+                          key={i}
+                          ref={el => { codeRefs.current[i] = el; }}
+                          type="text"
+                          inputMode="numeric"
+                          maxLength={1}
+                          value={d}
+                          onChange={e => handleCodeChange(i, e.target.value)}
+                          onKeyDown={e => handleCodeKeyDown(i, e)}
+                          onPaste={e => handleCodePaste(i, e)}
+                          className={`w-10 h-12 text-center text-xl font-bold border-2 rounded-xl focus:outline-none transition-all ${
+                            d ? 'border-[#233B86] bg-[#EEF1FB]' : 'border-gray-200 focus:border-[#233B86]'
+                          }`}
+                        />
+                      ))}
+                    </div>
+
+                    {verifyError && <p className="text-xs text-red-500 mb-2 text-center">{verifyError}</p>}
+
+                    <motion.button
+                      onClick={handleVerify}
                       disabled={submitting}
                       whileHover={!submitting ? { scale: 1.02 } : {}}
                       whileTap={!submitting ? { scale: 0.97 } : {}}
@@ -283,12 +380,17 @@ export function LeadCapture({ data, onChange, onSubmit }: LeadCaptureProps) {
                           Opening rates...
                         </>
                       ) : (
-                        <>
-                          See My HELOC Rates
-                          <ArrowRight size={15} />
-                        </>
+                        'Verify Code'
                       )}
                     </motion.button>
+
+                    <button
+                      onClick={() => { setFormStep('details'); setCode(['', '', '', '', '', '']); }}
+                      className="w-full text-center text-xs mt-2.5 hover:underline"
+                      style={{ color: '#757575' }}
+                    >
+                      ← Back · Resend code
+                    </button>
                   </motion.div>
                 )}
 
