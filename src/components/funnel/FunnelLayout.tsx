@@ -197,28 +197,22 @@ export function FunnelLayout({
         {/* ── TRUST FOOTER ─────────────────────────────────── */}
         {isQuestionStep && (
           <div className="flex-shrink-0 bg-gray-50 border-t border-gray-100 px-5 py-3">
-            <div className="flex items-center justify-center gap-3 sm:gap-5 flex-wrap">
+            <div className="flex items-center justify-center gap-4 sm:gap-6 flex-wrap">
               {[
-                { label: 'Google', score: '4.9' },
-                { label: 'Zillow', score: '5.0' },
-                { label: 'Yelp', score: '4.7' },
+                { label: 'Google', score: '4.9', reviews: '2,400+' },
+                { label: 'Zillow', score: '5.0', reviews: '180+' },
+                { label: 'Yelp',   score: '4.7', reviews: '90+' },
               ].map((r, i) => (
-                <span key={r.label} className="flex items-center gap-1.5 text-xs text-gray-500">
-                  {i > 0 && <span className="text-gray-300 text-xs mr-1 hidden sm:inline">·</span>}
-                  <svg width="10" height="10" viewBox="0 0 24 24" fill="#F59E0B">
+                <span key={r.label} className="flex items-center gap-1.5 text-sm">
+                  {i > 0 && <span className="text-gray-300 text-sm mx-0.5 hidden sm:inline">·</span>}
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="#F59E0B">
                     <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
                   </svg>
-                  <span className="font-semibold text-gray-600">{r.score}</span>
-                  <span className="text-gray-400">{r.label}</span>
+                  <span className="font-bold text-gray-700">{r.score}</span>
+                  <span className="font-semibold text-gray-900">{r.label}</span>
+                  <span className="text-gray-400 text-xs">({r.reviews})</span>
                 </span>
               ))}
-              <span className="text-gray-300 hidden sm:inline text-xs">·</span>
-              <span className="text-xs text-gray-400 flex items-center gap-1">
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#10B981" strokeWidth="2.5">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                </svg>
-                No credit pull · Free
-              </span>
             </div>
           </div>
         )}

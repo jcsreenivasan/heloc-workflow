@@ -98,7 +98,7 @@ function CreditScoreSlider({
       <div className="flex items-start justify-between">
         <div>
           <p className="text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-1">Your Score</p>
-          <p className="text-6xl font-black leading-none" style={{ color: '#CA8A04' }}>
+          <p className="text-6xl font-black leading-none" style={{ color: active.color }}>
             {value}
           </p>
         </div>
@@ -122,7 +122,7 @@ function CreditScoreSlider({
         onChange={e => onChange(Number(e.target.value))}
         className="slider-input w-full"
         style={{
-          background: `linear-gradient(to right, #CA8A04 ${pct}%, #E5E7EB ${pct}%)`,
+          background: `linear-gradient(to right, ${active.color} ${pct}%, #E5E7EB ${pct}%)`,
         }}
       />
 
@@ -133,11 +133,10 @@ function CreditScoreSlider({
           return (
             <div
               key={band.label}
-              className={`rounded-xl px-2 py-2.5 text-center border transition-all ${
-                isActive
-                  ? 'border-amber-200 bg-amber-50'
-                  : 'border-transparent bg-gray-50'
+              className={`rounded-xl px-2 py-2.5 text-center border-2 transition-all ${
+                isActive ? '' : 'border-transparent bg-gray-50'
               }`}
+              style={isActive ? { borderColor: band.color + '50', backgroundColor: band.color + '15' } : {}}
             >
               <p className="text-xs font-bold" style={{ color: band.color }}>
                 {band.label}
@@ -179,12 +178,9 @@ export function StepTwo({ data, onChange, onNext }: StepTwoProps) {
       {/* Q5: Credit score slider */}
       <motion.div key="q5" {...reveal}>
         <p className="text-[11px] font-bold text-[#EA2523] uppercase tracking-widest mb-1">Question 5</p>
-        <h2 className="text-lg font-black text-gray-900 mb-1">
+        <h2 className="text-lg font-black text-gray-900 mb-4">
           What's your credit score?
         </h2>
-        <p className="text-sm text-gray-400 mb-5">
-          An estimate is fine — this won't affect your actual score.
-        </p>
         <CreditScoreSlider
           value={creditScore ?? 700}
           onChange={v => onChange({ creditScore: v })}
