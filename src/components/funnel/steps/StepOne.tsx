@@ -19,6 +19,14 @@ function fmtCurrency(n: number) {
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(n);
 }
 
+function QLabel({ n }: { n: number }) {
+  return (
+    <span className="text-[10px] font-black tracking-widest shrink-0" style={{ color: '#757575' }}>
+      Q{n}
+    </span>
+  );
+}
+
 function HomeValueSlider({ value, onChange }: { value: number; onChange: (v: number) => void }) {
   const MIN = 50000, MAX = 2000000, STEP = 10000;
   const pct = ((value - MIN) / (MAX - MIN)) * 100;
@@ -72,11 +80,14 @@ export function StepOne({ data, onChange, onNext }: StepOneProps) {
   const canContinue = propertyType !== null;
 
   return (
-    <div className="px-5 py-4">
+    <div className="px-5 py-5">
 
       {/* Q1: Property type */}
-      <div className="pb-5">
-        <h2 className="text-base font-black text-gray-900 mb-3">What is the property type?</h2>
+      <div className="pb-6">
+        <div className="flex items-baseline gap-2 mb-3">
+          <QLabel n={1} />
+          <h2 className="text-base font-black text-gray-900">What is the property type?</h2>
+        </div>
         <div className="grid grid-cols-2 gap-2.5">
           {PROPERTY_TYPES.map(pt => {
             const selected = propertyType === pt.value;
@@ -110,10 +121,11 @@ export function StepOne({ data, onChange, onNext }: StepOneProps) {
       </div>
 
       {/* Q2: Home value */}
-      <div className="border-t border-gray-100 pt-5 pb-5">
-        <h2 className="text-base font-black text-gray-900 mb-3">
-          What's the estimated value of your home?
-        </h2>
+      <div className="border-t-2 border-gray-100 pt-6 pb-6">
+        <div className="flex items-baseline gap-2 mb-3">
+          <QLabel n={2} />
+          <h2 className="text-base font-black text-gray-900">What's the estimated value of your home?</h2>
+        </div>
         <HomeValueSlider
           value={homeValue ?? 400000}
           onChange={v => onChange({ homeValue: v })}
@@ -121,10 +133,11 @@ export function StepOne({ data, onChange, onNext }: StepOneProps) {
       </div>
 
       {/* Q3: Mortgage balance */}
-      <div className="border-t border-gray-100 pt-5 pb-3">
-        <h2 className="text-base font-black text-gray-900 mb-3">
-          What's your remaining mortgage balance?
-        </h2>
+      <div className="border-t-2 border-gray-100 pt-6 pb-3">
+        <div className="flex items-baseline gap-2 mb-3">
+          <QLabel n={3} />
+          <h2 className="text-base font-black text-gray-900">What's your remaining mortgage balance?</h2>
+        </div>
         <MortgageSlider
           value={mortgageBalance ?? 150000}
           onChange={v => onChange({ mortgageBalance: v })}
@@ -134,7 +147,7 @@ export function StepOne({ data, onChange, onNext }: StepOneProps) {
       {/* Continue */}
       <AnimatePresence>
         {canContinue && (
-          <motion.div key="continue" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="mt-4">
+          <motion.div key="continue" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="mt-5">
             <motion.button
               onClick={onNext}
               whileHover={{ scale: 1.02 }}

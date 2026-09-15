@@ -33,8 +33,13 @@ export function StepTwo({ data, onChange, onNext }: StepTwoProps) {
   const pct = ((score - MIN) / (MAX - MIN)) * 100;
 
   return (
-    <div className="px-5 py-4">
-      <h2 className="text-base font-black text-gray-900 mb-4">What's your credit score?</h2>
+    <div className="px-5 py-5">
+
+      {/* Q4 label + heading */}
+      <div className="flex items-baseline gap-2 mb-4">
+        <span className="text-[10px] font-black tracking-widest shrink-0" style={{ color: '#757575' }}>Q4</span>
+        <h2 className="text-base font-black text-gray-900">What's your credit score?</h2>
+      </div>
 
       {/* Score display */}
       <div className="flex items-start justify-between mb-4">
@@ -52,9 +57,14 @@ export function StepTwo({ data, onChange, onNext }: StepTwoProps) {
       <input
         type="range" min={MIN} max={MAX} step={1} value={score}
         onChange={e => onChange({ creditScore: Number(e.target.value) })}
-        className="slider-input w-full mb-4"
+        className="slider-input w-full"
         style={{ background: `linear-gradient(to right, ${active.color} ${pct}%, #E5E7EB ${pct}%)` }}
       />
+      {/* Range labels */}
+      <div className="flex justify-between mt-2 mb-5">
+        <span className="text-xs" style={{ color: '#757575' }}>500</span>
+        <span className="text-xs" style={{ color: '#757575' }}>850</span>
+      </div>
 
       {/* Band pills */}
       <div className="grid grid-cols-4 gap-1.5 mb-6">

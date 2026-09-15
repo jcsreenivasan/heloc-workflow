@@ -27,6 +27,14 @@ function fmtCurrency(n: number) {
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(n);
 }
 
+function QLabel({ n }: { n: number }) {
+  return (
+    <span className="text-[10px] font-black tracking-widest shrink-0" style={{ color: '#757575' }}>
+      Q{n}
+    </span>
+  );
+}
+
 function BorrowSlider({ value, onChange }: { value: number; onChange: (v: number) => void }) {
   const MIN = 10000, MAX = 350000, STEP = 5000;
   const pct = ((value - MIN) / (MAX - MIN)) * 100;
@@ -55,13 +63,14 @@ export function StepThree({ data, onChange, onNext }: StepThreeProps) {
   const canContinue = useOfFunds !== null && employmentStatus !== null;
 
   return (
-    <div className="px-5 py-4">
+    <div className="px-5 py-5">
 
-      {/* Q6: Use of funds */}
-      <div className="pb-5">
-        <h2 className="text-base font-black text-gray-900 mb-3">
-          What do you plan to use the funds for?
-        </h2>
+      {/* Q5: Use of funds */}
+      <div className="pb-6">
+        <div className="flex items-baseline gap-2 mb-3">
+          <QLabel n={5} />
+          <h2 className="text-base font-black text-gray-900">What do you plan to use the funds for?</h2>
+        </div>
         <div className="grid grid-cols-2 gap-2">
           {FUND_USES.map(fu => {
             const selected = useOfFunds === fu.value;
@@ -97,19 +106,21 @@ export function StepThree({ data, onChange, onNext }: StepThreeProps) {
         </div>
       </div>
 
-      {/* Q7: Borrow amount */}
-      <div className="border-t border-gray-100 pt-5 pb-5">
-        <h2 className="text-base font-black text-gray-900 mb-3">
-          How much are you looking to borrow?
-        </h2>
+      {/* Q6: Borrow amount */}
+      <div className="border-t-2 border-gray-100 pt-6 pb-6">
+        <div className="flex items-baseline gap-2 mb-3">
+          <QLabel n={6} />
+          <h2 className="text-base font-black text-gray-900">How much are you looking to borrow?</h2>
+        </div>
         <BorrowSlider value={borrowAmount ?? 75000} onChange={v => onChange({ borrowAmount: v })} />
       </div>
 
-      {/* Q8: Employment status */}
-      <div className="border-t border-gray-100 pt-5">
-        <h2 className="text-base font-black text-gray-900 mb-3">
-          What's your employment status?
-        </h2>
+      {/* Q7: Employment status */}
+      <div className="border-t-2 border-gray-100 pt-6">
+        <div className="flex items-baseline gap-2 mb-3">
+          <QLabel n={7} />
+          <h2 className="text-base font-black text-gray-900">What's your employment status?</h2>
+        </div>
         <div className="grid grid-cols-2 gap-2.5">
           {EMPLOYMENT_STATUSES.map(es => {
             const selected = employmentStatus === es.value;
