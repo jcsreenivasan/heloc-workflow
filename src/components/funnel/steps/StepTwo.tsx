@@ -16,10 +16,6 @@ const FUND_USES: { value: UseOfFunds; label: string; img?: string; icon?: string
   { value: 'other',              label: 'Other',              icon: '•••'                    },
 ];
 
-function fmtCurrency(n: number) {
-  return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(n);
-}
-
 // ─── Credit score slider ────────────────────────────────────────────────────
 const BANDS = [
   { label: 'Poor',      range: '500–579', min: 500, max: 579, color: '#DC2626' },
