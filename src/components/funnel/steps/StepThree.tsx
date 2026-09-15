@@ -8,11 +8,11 @@ interface StepThreeProps {
   onNext: () => void;
 }
 
-const EMPLOYMENT_STATUSES: { value: EmploymentStatus; label: string; sub: string; icon: string }[] = [
-  { value: 'employed',      label: 'Employed',      sub: 'W-2 employee',          icon: '💼' },
-  { value: 'self-employed', label: 'Self-Employed',  sub: '1099 / business owner', icon: '🏢' },
-  { value: 'retired',       label: 'Retired',        sub: 'Fixed income',           icon: '☕' },
-  { value: 'other',         label: 'Other',           sub: 'Not listed above',       icon: '•••' },
+const EMPLOYMENT_STATUSES: { value: EmploymentStatus; label: string; sub: string; img?: string; icon?: string }[] = [
+  { value: 'employed',      label: 'Employed',      sub: 'W-2 employee',          img: '/employed.png'      },
+  { value: 'self-employed', label: 'Self-Employed',  sub: '1099 / business owner', img: '/self-employed.png' },
+  { value: 'retired',       label: 'Retired',        sub: 'Fixed income',           img: '/retired.png'       },
+  { value: 'other',         label: 'Other',           sub: 'Not listed above',       icon: '•••'              },
 ];
 
 function fmtCurrency(n: number) {
@@ -110,7 +110,10 @@ export function StepThree({ data, onChange, onNext }: StepThreeProps) {
                     <Check size={11} className="text-white" strokeWidth={3} />
                   </motion.div>
                 )}
-                <span className="text-2xl mb-2">{es.icon}</span>
+                {es.img
+                  ? <img src={es.img} alt={es.label} className="w-14 h-14 object-contain mb-2" />
+                  : <span className="text-2xl mb-2">{es.icon}</span>
+                }
                 <p className="text-sm font-bold text-gray-900">{es.label}</p>
                 <p className="text-xs text-gray-400 mt-0.5">{es.sub}</p>
               </motion.button>
