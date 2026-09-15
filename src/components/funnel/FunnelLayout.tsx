@@ -207,9 +207,8 @@ export function FunnelLayout({
                 <div key={r.label} className="flex items-center">
                   {i > 0 && <div className="w-px h-9 bg-gray-200 mx-4 flex-shrink-0" />}
                   <div className="flex flex-col items-center gap-0.5">
-                    <div className="flex items-center gap-1.5">
-                      <img src={r.logo} alt={r.label} className="h-4 w-auto object-contain" />
-                      <span className="text-xs font-semibold text-gray-900">{r.label}</span>
+                    <div className="flex items-center justify-center">
+                      <img src={r.logo} alt={r.label} className="h-5 w-auto object-contain" />
                     </div>
                     <div className="flex items-center gap-1">
                       <svg width="11" height="11" viewBox="0 0 24 24" fill="#F59E0B">

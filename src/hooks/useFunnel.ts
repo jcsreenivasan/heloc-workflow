@@ -58,6 +58,7 @@ export function useFunnel() {
   const canGoBack =
     currentStep !== 'step1' &&
     currentStep !== 'loading' &&
+    currentStep !== 'lead-capture' &&
     currentStep !== 'rates' &&
     currentStep !== 'disqualified';
 

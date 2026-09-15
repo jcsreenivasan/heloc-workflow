@@ -117,12 +117,12 @@ export function LeadCapture({ data, onChange, onSubmit }: LeadCaptureProps) {
             {FAKE_ROWS.map((row, i) => (
               <div
                 key={i}
-                className={`grid grid-cols-4 gap-2 px-1 py-2 ${i % 2 === 0 ? 'bg-gray-50' : 'bg-white'} rounded`}
+                className={`grid grid-cols-4 gap-2 px-2 py-3 ${i % 2 === 0 ? 'bg-gray-50' : 'bg-white'} rounded`}
               >
-                <p className="text-xs text-gray-700 font-medium col-span-1 truncate">{row.product}</p>
-                <p className="text-xs font-bold text-gray-800 text-center">{row.rate}</p>
-                <p className="text-xs text-gray-600 text-center">{row.apr}</p>
-                <p className="text-xs font-bold text-gray-800 text-center">{row.payment}</p>
+                <p className="text-sm text-gray-700 font-semibold col-span-1 truncate">{row.product}</p>
+                <p className="text-sm font-bold text-gray-800 text-center">{row.rate}</p>
+                <p className="text-sm text-gray-600 text-center">{row.apr}</p>
+                <p className="text-sm font-bold text-gray-800 text-center">{row.payment}</p>
               </div>
             ))}
           </div>
