@@ -65,10 +65,19 @@ export function StepThree({ data, onChange, onNext }: StepThreeProps) {
   return (
     <div className="px-5 py-5">
 
-      {/* Q5: Use of funds */}
+      {/* Q5: Borrow amount */}
       <div className="pb-6">
         <div className="flex items-baseline gap-2 mb-3">
           <QLabel n={5} />
+          <h2 className="text-base font-black text-gray-900">How much are you looking to borrow?</h2>
+        </div>
+        <BorrowSlider value={borrowAmount ?? 75000} onChange={v => onChange({ borrowAmount: v })} />
+      </div>
+
+      {/* Q6: Use of funds */}
+      <div className="border-t-2 border-gray-100 pt-6 pb-6">
+        <div className="flex items-baseline gap-2 mb-3">
+          <QLabel n={6} />
           <h2 className="text-base font-black text-gray-900">What do you plan to use the funds for?</h2>
         </div>
         <div className="grid grid-cols-2 gap-2">
@@ -104,15 +113,6 @@ export function StepThree({ data, onChange, onNext }: StepThreeProps) {
             );
           })}
         </div>
-      </div>
-
-      {/* Q6: Borrow amount */}
-      <div className="border-t-2 border-gray-100 pt-6 pb-6">
-        <div className="flex items-baseline gap-2 mb-3">
-          <QLabel n={6} />
-          <h2 className="text-base font-black text-gray-900">How much are you looking to borrow?</h2>
-        </div>
-        <BorrowSlider value={borrowAmount ?? 75000} onChange={v => onChange({ borrowAmount: v })} />
       </div>
 
       {/* Q7: Employment status */}
