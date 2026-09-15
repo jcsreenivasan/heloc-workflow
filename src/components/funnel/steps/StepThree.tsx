@@ -149,7 +149,7 @@ export function StepThree({ data, onChange, onNext }: StepThreeProps) {
                   ? <img src={es.img} alt={es.label} className="w-12 h-12 object-contain mb-1.5" />
                   : <span className="text-2xl mb-1.5">{es.icon}</span>
                 }
-                <p className="text-sm font-bold text-gray-900">{es.label}</p>
+                <p className="text-xs font-bold text-gray-900">{es.label}</p>
               </motion.button>
             );
           })}

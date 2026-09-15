@@ -113,7 +113,7 @@ export function StepOne({ data, onChange, onNext }: StepOneProps) {
                   </motion.div>
                 )}
                 <img src={pt.img} alt={pt.label} className="w-16 h-16 object-contain mb-1.5" />
-                <p className="text-sm font-bold text-gray-900 leading-tight">{pt.label}</p>
+                <p className="text-xs font-bold text-gray-900 leading-tight">{pt.label}</p>
               </motion.button>
             );
           })}
