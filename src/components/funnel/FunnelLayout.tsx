@@ -211,13 +211,9 @@ export function FunnelLayout({
                     {/* Row 1: logo + stars + score */}
                     <div className="flex items-center gap-1.5">
                       <img src={r.logo} alt={r.label} className="h-4 w-auto object-contain" />
-                      <div className="flex gap-0.5">
-                        {[...Array(5)].map((_, i) => (
-                          <svg key={i} width="10" height="10" viewBox="0 0 24 24" fill="#F59E0B">
-                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                          </svg>
-                        ))}
-                      </div>
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="#F59E0B">
+                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                      </svg>
                       <span className="text-xs font-bold text-gray-700">{r.score}</span>
                     </div>
                     {/* Row 2: review count */}
@@ -236,7 +232,7 @@ export function FunnelLayout({
                 <img
                   src="/bankingbridge-badge.png"
                   alt="Powered by BankingBridge"
-                  className="h-8 w-auto object-contain"
+                  className="h-12 w-auto object-contain"
                 />
               </a>
 
