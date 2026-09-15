@@ -63,12 +63,9 @@ export function LeadCapture({ data, onChange, onSubmit }: LeadCaptureProps) {
   ];
 
   return (
-    <div
-      className="flex flex-col sm:flex-row min-h-[700px]"
-      style={{ background: 'linear-gradient(to right, #1A2B63 260px, white 260px)' }}
-    >
+    <div className="flex flex-col sm:flex-row min-h-[700px]">
       {/* ── Left sidebar — hidden on mobile ──────────── */}
-      <div className="hidden sm:flex w-[260px] flex-shrink-0 px-6 py-7 flex-col">
+      <div className="hidden sm:flex w-[260px] flex-shrink-0 px-6 py-7 flex-col bg-[#1A2B63]">
         <p className="text-white font-bold text-base mb-5">Your selected details</p>
         <div className="space-y-0">
           {sidebarRows.map((row, i) => (
