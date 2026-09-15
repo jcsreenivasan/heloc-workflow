@@ -226,7 +226,7 @@ export function FunnelLayout({
                 <img
                   src="/bankingbridge-badge.png"
                   alt="Powered by BankingBridge"
-                  className="h-8 sm:h-12 w-auto object-contain"
+                  className="h-11 sm:h-12 w-auto object-contain"
                 />
               </a>
 

@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Lock } from 'lucide-react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { Lock, ArrowRight } from 'lucide-react';
 import type { FunnelData } from '../../types/funnel';
 
 interface LeadCaptureProps {
@@ -24,7 +24,6 @@ function getBandLabel(score: number) {
   return 'Poor';
 }
 
-// Fake blurred rate rows to tease the results
 const FAKE_ROWS = [
   { product: 'HELOC · 10yr Draw / 20yr Repay', rate: '8.75%', apr: '8.80%', payment: '$588/mo' },
   { product: 'Home Equity Loan · 10yr Fixed',  rate: '9.49%', apr: '9.61%', payment: '$777/mo' },
@@ -38,43 +37,68 @@ const FAKE_ROWS = [
   { product: 'Home Equity Loan · 30yr Fixed',  rate: '8.90%', apr: '9.03%', payment: '$445/mo' },
 ];
 
+const inputCls = (hasError?: boolean) =>
+  `w-full px-3 py-2.5 border-2 rounded-xl text-sm font-medium text-gray-800 placeholder-gray-400 focus:outline-none transition-all ${
+    hasError ? 'border-red-400 focus:border-red-500' : 'border-gray-200 focus:border-[#233B86]'
+  }`;
+
 export function LeadCapture({ data, onChange, onSubmit }: LeadCaptureProps) {
+  const [formStep, setFormStep] = useState<'email' | 'details'>('email');
+  const [emailError, setEmailError] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName]   = useState('');
+  const [detailsError, setDetailsError] = useState('');
+  const [consent1, setConsent1] = useState(false);
+  const [consent2, setConsent2] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState('');
 
   const email = data.lead.email;
+  const phone = data.lead.phone;
   const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
-  const handleSubmit = () => {
-    if (!isValidEmail) { setError('Please enter a valid email address.'); return; }
+  // Step 1 → Step 2
+  const handleEmailContinue = () => {
+    if (!isValidEmail) { setEmailError('Please enter a valid email address.'); return; }
+    setEmailError('');
+    setFormStep('details');
+  };
+
+  // Step 2 → submit
+  const handleDetailsContinue = () => {
+    if (!firstName.trim() || !lastName.trim() || !phone.trim()) {
+      setDetailsError('Please fill in all fields.');
+      return;
+    }
+    if (!consent1 || !consent2) {
+      setDetailsError('Please agree to both checkboxes to continue.');
+      return;
+    }
+    setDetailsError('');
+    onChange({ lead: { ...data.lead, name: `${firstName.trim()} ${lastName.trim()}` } });
     setSubmitting(true);
     setTimeout(onSubmit, 600);
   };
 
-  // Sidebar data rows
+  // Sidebar rows
   const sidebarRows = [
-    { label: 'Property Type',   value: data.propertyType ? humanize(data.propertyType) : '—' },
-    { label: 'Home Value',      value: data.homeValue ? fmtCurrency(data.homeValue) : '—' },
-    { label: 'Mortgage Bal.',   value: data.mortgageBalance === 0 ? 'None / Paid Off' : data.mortgageBalance ? fmtCurrency(data.mortgageBalance) : '—' },
-    { label: 'Credit Score',    value: data.creditScore ? `${data.creditScore} (${getBandLabel(data.creditScore)})` : '—' },
-    { label: 'Use of Funds',    value: data.useOfFunds ? humanize(data.useOfFunds) : '—' },
-    { label: 'Borrow Amount',   value: data.borrowAmount ? fmtCurrency(data.borrowAmount) : '—' },
-    { label: 'Employment',      value: data.employmentStatus ? humanize(data.employmentStatus) : '—' },
+    { label: 'Property Type', value: data.propertyType ? humanize(data.propertyType) : '—' },
+    { label: 'Home Value',    value: data.homeValue ? fmtCurrency(data.homeValue) : '—' },
+    { label: 'Mortgage Bal.', value: data.mortgageBalance === 0 ? 'None / Paid Off' : data.mortgageBalance ? fmtCurrency(data.mortgageBalance) : '—' },
+    { label: 'Credit Score',  value: data.creditScore ? `${data.creditScore} (${getBandLabel(data.creditScore)})` : '—' },
+    { label: 'Use of Funds',  value: data.useOfFunds ? humanize(data.useOfFunds) : '—' },
+    { label: 'Borrow Amount', value: data.borrowAmount ? fmtCurrency(data.borrowAmount) : '—' },
+    { label: 'Employment',    value: data.employmentStatus ? humanize(data.employmentStatus) : '—' },
   ];
 
   return (
     <div className="flex flex-col sm:flex-row min-h-[700px]">
-      {/* ── Left sidebar — hidden on mobile ──────────── */}
+
+      {/* ── Left sidebar — desktop only ── */}
       <div className="hidden sm:flex w-[260px] flex-shrink-0 px-6 py-7 flex-col bg-[#1A2B63]">
         <p className="text-white font-bold text-base mb-5">Your selected details</p>
         <div className="space-y-0">
           {sidebarRows.map((row, i) => (
-            <div
-              key={row.label}
-              className={`flex justify-between items-start py-3 ${
-                i < sidebarRows.length - 1 ? 'border-b border-white/10' : ''
-              }`}
-            >
+            <div key={row.label} className={`flex justify-between items-start py-3 ${i < sidebarRows.length - 1 ? 'border-b border-white/10' : ''}`}>
               <span className="text-white/50 text-xs leading-tight">{row.label}</span>
               <span className="text-white font-bold text-xs text-right ml-3 leading-tight">{row.value}</span>
             </div>
@@ -82,7 +106,7 @@ export function LeadCapture({ data, onChange, onSubmit }: LeadCaptureProps) {
         </div>
       </div>
 
-      {/* ── Right content ──────────────────────────────── */}
+      {/* ── Right content ── */}
       <div className="flex-1 flex flex-col px-6 py-6">
 
         {/* Live rates badge */}
@@ -95,9 +119,7 @@ export function LeadCapture({ data, onChange, onSubmit }: LeadCaptureProps) {
 
         {/* Heading */}
         <h2 className="text-lg font-black text-gray-900 text-center mb-4 leading-snug">
-          You have{' '}
-          <span className="text-[#233B86]">2 HELOC offers</span>{' '}
-          that are ready for your review!
+          You have <span className="text-[#233B86]">2 HELOC offers</span> ready for your review!
         </h2>
 
         {/* Blurred table + overlay card */}
@@ -112,10 +134,7 @@ export function LeadCapture({ data, onChange, onSubmit }: LeadCaptureProps) {
           {/* Blurred rows */}
           <div className="select-none pointer-events-none" style={{ filter: 'blur(4px)' }}>
             {FAKE_ROWS.map((row, i) => (
-              <div
-                key={i}
-                className={`grid grid-cols-4 gap-2 px-2 py-3 ${i % 2 === 0 ? 'bg-gray-50' : 'bg-white'} rounded`}
-              >
+              <div key={i} className={`grid grid-cols-4 gap-2 px-2 py-3 ${i % 2 === 0 ? 'bg-gray-50' : 'bg-white'} rounded`}>
                 <p className="text-sm text-gray-700 font-semibold col-span-1 truncate">{row.product}</p>
                 <p className="text-sm font-bold text-gray-800 text-center">{row.rate}</p>
                 <p className="text-sm text-gray-600 text-center">{row.apr}</p>
@@ -124,13 +143,14 @@ export function LeadCapture({ data, onChange, onSubmit }: LeadCaptureProps) {
             ))}
           </div>
 
-          {/* Email gate overlay card */}
+          {/* Gate overlay */}
           <div className="absolute inset-0 flex items-center justify-center">
             <motion.div
+              layout
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.2, type: 'spring', stiffness: 260, damping: 24 }}
-              className="bg-white rounded-2xl shadow-xl px-6 py-5 w-full max-w-[280px] border border-gray-100"
+              className="bg-white rounded-2xl shadow-xl px-6 py-5 w-full max-w-[320px] border border-gray-100"
             >
               {/* Lock icon */}
               <div className="flex justify-center mb-3">
@@ -139,53 +159,140 @@ export function LeadCapture({ data, onChange, onSubmit }: LeadCaptureProps) {
                 </div>
               </div>
 
-              <p className="text-sm font-bold text-gray-900 text-center mb-3">
-                Free and complete access in seconds
-              </p>
+              <AnimatePresence mode="wait">
 
-              {/* Email input */}
-              <div className="mb-3">
-                <input
-                  type="email"
-                  placeholder="Enter your email"
-                  value={email}
-                  onChange={e => {
-                    onChange({ lead: { ...data.lead, email: e.target.value } });
-                    setError('');
-                  }}
-                  onKeyDown={e => { if (e.key === 'Enter') handleSubmit(); }}
-                  className={`w-full px-3.5 py-2.5 border-2 rounded-xl text-sm font-medium text-gray-800 placeholder-gray-300 focus:outline-none transition-all ${
-                    error
-                      ? 'border-red-400 focus:border-red-500'
-                      : 'border-gray-200 focus:border-[#233B86]'
-                  }`}
-                />
-                {error && <p className="text-xs text-red-500 mt-1">{error}</p>}
-              </div>
-
-              {/* Continue button */}
-              <motion.button
-                onClick={handleSubmit}
-                disabled={submitting}
-                whileHover={!submitting ? { scale: 1.02 } : {}}
-                whileTap={!submitting ? { scale: 0.97 } : {}}
-                className="w-full py-2.5 rounded-xl font-bold text-sm text-white bg-[#EA2523] hover:bg-[#C41E1C] transition-colors disabled:opacity-70 flex items-center justify-center gap-2"
-              >
-                {submitting ? (
-                  <>
-                    <motion.div
-                      animate={{ rotate: 360 }}
-                      transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-                      className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full"
-                    />
-                    Opening rates...
-                  </>
-                ) : (
-                  'Continue'
+                {/* ── Step 1: Email ── */}
+                {formStep === 'email' && (
+                  <motion.div
+                    key="email"
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -20 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <p className="text-sm font-bold text-gray-900 text-center mb-3">
+                      Free and complete access in seconds
+                    </p>
+                    <div className="mb-3">
+                      <input
+                        type="email"
+                        placeholder="Enter your email"
+                        value={email}
+                        onChange={e => { onChange({ lead: { ...data.lead, email: e.target.value } }); setEmailError(''); }}
+                        onKeyDown={e => { if (e.key === 'Enter') handleEmailContinue(); }}
+                        className={inputCls(!!emailError)}
+                      />
+                      {emailError && <p className="text-xs text-red-500 mt-1">{emailError}</p>}
+                    </div>
+                    <motion.button
+                      onClick={handleEmailContinue}
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.97 }}
+                      className="w-full py-2.5 rounded-xl font-bold text-sm text-white bg-[#EA2523] hover:bg-[#C41E1C] transition-colors flex items-center justify-center gap-2"
+                    >
+                      Continue
+                      <ArrowRight size={15} />
+                    </motion.button>
+                    <p className="text-[11px] text-center mt-2" style={{ color: '#757575' }}>• No SSN required •</p>
+                  </motion.div>
                 )}
-              </motion.button>
 
-              <p className="text-[11px] text-center mt-2" style={{ color: '#757575' }}>• No SSN required •</p>
+                {/* ── Step 2: Name + Phone + Consents ── */}
+                {formStep === 'details' && (
+                  <motion.div
+                    key="details"
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -20 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <p className="text-sm font-bold text-gray-900 text-center mb-3">
+                      Almost there! Just a few more details.
+                    </p>
+
+                    <div className="space-y-2 mb-3">
+                      {/* First + Last name row */}
+                      <div className="grid grid-cols-2 gap-2">
+                        <input
+                          type="text"
+                          placeholder="First name"
+                          value={firstName}
+                          onChange={e => { setFirstName(e.target.value); setDetailsError(''); }}
+                          className={inputCls()}
+                        />
+                        <input
+                          type="text"
+                          placeholder="Last name"
+                          value={lastName}
+                          onChange={e => { setLastName(e.target.value); setDetailsError(''); }}
+                          className={inputCls()}
+                        />
+                      </div>
+                      {/* Phone */}
+                      <input
+                        type="tel"
+                        placeholder="Phone number"
+                        value={phone}
+                        onChange={e => { onChange({ lead: { ...data.lead, phone: e.target.value } }); setDetailsError(''); }}
+                        className={inputCls()}
+                      />
+                    </div>
+
+                    {/* Consent checkboxes */}
+                    <div className="space-y-2 mb-3">
+                      <label className="flex items-start gap-2 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={consent1}
+                          onChange={e => { setConsent1(e.target.checked); setDetailsError(''); }}
+                          className="mt-0.5 flex-shrink-0 accent-[#EA2523]"
+                        />
+                        <span className="text-[11px] leading-tight" style={{ color: '#757575' }}>
+                          I agree to receive calls, texts &amp; emails from Texas United Mortgage regarding my loan inquiry.
+                        </span>
+                      </label>
+                      <label className="flex items-start gap-2 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={consent2}
+                          onChange={e => { setConsent2(e.target.checked); setDetailsError(''); }}
+                          className="mt-0.5 flex-shrink-0 accent-[#EA2523]"
+                        />
+                        <span className="text-[11px] leading-tight" style={{ color: '#757575' }}>
+                          I agree to the <span className="text-[#233B86] font-semibold">Terms of Service</span> and <span className="text-[#233B86] font-semibold">Privacy Policy</span>.
+                        </span>
+                      </label>
+                    </div>
+
+                    {detailsError && <p className="text-xs text-red-500 mb-2">{detailsError}</p>}
+
+                    <motion.button
+                      onClick={handleDetailsContinue}
+                      disabled={submitting}
+                      whileHover={!submitting ? { scale: 1.02 } : {}}
+                      whileTap={!submitting ? { scale: 0.97 } : {}}
+                      className="w-full py-2.5 rounded-xl font-bold text-sm text-white bg-[#EA2523] hover:bg-[#C41E1C] transition-colors disabled:opacity-70 flex items-center justify-center gap-2"
+                    >
+                      {submitting ? (
+                        <>
+                          <motion.div
+                            animate={{ rotate: 360 }}
+                            transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+                            className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full"
+                          />
+                          Opening rates...
+                        </>
+                      ) : (
+                        <>
+                          See My HELOC Rates
+                          <ArrowRight size={15} />
+                        </>
+                      )}
+                    </motion.button>
+                  </motion.div>
+                )}
+
+              </AnimatePresence>
             </motion.div>
           </div>
         </div>
@@ -194,7 +301,6 @@ export function LeadCapture({ data, onChange, onSubmit }: LeadCaptureProps) {
         <div className="pt-4 mt-auto border-t border-gray-100">
           <p className="text-xs text-center mb-1.5" style={{ color: '#757575' }}>Reviews of Texas United Mortgage</p>
           <div className="flex items-center justify-center gap-2">
-            {/* Google G */}
             <svg width="16" height="16" viewBox="0 0 24 24">
               <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
               <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
