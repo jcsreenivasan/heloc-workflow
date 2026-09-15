@@ -197,29 +197,49 @@ export function FunnelLayout({
         {/* ── TRUST FOOTER ─────────────────────────────────── */}
         {isQuestionStep && (
           <div className="flex-shrink-0 bg-gray-50 border-t border-gray-100 px-5 py-4">
-            <div className="flex items-center justify-center">
-              {[
-                { label: 'Google',         score: '4.9', reviews: '2,400+ reviews', logo: '/google-logo.png'     },
-                { label: 'Zillow',         score: '5.0', reviews: '180+ reviews',   logo: '/zillow-logo.png'     },
-                { label: 'Yelp',           score: '4.7', reviews: '90+ reviews',    logo: '/yelp-logo.png'       },
-                { label: 'Experience.com', score: '4.8', reviews: '500+ reviews',   logo: '/experience-logo.png' },
-              ].map((r, i) => (
-                <div key={r.label} className="flex items-center">
-                  {i > 0 && <div className="w-px h-9 bg-gray-200 mx-4 flex-shrink-0" />}
-                  <div className="flex flex-col items-center gap-0.5">
-                    <div className="flex items-center justify-center">
-                      <img src={r.logo} alt={r.label} className="h-5 w-auto object-contain" />
+            <div className="flex items-center justify-between gap-4">
+
+              {/* ── Review sources (left-aligned) ── */}
+              <div className="flex items-center gap-5 flex-wrap">
+                {[
+                  { label: 'Google',         score: '4.9', reviews: '2,400+ reviews', logo: '/google-logo.png'     },
+                  { label: 'Zillow',         score: '5.0', reviews: '180+ reviews',   logo: '/zillow-logo.png'     },
+                  { label: 'Yelp',           score: '4.7', reviews: '90+ reviews',    logo: '/yelp-logo.png'       },
+                  { label: 'Experience.com', score: '4.8', reviews: '500+ reviews',   logo: '/experience-logo.png' },
+                ].map(r => (
+                  <div key={r.label} className="flex flex-col gap-0.5">
+                    {/* Row 1: logo + stars + score */}
+                    <div className="flex items-center gap-1.5">
+                      <img src={r.logo} alt={r.label} className="h-4 w-auto object-contain" />
+                      <div className="flex gap-0.5">
+                        {[...Array(5)].map((_, i) => (
+                          <svg key={i} width="10" height="10" viewBox="0 0 24 24" fill="#F59E0B">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                          </svg>
+                        ))}
+                      </div>
+                      <span className="text-xs font-bold text-gray-700">{r.score}</span>
                     </div>
-                    <div className="flex items-center gap-1">
-                      <svg width="11" height="11" viewBox="0 0 24 24" fill="#F59E0B">
-                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                      </svg>
-                      <span className="text-sm font-bold text-gray-700">{r.score}</span>
-                    </div>
+                    {/* Row 2: review count */}
                     <span className="text-[10px]" style={{ color: '#757575' }}>{r.reviews}</span>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
+
+              {/* ── BankingBridge badge (right) ── */}
+              <a
+                href="https://www.bankingbridge.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex-shrink-0"
+              >
+                <img
+                  src="/bankingbridge-badge.png"
+                  alt="Powered by BankingBridge"
+                  className="h-8 w-auto object-contain"
+                />
+              </a>
+
             </div>
           </div>
         )}
