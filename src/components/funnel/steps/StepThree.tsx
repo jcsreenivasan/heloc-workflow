@@ -150,7 +150,6 @@ export function StepThree({ data, onChange, onNext }: StepThreeProps) {
                   : <span className="text-2xl mb-1.5">{es.icon}</span>
                 }
                 <p className="text-sm font-bold text-gray-900">{es.label}</p>
-                <p className="text-xs mt-0.5" style={{ color: '#757575' }}>{es.sub}</p>
               </motion.button>
             );
           })}
