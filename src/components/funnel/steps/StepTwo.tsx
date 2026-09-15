@@ -228,7 +228,7 @@ export function StepTwo({ data, onChange, onNext }: StepTwoProps) {
       {/* Continue */}
       <AnimatePresence>
         {canContinue && (
-          <motion.div key="continue" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
+          <motion.div key="continue" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="mt-8">
             <motion.button
               onClick={onNext}
               whileHover={{ scale: 1.02 }}
