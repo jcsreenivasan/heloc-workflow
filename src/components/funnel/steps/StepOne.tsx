@@ -191,7 +191,7 @@ export function StepOne({ data, onChange, onNext, onDisqualify }: StepOneProps) 
               onClick={onNext}
               whileHover={{ scale: 1.02, boxShadow: '0 8px 24px rgba(234,37,35,0.3)' }}
               whileTap={{ scale: 0.98 }}
-              className="w-full py-3.5 bg-[#EA2523] text-white font-bold text-sm rounded-xl shadow-lg shadow-[#EA2523]/20 flex items-center justify-center gap-2"
+              className="w-full py-3.5 bg-[#EA2523] text-white font-bold text-sm rounded-xl flex items-center justify-center gap-2"
             >
               Continue
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>

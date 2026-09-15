@@ -164,7 +164,7 @@ function HELOCRateCard({
             disabled={downloading}
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            className="w-full py-2.5 rounded-xl font-bold text-white text-xs flex items-center justify-center gap-1.5 bg-[#EA2523] hover:bg-[#C41E1C] transition-colors shadow-sm"
+            className="w-full py-2.5 rounded-xl font-bold text-white text-xs flex items-center justify-center gap-1.5 bg-[#EA2523] hover:bg-[#C41E1C] transition-colors"
           >
             {downloading ? (
               <>
@@ -212,6 +212,7 @@ function HELOCSummary({ data, equity, maxLine }: { data: FunnelData; equity: num
     { label: 'Use of Funds', value: data.useOfFunds ? humanize(data.useOfFunds) : '—' },
     { label: 'Amount Requested', value: data.borrowAmount ? fmtCurrency(data.borrowAmount) : '—' },
     { label: 'Employment', value: data.employmentStatus ? humanize(data.employmentStatus) : '—' },
+    { label: 'Property ZIP', value: data.zipCode ?? '—' },
   ];
 
   return (

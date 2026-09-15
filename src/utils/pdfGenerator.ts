@@ -97,6 +97,7 @@ export function generateRatePDF(data: FunnelData, rates: RateData[]): void {
     ['Amount Requested', data.borrowAmount ? fmt(data.borrowAmount) : 'N/A'],
     ['Credit Profile', data.creditBand ? creditBandLabel(data.creditBand) : 'N/A'],
     ['Use of Funds', data.useOfFunds ? humanize(data.useOfFunds) : 'N/A'],
+    ['Property ZIP', data.zipCode ?? 'N/A'],
   ];
 
   doc.setFontSize(10);

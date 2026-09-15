@@ -115,7 +115,7 @@ export function LeadCapture({ data, onChange, onSubmit }: LeadCaptureProps) {
           disabled={submitting}
           whileHover={!submitting ? { scale: 1.02 } : {}}
           whileTap={!submitting ? { scale: 0.97 } : {}}
-          className="w-full mt-1 py-4 rounded-2xl font-bold text-base text-white flex items-center justify-center gap-2.5 bg-[#EA2523] shadow-lg shadow-[#EA2523]/25 hover:bg-[#C41E1C] transition-colors disabled:opacity-70"
+          className="w-full mt-1 py-4 rounded-2xl font-bold text-base text-white flex items-center justify-center gap-2.5 bg-[#EA2523] hover:bg-[#C41E1C] transition-colors disabled:opacity-70"
         >
           {submitting ? (
             <><Loader2 size={18} className="animate-spin" /> Opening your rates...</>

@@ -11,6 +11,7 @@ const DEFAULT_DATA: FunnelData = {
   useOfFunds: null,
   borrowAmount: 75000,
   employmentStatus: null,
+  zipCode: null,
   lead: { name: '', email: '', phone: '' },
 };
 
