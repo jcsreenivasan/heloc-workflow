@@ -129,7 +129,7 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.8 }}
-        className="text-xs mt-12 text-center text-gray-400"
+        className="text-xs mt-12 text-center" style={{ color: '#757575' }}
       >
         No credit check · Takes seconds · 100% free
       </motion.p>

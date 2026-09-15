@@ -42,14 +42,33 @@ function HomeValueSlider({ value, onChange }: { value: number; onChange: (v: num
   );
 }
 
-const reveal = {
-  initial: { opacity: 0, y: 18 },
-  animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.32, ease: 'easeOut' as const },
-};
+function MortgageSlider({ value, onChange }: { value: number; onChange: (v: number) => void }) {
+  const MIN = 0, MAX = 700000, STEP = 5000;
+  const pct = ((value - MIN) / (MAX - MIN)) * 100;
+  return (
+    <div className="bg-white border border-gray-200 rounded-2xl px-5 py-4">
+      <div className="flex items-baseline justify-between mb-4">
+        <span className="text-[11px] font-bold uppercase tracking-widest" style={{ color: '#757575' }}>Mortgage Balance</span>
+        <span className="text-2xl font-black text-[#1E3569]">
+          {value === 0 ? 'None / Paid Off' : fmtCurrency(value)}
+        </span>
+      </div>
+      <input
+        type="range" min={MIN} max={MAX} step={STEP} value={value}
+        onChange={e => onChange(Number(e.target.value))}
+        className="slider-input w-full"
+        style={{ background: `linear-gradient(to right, #1E3569 ${pct}%, #E5E7EB ${pct}%)` }}
+      />
+      <div className="flex justify-between mt-2.5">
+        <span className="text-xs" style={{ color: '#757575' }}>None</span>
+        <span className="text-xs" style={{ color: '#757575' }}>$700K</span>
+      </div>
+    </div>
+  );
+}
 
 export function StepOne({ data, onChange, onNext }: StepOneProps) {
-  const { propertyType, homeValue } = data;
+  const { propertyType, homeValue, mortgageBalance } = data;
   const canContinue = propertyType !== null;
 
   return (
@@ -57,7 +76,7 @@ export function StepOne({ data, onChange, onNext }: StepOneProps) {
 
       {/* Q1: Property type */}
       <div className="pb-7">
-        <h2 className="text-lg font-black text-gray-900 mb-4">What type of property is it?</h2>
+        <h2 className="text-lg font-black text-gray-900 mb-4">What is the property type?</h2>
         <div className="grid grid-cols-2 gap-3">
           {PROPERTY_TYPES.map(pt => {
             const selected = propertyType === pt.value;
@@ -90,25 +109,32 @@ export function StepOne({ data, onChange, onNext }: StepOneProps) {
         </div>
       </div>
 
-      {/* Q2: Home value slider */}
-      <AnimatePresence>
-        {propertyType !== null && (
-          <motion.div key="q2" {...reveal} className="border-t border-gray-100 pt-7 pb-4">
-            <h2 className="text-lg font-black text-gray-900 mb-4">
-              What's the estimated current value of your home?
-            </h2>
-            <HomeValueSlider
-              value={homeValue ?? 400000}
-              onChange={v => onChange({ homeValue: v })}
-            />
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* Q2: Home value */}
+      <div className="border-t border-gray-100 pt-7 pb-7">
+        <h2 className="text-lg font-black text-gray-900 mb-4">
+          What's the estimated current value of your home?
+        </h2>
+        <HomeValueSlider
+          value={homeValue ?? 400000}
+          onChange={v => onChange({ homeValue: v })}
+        />
+      </div>
+
+      {/* Q3: Mortgage balance */}
+      <div className="border-t border-gray-100 pt-7 pb-4">
+        <h2 className="text-lg font-black text-gray-900 mb-4">
+          What's your remaining mortgage balance?
+        </h2>
+        <MortgageSlider
+          value={mortgageBalance ?? 150000}
+          onChange={v => onChange({ mortgageBalance: v })}
+        />
+      </div>
 
       {/* Continue */}
       <AnimatePresence>
         {canContinue && (
-          <motion.div key="continue" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="mt-2">
+          <motion.div key="continue" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="mt-4">
             <motion.button
               onClick={onNext}
               whileHover={{ scale: 1.02 }}

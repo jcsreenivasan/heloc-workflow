@@ -108,7 +108,7 @@ export function LeadCapture({ data, onChange, onSubmit }: LeadCaptureProps) {
           {/* Table header */}
           <div className="grid grid-cols-4 gap-2 mb-1.5 px-1">
             {['PRODUCT', 'RATE', 'APR', 'MO. PAYMENT'].map(h => (
-              <p key={h} className="text-[10px] font-bold text-gray-400 uppercase tracking-wide text-center">{h}</p>
+              <p key={h} className="text-[10px] font-bold uppercase tracking-wide text-center" style={{ color: '#757575' }}>{h}</p>
             ))}
           </div>
 
@@ -188,14 +188,14 @@ export function LeadCapture({ data, onChange, onSubmit }: LeadCaptureProps) {
                 )}
               </motion.button>
 
-              <p className="text-[11px] text-gray-400 text-center mt-2">• No SSN required •</p>
+              <p className="text-[11px] text-center mt-2" style={{ color: '#757575' }}>• No SSN required •</p>
             </motion.div>
           </div>
         </div>
 
         {/* Reviews */}
         <div className="pt-4 mt-auto border-t border-gray-100">
-          <p className="text-xs text-gray-400 text-center mb-1.5">Reviews of Texas United Mortgage</p>
+          <p className="text-xs text-center mb-1.5" style={{ color: '#757575' }}>Reviews of Texas United Mortgage</p>
           <div className="flex items-center justify-center gap-2">
             {/* Google G */}
             <svg width="16" height="16" viewBox="0 0 24 24">
@@ -212,7 +212,7 @@ export function LeadCapture({ data, onChange, onSubmit }: LeadCaptureProps) {
                 </svg>
               ))}
             </div>
-            <span className="text-xs text-gray-400">150+ reviews</span>
+            <span className="text-xs" style={{ color: '#757575' }}>150+ reviews</span>
           </div>
         </div>
       </div>

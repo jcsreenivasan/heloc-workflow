@@ -1,4 +1,3 @@
-import { useState, useRef, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Check } from 'lucide-react';
 import type { FunnelData, UseOfFunds } from '../../../types/funnel';
@@ -19,32 +18,6 @@ const FUND_USES: { value: UseOfFunds; label: string; img?: string; icon?: string
 
 function fmtCurrency(n: number) {
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(n);
-}
-
-// ─── Mortgage balance slider ────────────────────────────────────────────────
-function MortgageSlider({ value, onChange }: { value: number; onChange: (v: number) => void }) {
-  const MIN = 0, MAX = 700000, STEP = 5000;
-  const pct = ((value - MIN) / (MAX - MIN)) * 100;
-  return (
-    <div className="bg-white border border-gray-200 rounded-2xl px-5 py-4">
-      <div className="flex items-baseline justify-between mb-4">
-        <span className="text-[11px] font-bold text-[#757575] uppercase tracking-widest">Mortgage Balance</span>
-        <span className="text-2xl font-black text-[#1E3569]">
-          {value === 0 ? 'None / Paid Off' : fmtCurrency(value)}
-        </span>
-      </div>
-      <input
-        type="range" min={MIN} max={MAX} step={STEP} value={value}
-        onChange={e => onChange(Number(e.target.value))}
-        className="slider-input w-full"
-        style={{ background: `linear-gradient(to right, #1E3569 ${pct}%, #E5E7EB ${pct}%)` }}
-      />
-      <div className="flex justify-between mt-2.5">
-        <span className="text-xs text-[#757575]">None</span>
-        <span className="text-xs text-[#757575]">$700K</span>
-      </div>
-    </div>
-  );
 }
 
 // ─── Credit score slider ────────────────────────────────────────────────────
@@ -74,12 +47,12 @@ function CreditScoreSlider({ value, onChange }: { value: number; onChange: (v: n
     <div className="space-y-4">
       <div className="flex items-start justify-between">
         <div>
-          <p className="text-[11px] font-bold text-[#757575] uppercase tracking-widest mb-1">Your Score</p>
+          <p className="text-[11px] font-bold uppercase tracking-widest mb-1" style={{ color: '#757575' }}>Your Score</p>
           <p className="text-6xl font-black leading-none" style={{ color: active.color }}>{value}</p>
         </div>
         <div className="text-right mt-1">
           <p className="text-lg font-bold" style={{ color: active.color }}>{active.label}</p>
-          <p className="text-xs text-[#757575] mt-1 leading-relaxed max-w-[160px]">{BAND_MESSAGES[active.label]}</p>
+          <p className="text-xs mt-1 leading-relaxed max-w-[160px]" style={{ color: '#757575' }}>{BAND_MESSAGES[active.label]}</p>
         </div>
       </div>
       <input
@@ -98,7 +71,7 @@ function CreditScoreSlider({ value, onChange }: { value: number; onChange: (v: n
               style={isActive ? { borderColor: band.color + '50', backgroundColor: band.color + '15' } : {}}
             >
               <p className="text-xs font-bold" style={{ color: band.color }}>{band.label}</p>
-              <p className="text-[10px] text-[#757575] mt-0.5">{band.range}</p>
+              <p className="text-[10px] mt-0.5" style={{ color: '#757575' }}>{band.range}</p>
             </div>
           );
         })}
@@ -107,114 +80,60 @@ function CreditScoreSlider({ value, onChange }: { value: number; onChange: (v: n
   );
 }
 
-// ─── Reusable "Next" button ──────────────────────────────────────────────────
-function NextBtn({ onClick }: { onClick: () => void }) {
-  return (
-    <motion.button
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      onClick={onClick}
-      className="mt-5 w-full py-2.5 border border-gray-200 text-gray-500 font-semibold text-sm rounded-xl flex items-center justify-center gap-2 hover:border-[#233B86] hover:text-[#233B86] transition-colors"
-    >
-      Next
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
-        <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
-      </svg>
-    </motion.button>
-  );
-}
-
-const reveal = {
-  initial: { opacity: 0, y: 18 },
-  animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.32, ease: 'easeOut' as const },
-};
-
 export function StepTwo({ data, onChange, onNext }: StepTwoProps) {
-  const { mortgageBalance, creditScore, useOfFunds } = data;
-  const [showQ5, setShowQ5] = useState(false);
-  const [showQ6, setShowQ6] = useState(false);
+  const { creditScore, useOfFunds } = data;
   const canContinue = useOfFunds !== null;
-
-  const q5Ref = useRef<HTMLDivElement>(null);
-  const q6Ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (showQ5) setTimeout(() => q5Ref.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 350);
-  }, [showQ5]);
-
-  useEffect(() => {
-    if (showQ6) setTimeout(() => q6Ref.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 350);
-  }, [showQ6]);
 
   return (
     <div className="px-5 py-6">
 
-      {/* Q4: Mortgage balance */}
+      {/* Q4: Credit score */}
       <div className="pb-7">
         <h2 className="text-lg font-black text-gray-900 mb-4">
-          What's your remaining mortgage balance?
+          What's your credit score?
         </h2>
-        <MortgageSlider value={mortgageBalance ?? 0} onChange={v => onChange({ mortgageBalance: v })} />
-        {!showQ5 && <NextBtn onClick={() => setShowQ5(true)} />}
+        <CreditScoreSlider value={creditScore ?? 700} onChange={v => onChange({ creditScore: v })} />
       </div>
 
-      {/* Q5: Credit score */}
-      <AnimatePresence>
-        {showQ5 && (
-          <motion.div ref={q5Ref} key="q5" {...reveal} className="border-t border-gray-100 pt-7 pb-7">
-            <h2 className="text-lg font-black text-gray-900 mb-4">
-              What's your credit score?
-            </h2>
-            <CreditScoreSlider value={creditScore ?? 700} onChange={v => onChange({ creditScore: v })} />
-            {!showQ6 && <NextBtn onClick={() => setShowQ6(true)} />}
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Q6: Use of funds */}
-      <AnimatePresence>
-        {showQ6 && (
-          <motion.div ref={q6Ref} key="q6" {...reveal} className="border-t border-gray-100 pt-7">
-            <h2 className="text-lg font-black text-gray-900 mb-4">
-              What do you plan to use the funds for?
-            </h2>
-            <div className="grid grid-cols-2 gap-2.5">
-              {FUND_USES.map(fu => {
-                const selected = useOfFunds === fu.value;
-                return (
-                  <motion.button
-                    key={fu.value}
-                    onClick={() => onChange({ useOfFunds: fu.value })}
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.97 }}
-                    className={`relative flex flex-col items-center text-center p-3.5 rounded-xl border-2 transition-all ${
-                      selected
-                        ? 'border-[#EA2523] bg-[#EA2523]/5 shadow-md'
-                        : 'border-gray-200 bg-white hover:border-gray-300'
-                    } ${fu.value === 'other' ? 'col-span-2' : ''}`}
+      {/* Q5: Use of funds */}
+      <div className="border-t border-gray-100 pt-7">
+        <h2 className="text-lg font-black text-gray-900 mb-4">
+          What do you plan to use the funds for?
+        </h2>
+        <div className="grid grid-cols-2 gap-2.5">
+          {FUND_USES.map(fu => {
+            const selected = useOfFunds === fu.value;
+            return (
+              <motion.button
+                key={fu.value}
+                onClick={() => onChange({ useOfFunds: fu.value })}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.97 }}
+                className={`relative flex flex-col items-center text-center p-3.5 rounded-xl border-2 transition-all ${
+                  selected
+                    ? 'border-[#EA2523] bg-[#EA2523]/5 shadow-md'
+                    : 'border-gray-200 bg-white hover:border-gray-300'
+                } ${fu.value === 'other' ? 'col-span-2' : ''}`}
+              >
+                {selected && (
+                  <motion.div
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    className="absolute top-1.5 right-1.5 w-4 h-4 bg-[#EA2523] rounded-full flex items-center justify-center"
                   >
-                    {selected && (
-                      <motion.div
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1 }}
-                        className="absolute top-1.5 right-1.5 w-4 h-4 bg-[#EA2523] rounded-full flex items-center justify-center"
-                      >
-                        <Check size={9} className="text-white" strokeWidth={3} />
-                      </motion.div>
-                    )}
-                    {fu.img
-                      ? <img src={fu.img} alt={fu.label} className="w-12 h-12 object-contain mb-1" />
-                      : <span className="text-xl mb-1">{fu.icon}</span>
-                    }
-                    <span className="text-xs font-bold text-gray-800">{fu.label}</span>
-                  </motion.button>
-                );
-              })}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+                    <Check size={9} className="text-white" strokeWidth={3} />
+                  </motion.div>
+                )}
+                {fu.img
+                  ? <img src={fu.img} alt={fu.label} className="w-12 h-12 object-contain mb-1" />
+                  : <span className="text-xl mb-1">{fu.icon}</span>
+                }
+                <span className="text-xs font-bold text-gray-800">{fu.label}</span>
+              </motion.button>
+            );
+          })}
+        </div>
+      </div>
 
       {/* Continue */}
       <AnimatePresence>

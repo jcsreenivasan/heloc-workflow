@@ -133,8 +133,9 @@ export function FunnelLayout({
                     className={`w-9 h-9 flex items-center justify-center rounded-xl transition-colors ${
                       isRates
                         ? 'text-white/50 hover:text-white hover:bg-white/10'
-                        : 'text-gray-400 hover:text-gray-700 hover:bg-gray-100'
+                        : 'hover:text-gray-700 hover:bg-gray-100'
                     }`}
+                    style={isRates ? {} : { color: '#757575' }}
                   >
                     <X size={17} />
                   </button>
@@ -146,7 +147,7 @@ export function FunnelLayout({
             {isQuestionStep && (
               <div className="px-5 pb-4">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-xs font-semibold text-gray-400 uppercase tracking-widest">
+                  <span className="text-xs font-semibold uppercase tracking-widest" style={{ color: '#757575' }}>
                     {STEP_LABELS[currentStep]}
                   </span>
                   <span className="text-xs font-bold text-[#EA2523] tabular-nums">
@@ -196,28 +197,28 @@ export function FunnelLayout({
 
         {/* ── TRUST FOOTER ─────────────────────────────────── */}
         {isQuestionStep && (
-          <div className="flex-shrink-0 bg-gray-50 border-t border-gray-100 px-5 py-4">
+          <div className="flex-shrink-0 bg-gray-50 border-t border-gray-100 px-5 py-5">
             <div className="flex items-center justify-between gap-4">
 
               {/* ── Review sources (left-aligned) ── */}
-              <div className="flex items-center gap-5 flex-wrap">
+              <div className="flex items-center gap-7 flex-wrap">
                 {[
                   { label: 'Google',         score: '4.9', reviews: '2,400+ reviews', logo: '/google-logo.png'     },
                   { label: 'Zillow',         score: '5.0', reviews: '180+ reviews',   logo: '/zillow-logo.png'     },
                   { label: 'Yelp',           score: '4.7', reviews: '90+ reviews',    logo: '/yelp-logo.png'       },
                   { label: 'Experience.com', score: '4.8', reviews: '500+ reviews',   logo: '/experience-logo.png' },
                 ].map(r => (
-                  <div key={r.label} className="flex flex-col gap-0.5">
-                    {/* Row 1: logo + stars + score */}
-                    <div className="flex items-center gap-1.5">
-                      <img src={r.logo} alt={r.label} className="h-4 w-auto object-contain" />
-                      <svg width="13" height="13" viewBox="0 0 24 24" fill="#F59E0B">
+                  <div key={r.label} className="flex flex-col gap-1">
+                    {/* Row 1: logo + star + score */}
+                    <div className="flex items-center gap-2">
+                      <img src={r.logo} alt={r.label} className="h-6 w-auto object-contain" />
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="#F59E0B">
                         <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
                       </svg>
-                      <span className="text-xs font-bold text-gray-700">{r.score}</span>
+                      <span className="text-base font-bold text-gray-800">{r.score}</span>
                     </div>
                     {/* Row 2: review count */}
-                    <span className="text-[10px]" style={{ color: '#757575' }}>{r.reviews}</span>
+                    <span className="text-sm" style={{ color: '#757575' }}>{r.reviews}</span>
                   </div>
                 ))}
               </div>
