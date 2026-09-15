@@ -169,7 +169,7 @@ export function FunnelLayout({
                         initial={{ width: 0 }}
                         animate={{
                           width: i <= currentQuestionIndex ? '100%' : '0%',
-                          backgroundColor: i < currentQuestionIndex ? '#233B86' : '#EA2523',
+                          backgroundColor: '#EA2523',
                         }}
                         transition={{ duration: 0.4, ease: 'easeInOut' }}
                       />

@@ -1,6 +1,6 @@
 import jsPDF from 'jspdf';
 import type { FunnelData, RateData } from '../types/funnel';
-import { homeValueMidpoint, mortgageBalanceMidpoint, creditBandLabel } from './rateCalculator';
+import { creditBandLabel } from './rateCalculator';
 
 function fmt(amount: number): string {
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(amount);
@@ -84,17 +84,17 @@ export function generateRatePDF(data: FunnelData, rates: RateData[]): void {
   doc.line(15, y, pageW - 15, y);
   y += 6;
 
-  const homeVal = data.homeValue ? homeValueMidpoint(data.homeValue) : 0;
-  const mortgageAmt = data.mortgageBalance ? mortgageBalanceMidpoint(data.mortgageBalance) : 0;
+  const homeVal = data.homeValue ?? 0;
+  const mortgageAmt = data.mortgageBalance ?? 0;
   const equity = homeVal - mortgageAmt;
   const maxLine = Math.max(0, homeVal * 0.85 - mortgageAmt);
 
   const helocRows: [string, string][] = [
-    ['Est. Home Value', data.homeValue ? fmt(homeVal) : 'N/A'],
-    ['Mortgage Balance', data.mortgageBalance ? fmt(mortgageAmt) : 'N/A'],
+    ['Est. Home Value', fmt(homeVal)],
+    ['Mortgage Balance', mortgageAmt === 0 ? 'None / Paid Off' : fmt(mortgageAmt)],
     ['Est. Equity', fmt(equity)],
     ['Max Credit Line (85% CLTV)', fmt(maxLine)],
-    ['Amount Requested', data.borrowAmount ? data.borrowAmount.replace('<', 'Under $').replace('+', '+') : 'N/A'],
+    ['Amount Requested', data.borrowAmount ? fmt(data.borrowAmount) : 'N/A'],
     ['Credit Profile', data.creditBand ? creditBandLabel(data.creditBand) : 'N/A'],
     ['Use of Funds', data.useOfFunds ? humanize(data.useOfFunds) : 'N/A'],
   ];
@@ -173,7 +173,6 @@ export function generateRatePDF(data: FunnelData, rates: RateData[]): void {
       doc.text(field[1], fx, fy + 7);
     });
 
-    // Draw/repayment periods
     const periodLine = rate.drawPeriod
       ? `Draw period: ${rate.drawPeriod}  ·  Repayment: ${rate.repaymentPeriod}`
       : `Term: ${rate.repaymentPeriod}`;

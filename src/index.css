@@ -39,12 +39,12 @@ body {
 .slider-input::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 28px;
-  height: 28px;
+  width: 26px;
+  height: 26px;
   border-radius: 50%;
-  background: #233B86;
+  background: #EA2523;
   border: 3px solid white;
-  box-shadow: 0 2px 8px rgba(35, 59, 134, 0.4);
+  box-shadow: 0 2px 8px rgba(234, 37, 35, 0.4);
   cursor: grab;
   transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
@@ -52,16 +52,16 @@ body {
 .slider-input::-webkit-slider-thumb:active {
   cursor: grabbing;
   transform: scale(1.15);
-  box-shadow: 0 4px 16px rgba(35, 59, 134, 0.6);
+  box-shadow: 0 4px 16px rgba(234, 37, 35, 0.6);
 }
 
 .slider-input::-moz-range-thumb {
-  width: 28px;
-  height: 28px;
+  width: 26px;
+  height: 26px;
   border-radius: 50%;
-  background: #233B86;
+  background: #EA2523;
   border: 3px solid white;
-  box-shadow: 0 2px 8px rgba(35, 59, 134, 0.4);
+  box-shadow: 0 2px 8px rgba(234, 37, 35, 0.4);
   cursor: grab;
   transition: transform 0.15s ease;
 }

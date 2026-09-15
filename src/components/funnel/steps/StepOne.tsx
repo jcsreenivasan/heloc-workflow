@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { Check } from 'lucide-react';
-import type { FunnelData, PropertyType, HomeValue } from '../../../types/funnel';
+import type { FunnelData, PropertyType } from '../../../types/funnel';
 
 interface StepOneProps {
   data: FunnelData;
@@ -9,20 +9,59 @@ interface StepOneProps {
   onDisqualify: () => void;
 }
 
-const PROPERTY_TYPES: { value: PropertyType; label: string; icon: string; color: string }[] = [
-  { value: 'single-family', label: 'Single-Family Home', icon: '🏠', color: '#6366F1' },
-  { value: 'condo',         label: 'Condo',              icon: '🏢', color: '#0D9488' },
-  { value: 'multi-family',  label: 'Multi-Family',       icon: '🏘️', color: '#F59E0B' },
-  { value: 'manufactured',  label: 'Manufactured Home',  icon: '🏡', color: '#EC4899' },
+const PROPERTY_TYPES: { value: PropertyType; label: string; img: string }[] = [
+  { value: 'single-family', label: 'Single-Family Home', img: '/icons/single-family.png' },
+  { value: 'condo',         label: 'Condo',              img: '/icons/condo.png'          },
+  { value: 'townhome',      label: 'Townhome',           img: '/icons/townhome.png'       },
+  { value: 'multi-unit',    label: 'Multi-Unit',         img: '/icons/multi-unit.png'     },
 ];
 
-const HOME_VALUES: { value: HomeValue; label: string }[] = [
-  { value: '<200k',     label: 'Less than $200,000' },
-  { value: '200k-400k', label: '$200,000 – $400,000' },
-  { value: '400k-600k', label: '$400,000 – $600,000' },
-  { value: '600k-1m',   label: '$600,000 – $1,000,000' },
-  { value: '1m+',       label: 'Over $1,000,000' },
-];
+function fmt(n: number): string {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    maximumFractionDigits: 0,
+  }).format(n);
+}
+
+function HomeValueSlider({
+  value,
+  onChange,
+}: {
+  value: number;
+  onChange: (v: number) => void;
+}) {
+  const MIN = 50000;
+  const MAX = 2000000;
+  const STEP = 10000;
+  const pct = ((value - MIN) / (MAX - MIN)) * 100;
+
+  return (
+    <div>
+      <div className="flex justify-center mb-5">
+        <div className="bg-[#EA2523]/8 rounded-2xl px-8 py-3">
+          <p className="text-2xl font-black text-[#EA2523] text-center">{fmt(value)}</p>
+        </div>
+      </div>
+      <input
+        type="range"
+        min={MIN}
+        max={MAX}
+        step={STEP}
+        value={value}
+        onChange={e => onChange(Number(e.target.value))}
+        className="slider-input w-full"
+        style={{
+          background: `linear-gradient(to right, #EA2523 ${pct}%, #E5E7EB ${pct}%)`,
+        }}
+      />
+      <div className="flex justify-between mt-2">
+        <span className="text-xs text-gray-400">{fmt(MIN)}</span>
+        <span className="text-xs text-gray-400">{fmt(MAX)}</span>
+      </div>
+    </div>
+  );
+}
 
 const reveal = {
   initial: { opacity: 0, y: 18 },
@@ -34,13 +73,12 @@ export function StepOne({ data, onChange, onNext, onDisqualify }: StepOneProps) 
   const { ownsHome, propertyType, homeValue } = data;
 
   const selectOwnsHome = (val: boolean) => {
-    onChange({ ownsHome: val, propertyType: null, homeValue: null });
-    if (!val) {
-      setTimeout(onDisqualify, 200);
-    }
+    onChange({ ownsHome: val, propertyType: null });
+    if (!val) setTimeout(onDisqualify, 200);
   };
 
-  const canContinue = ownsHome === true && propertyType !== null && homeValue !== null;
+  // Continue once Q1=yes + Q2 answered (Q3 slider always has a value)
+  const canContinue = ownsHome === true && propertyType !== null;
 
   return (
     <div className="px-5 py-6 space-y-7">
@@ -51,8 +89,8 @@ export function StepOne({ data, onChange, onNext, onDisqualify }: StepOneProps) 
         <h2 className="text-lg font-black text-gray-900 mb-4">Do you currently own your home?</h2>
         <div className="grid grid-cols-2 gap-3">
           {[
-            { val: true,  label: 'Yes, I Own',   sub: "I'm a homeowner",  icon: '🏡', color: '#16A34A' },
-            { val: false, label: 'No, I Rent',    sub: 'I rent my home',   icon: '🔑', color: '#6B7280' },
+            { val: true,  label: 'Yes, I Own',  sub: "I'm a homeowner", icon: '🏡' },
+            { val: false, label: 'No, I Rent',   sub: 'I rent my home',  icon: '🔑' },
           ].map(opt => {
             const selected = ownsHome === opt.val;
             return (
@@ -85,7 +123,7 @@ export function StepOne({ data, onChange, onNext, onDisqualify }: StepOneProps) 
         </div>
       </div>
 
-      {/* Q2: Property type */}
+      {/* Q2: Property type with custom icons */}
       <AnimatePresence>
         {ownsHome === true && (
           <motion.div key="q2" {...reveal}>
@@ -97,7 +135,7 @@ export function StepOne({ data, onChange, onNext, onDisqualify }: StepOneProps) 
                 return (
                   <motion.button
                     key={pt.value}
-                    onClick={() => onChange({ propertyType: pt.value, homeValue: null })}
+                    onClick={() => onChange({ propertyType: pt.value })}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.97 }}
                     className={`relative flex flex-col items-center text-center p-4 rounded-2xl border-2 transition-all ${
@@ -115,8 +153,12 @@ export function StepOne({ data, onChange, onNext, onDisqualify }: StepOneProps) 
                         <Check size={11} className="text-white" strokeWidth={3} />
                       </motion.div>
                     )}
-                    <span className="text-2xl mb-2">{pt.icon}</span>
-                    <p className="text-sm font-bold text-gray-900">{pt.label}</p>
+                    <img
+                      src={pt.img}
+                      alt={pt.label}
+                      className="w-14 h-14 object-contain mb-2"
+                    />
+                    <p className="text-sm font-bold text-gray-900 leading-tight">{pt.label}</p>
                   </motion.button>
                 );
               })}
@@ -125,50 +167,23 @@ export function StepOne({ data, onChange, onNext, onDisqualify }: StepOneProps) 
         )}
       </AnimatePresence>
 
-      {/* Q3: Home value */}
+      {/* Q3: Home value slider */}
       <AnimatePresence>
         {ownsHome === true && propertyType !== null && (
           <motion.div key="q3" {...reveal}>
             <p className="text-[11px] font-bold text-[#EA2523] uppercase tracking-widest mb-1">Question 3</p>
-            <h2 className="text-lg font-black text-gray-900 mb-4">
+            <h2 className="text-lg font-black text-gray-900 mb-5">
               What's the estimated current value of your home?
             </h2>
-            <div className="space-y-2">
-              {HOME_VALUES.map(hv => {
-                const selected = homeValue === hv.value;
-                return (
-                  <motion.button
-                    key={hv.value}
-                    onClick={() => onChange({ homeValue: hv.value })}
-                    whileHover={{ scale: 1.01 }}
-                    whileTap={{ scale: 0.98 }}
-                    className={`w-full flex items-center justify-between px-4 py-3 rounded-xl border-2 text-left transition-all ${
-                      selected
-                        ? 'border-[#EA2523] bg-[#EA2523]/5 shadow-sm'
-                        : 'border-gray-200 bg-white hover:border-gray-300'
-                    }`}
-                  >
-                    <span className={`text-sm font-semibold ${selected ? 'text-[#EA2523]' : 'text-gray-800'}`}>
-                      {hv.label}
-                    </span>
-                    {selected && (
-                      <motion.div
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1 }}
-                        className="w-5 h-5 bg-[#EA2523] rounded-full flex items-center justify-center flex-shrink-0"
-                      >
-                        <Check size={11} className="text-white" strokeWidth={3} />
-                      </motion.div>
-                    )}
-                  </motion.button>
-                );
-              })}
-            </div>
+            <HomeValueSlider
+              value={homeValue ?? 400000}
+              onChange={v => onChange({ homeValue: v })}
+            />
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Continue button */}
+      {/* Continue */}
       <AnimatePresence>
         {canContinue && (
           <motion.div key="continue" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
@@ -176,7 +191,7 @@ export function StepOne({ data, onChange, onNext, onDisqualify }: StepOneProps) 
               onClick={onNext}
               whileHover={{ scale: 1.02, boxShadow: '0 8px 24px rgba(234,37,35,0.3)' }}
               whileTap={{ scale: 0.98 }}
-              className="w-full py-3.5 bg-[#EA2523] text-white font-bold text-sm rounded-xl shadow-lg shadow-[#EA2523]/20 transition-all flex items-center justify-center gap-2"
+              className="w-full py-3.5 bg-[#EA2523] text-white font-bold text-sm rounded-xl shadow-lg shadow-[#EA2523]/20 flex items-center justify-center gap-2"
             >
               Continue
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>

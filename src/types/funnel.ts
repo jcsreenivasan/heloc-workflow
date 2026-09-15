@@ -1,5 +1,3 @@
-export type HomeValue = '<200k' | '200k-400k' | '400k-600k' | '600k-1m' | '1m+';
-export type MortgageBalance = 'none' | '<50k' | '50k-100k' | '100k-200k' | '200k-300k' | '300k+';
 export type CreditBand = 'excellent' | 'good' | 'fair' | 'poor';
 export type UseOfFunds =
   | 'home-improvement'
@@ -7,18 +5,17 @@ export type UseOfFunds =
   | 'major-purchase'
   | 'emergency-fund'
   | 'other';
-export type BorrowAmount = '<25k' | '25k-50k' | '50k-100k' | '100k-150k' | '150k+';
 export type EmploymentStatus = 'employed' | 'self-employed' | 'retired' | 'other';
-export type PropertyType = 'single-family' | 'condo' | 'multi-family' | 'manufactured';
+export type PropertyType = 'single-family' | 'condo' | 'townhome' | 'multi-unit';
 
 export interface FunnelData {
   ownsHome: boolean | null;
   propertyType: PropertyType | null;
-  homeValue: HomeValue | null;
-  mortgageBalance: MortgageBalance | null;
+  homeValue: number | null;       // slider: $50k–$2M
+  mortgageBalance: number | null; // slider: $0–$700k
   creditBand: CreditBand | null;
   useOfFunds: UseOfFunds | null;
-  borrowAmount: BorrowAmount | null;
+  borrowAmount: number | null;    // slider: $10k–$350k
   employmentStatus: EmploymentStatus | null;
   lead: {
     name: string;

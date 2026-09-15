@@ -1,40 +1,6 @@
-import type { FunnelData, RateData, HomeValue, MortgageBalance, BorrowAmount, CreditBand } from '../types/funnel';
+import type { FunnelData, RateData, CreditBand } from '../types/funnel';
 
 const PRIME_RATE = 8.5;
-
-export function homeValueMidpoint(val: HomeValue): number {
-  const map: Record<HomeValue, number> = {
-    '<200k': 150000,
-    '200k-400k': 300000,
-    '400k-600k': 500000,
-    '600k-1m': 800000,
-    '1m+': 1250000,
-  };
-  return map[val];
-}
-
-export function mortgageBalanceMidpoint(val: MortgageBalance): number {
-  const map: Record<MortgageBalance, number> = {
-    'none': 0,
-    '<50k': 35000,
-    '50k-100k': 75000,
-    '100k-200k': 150000,
-    '200k-300k': 250000,
-    '300k+': 350000,
-  };
-  return map[val];
-}
-
-export function borrowAmountMidpoint(val: BorrowAmount): number {
-  const map: Record<BorrowAmount, number> = {
-    '<25k': 20000,
-    '25k-50k': 37500,
-    '50k-100k': 75000,
-    '100k-150k': 125000,
-    '150k+': 175000,
-  };
-  return map[val];
-}
 
 function helocSpread(creditBand: CreditBand): number {
   const map: Record<CreditBand, number> = {
@@ -73,10 +39,10 @@ export interface RateCalculationResult {
 }
 
 export function calculateRates(data: FunnelData): RateCalculationResult {
-  const homeVal = homeValueMidpoint(data.homeValue!);
-  const mortgageAmt = mortgageBalanceMidpoint(data.mortgageBalance!);
-  const requestedAmt = borrowAmountMidpoint(data.borrowAmount!);
-  const creditBand = data.creditBand!;
+  const homeVal = data.homeValue ?? 400000;
+  const mortgageAmt = data.mortgageBalance ?? 0;
+  const requestedAmt = data.borrowAmount ?? 75000;
+  const creditBand = data.creditBand ?? 'good';
 
   const equity = homeVal - mortgageAmt;
   const maxCLTV = homeVal * 0.85;
@@ -86,9 +52,9 @@ export function calculateRates(data: FunnelData): RateCalculationResult {
   const helocRate = PRIME_RATE + helocSpread(creditBand);
   const helRate = homeEquityLoanRate(creditBand);
 
-  // HELOC: interest-only during draw period
+  // HELOC: interest-only draw period
   const helocMonthly = (loanAmount * (helocRate / 100)) / 12;
-  // Home Equity Loan: fully amortized over 10 years
+  // Home Equity Loan: fully amortized 10 years
   const helMonthly = calcMonthlyPayment(loanAmount, helRate, 10);
 
   return {

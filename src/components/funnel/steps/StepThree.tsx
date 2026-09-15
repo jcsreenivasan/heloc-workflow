@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { Check } from 'lucide-react';
-import type { FunnelData, BorrowAmount, EmploymentStatus } from '../../../types/funnel';
+import type { FunnelData, EmploymentStatus } from '../../../types/funnel';
 
 interface StepThreeProps {
   data: FunnelData;
@@ -8,20 +8,59 @@ interface StepThreeProps {
   onNext: () => void;
 }
 
-const BORROW_AMOUNTS: { value: BorrowAmount; label: string }[] = [
-  { value: '<25k',       label: 'Under $25,000' },
-  { value: '25k-50k',   label: '$25,000 – $50,000' },
-  { value: '50k-100k',  label: '$50,000 – $100,000' },
-  { value: '100k-150k', label: '$100,000 – $150,000' },
-  { value: '150k+',     label: 'Over $150,000' },
-];
-
 const EMPLOYMENT_STATUSES: { value: EmploymentStatus; label: string; sub: string; icon: string }[] = [
   { value: 'employed',      label: 'Employed',      sub: 'W-2 employee',          icon: '💼' },
   { value: 'self-employed', label: 'Self-Employed',  sub: '1099 / business owner', icon: '🏢' },
   { value: 'retired',       label: 'Retired',        sub: 'Fixed income',           icon: '☕' },
   { value: 'other',         label: 'Other',           sub: 'Not listed above',       icon: '•••' },
 ];
+
+function fmt(n: number): string {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    maximumFractionDigits: 0,
+  }).format(n);
+}
+
+function BorrowSlider({
+  value,
+  onChange,
+}: {
+  value: number;
+  onChange: (v: number) => void;
+}) {
+  const MIN = 10000;
+  const MAX = 350000;
+  const STEP = 5000;
+  const pct = ((value - MIN) / (MAX - MIN)) * 100;
+
+  return (
+    <div>
+      <div className="flex justify-center mb-5">
+        <div className="bg-[#EA2523]/8 rounded-2xl px-8 py-3">
+          <p className="text-2xl font-black text-[#EA2523] text-center">{fmt(value)}</p>
+        </div>
+      </div>
+      <input
+        type="range"
+        min={MIN}
+        max={MAX}
+        step={STEP}
+        value={value}
+        onChange={e => onChange(Number(e.target.value))}
+        className="slider-input w-full"
+        style={{
+          background: `linear-gradient(to right, #EA2523 ${pct}%, #E5E7EB ${pct}%)`,
+        }}
+      />
+      <div className="flex justify-between mt-2">
+        <span className="text-xs text-gray-400">{fmt(MIN)}</span>
+        <span className="text-xs text-gray-400">{fmt(MAX)}</span>
+      </div>
+    </div>
+  );
+}
 
 const reveal = {
   initial: { opacity: 0, y: 18 },
@@ -31,92 +70,61 @@ const reveal = {
 
 export function StepThree({ data, onChange, onNext }: StepThreeProps) {
   const { borrowAmount, employmentStatus } = data;
-  const canContinue = borrowAmount !== null && employmentStatus !== null;
+  const canContinue = employmentStatus !== null;
 
   return (
     <div className="px-5 py-6 space-y-7">
 
-      {/* Q7: How much to borrow */}
+      {/* Q7: Borrow amount slider */}
       <div>
         <p className="text-[11px] font-bold text-[#EA2523] uppercase tracking-widest mb-1">Question 7</p>
-        <h2 className="text-lg font-black text-gray-900 mb-4">
+        <h2 className="text-lg font-black text-gray-900 mb-5">
           How much are you looking to borrow?
         </h2>
-        <div className="space-y-2">
-          {BORROW_AMOUNTS.map(ba => {
-            const selected = borrowAmount === ba.value;
+        <BorrowSlider
+          value={borrowAmount ?? 75000}
+          onChange={v => onChange({ borrowAmount: v })}
+        />
+      </div>
+
+      {/* Q8: Employment status — always visible alongside Q7 */}
+      <motion.div key="q8" {...reveal}>
+        <p className="text-[11px] font-bold text-[#EA2523] uppercase tracking-widest mb-1">Question 8</p>
+        <h2 className="text-lg font-black text-gray-900 mb-4">
+          What's your employment status?
+        </h2>
+        <div className="grid grid-cols-2 gap-3">
+          {EMPLOYMENT_STATUSES.map(es => {
+            const selected = employmentStatus === es.value;
             return (
               <motion.button
-                key={ba.value}
-                onClick={() => onChange({ borrowAmount: ba.value, employmentStatus: null })}
-                whileHover={{ scale: 1.01 }}
-                whileTap={{ scale: 0.98 }}
-                className={`w-full flex items-center justify-between px-4 py-3 rounded-xl border-2 text-left transition-all ${
+                key={es.value}
+                onClick={() => onChange({ employmentStatus: es.value })}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.97 }}
+                className={`relative flex flex-col items-center text-center p-4 rounded-2xl border-2 transition-all ${
                   selected
-                    ? 'border-[#EA2523] bg-[#EA2523]/5 shadow-sm'
+                    ? 'border-[#EA2523] bg-[#EA2523]/5 shadow-md'
                     : 'border-gray-200 bg-white hover:border-gray-300'
                 }`}
               >
-                <span className={`text-sm font-semibold ${selected ? 'text-[#EA2523]' : 'text-gray-800'}`}>
-                  {ba.label}
-                </span>
                 {selected && (
                   <motion.div
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
-                    className="w-5 h-5 bg-[#EA2523] rounded-full flex items-center justify-center flex-shrink-0"
+                    className="absolute top-2 right-2 w-5 h-5 bg-[#EA2523] rounded-full flex items-center justify-center"
                   >
                     <Check size={11} className="text-white" strokeWidth={3} />
                   </motion.div>
                 )}
+                <span className="text-2xl mb-2">{es.icon}</span>
+                <p className="text-sm font-bold text-gray-900">{es.label}</p>
+                <p className="text-xs text-gray-400 mt-0.5">{es.sub}</p>
               </motion.button>
             );
           })}
         </div>
-      </div>
-
-      {/* Q8: Employment status */}
-      <AnimatePresence>
-        {borrowAmount !== null && (
-          <motion.div key="q8" {...reveal}>
-            <p className="text-[11px] font-bold text-[#EA2523] uppercase tracking-widest mb-1">Question 8</p>
-            <h2 className="text-lg font-black text-gray-900 mb-4">
-              What's your employment status?
-            </h2>
-            <div className="grid grid-cols-2 gap-3">
-              {EMPLOYMENT_STATUSES.map(es => {
-                const selected = employmentStatus === es.value;
-                return (
-                  <motion.button
-                    key={es.value}
-                    onClick={() => onChange({ employmentStatus: es.value })}
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.97 }}
-                    className={`relative flex flex-col items-center text-center p-4 rounded-2xl border-2 transition-all ${
-                      selected
-                        ? 'border-[#EA2523] bg-[#EA2523]/5 shadow-md'
-                        : 'border-gray-200 bg-white hover:border-gray-300'
-                    }`}
-                  >
-                    {selected && (
-                      <motion.div
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1 }}
-                        className="absolute top-2 right-2 w-5 h-5 bg-[#EA2523] rounded-full flex items-center justify-center"
-                      >
-                        <Check size={11} className="text-white" strokeWidth={3} />
-                      </motion.div>
-                    )}
-                    <span className="text-2xl mb-2">{es.icon}</span>
-                    <p className="text-sm font-bold text-gray-900">{es.label}</p>
-                    <p className="text-xs text-gray-400 mt-0.5">{es.sub}</p>
-                  </motion.button>
-                );
-              })}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      </motion.div>
 
       {/* Continue */}
       <AnimatePresence>
@@ -126,7 +134,7 @@ export function StepThree({ data, onChange, onNext }: StepThreeProps) {
               onClick={onNext}
               whileHover={{ scale: 1.02, boxShadow: '0 8px 24px rgba(234,37,35,0.3)' }}
               whileTap={{ scale: 0.98 }}
-              className="w-full py-3.5 bg-[#EA2523] text-white font-bold text-sm rounded-xl shadow-lg shadow-[#EA2523]/20 transition-all flex items-center justify-center gap-2"
+              className="w-full py-3.5 bg-[#EA2523] text-white font-bold text-sm rounded-xl shadow-lg shadow-[#EA2523]/20 flex items-center justify-center gap-2"
             >
               See My HELOC Options
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>

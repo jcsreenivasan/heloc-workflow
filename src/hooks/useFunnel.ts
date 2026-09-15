@@ -5,11 +5,11 @@ import { STEP_ORDER, QUESTION_STEPS } from '../types/funnel';
 const DEFAULT_DATA: FunnelData = {
   ownsHome: null,
   propertyType: null,
-  homeValue: null,
-  mortgageBalance: null,
+  homeValue: 400000,
+  mortgageBalance: 150000,
   creditBand: null,
   useOfFunds: null,
-  borrowAmount: null,
+  borrowAmount: 75000,
   employmentStatus: null,
   lead: { name: '', email: '', phone: '' },
 };

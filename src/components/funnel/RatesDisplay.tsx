@@ -204,13 +204,13 @@ function HELOCSummary({ data, equity, maxLine }: { data: FunnelData; equity: num
 
   const rows = [
     { label: 'Property Type', value: data.propertyType ? humanize(data.propertyType) : '—' },
-    { label: 'Est. Home Value', value: data.homeValue ? data.homeValue.replace('<', 'Under $').replace('+', '+') : '—' },
-    { label: 'Mortgage Balance', value: data.mortgageBalance === 'none' ? 'None' : data.mortgageBalance ?? '—' },
+    { label: 'Est. Home Value', value: data.homeValue ? fmtCurrency(data.homeValue) : '—' },
+    { label: 'Mortgage Balance', value: data.mortgageBalance === 0 ? 'None / Paid Off' : data.mortgageBalance ? fmtCurrency(data.mortgageBalance) : '—' },
     { label: 'Est. Available Equity', value: fmtCurrency(equity) },
     { label: 'Max Credit Line (85% CLTV)', value: fmtCurrency(maxLine) },
     { label: 'Credit Profile', value: data.creditBand ? creditBandLabel(data.creditBand) : '—' },
     { label: 'Use of Funds', value: data.useOfFunds ? humanize(data.useOfFunds) : '—' },
-    { label: 'Amount Requested', value: data.borrowAmount ? data.borrowAmount.replace('<', 'Under $').replace('+', '+') : '—' },
+    { label: 'Amount Requested', value: data.borrowAmount ? fmtCurrency(data.borrowAmount) : '—' },
     { label: 'Employment', value: data.employmentStatus ? humanize(data.employmentStatus) : '—' },
   ];
 

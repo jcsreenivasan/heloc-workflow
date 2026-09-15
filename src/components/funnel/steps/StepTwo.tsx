@@ -1,21 +1,12 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { Check } from 'lucide-react';
-import type { FunnelData, MortgageBalance, CreditBand, UseOfFunds } from '../../../types/funnel';
+import type { FunnelData, CreditBand, UseOfFunds } from '../../../types/funnel';
 
 interface StepTwoProps {
   data: FunnelData;
   onChange: (updates: Partial<FunnelData>) => void;
   onNext: () => void;
 }
-
-const MORTGAGE_BALANCES: { value: MortgageBalance; label: string }[] = [
-  { value: 'none',       label: 'None / Paid Off' },
-  { value: '<50k',       label: 'Under $50,000' },
-  { value: '50k-100k',   label: '$50,000 – $100,000' },
-  { value: '100k-200k',  label: '$100,000 – $200,000' },
-  { value: '200k-300k',  label: '$200,000 – $300,000' },
-  { value: '300k+',      label: '$300,000 or more' },
-];
 
 const CREDIT_BANDS: { value: CreditBand; label: string; sub: string; color: string; bg: string }[] = [
   { value: 'excellent', label: 'Excellent', sub: '720 or higher',  color: '#16A34A', bg: '#F0FDF4' },
@@ -32,6 +23,55 @@ const FUND_USES: { value: UseOfFunds; label: string; icon: string }[] = [
   { value: 'other',              label: 'Other',              icon: '•••' },
 ];
 
+function fmt(n: number): string {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    maximumFractionDigits: 0,
+  }).format(n);
+}
+
+function MortgageSlider({
+  value,
+  onChange,
+}: {
+  value: number;
+  onChange: (v: number) => void;
+}) {
+  const MIN = 0;
+  const MAX = 700000;
+  const STEP = 5000;
+  const pct = ((value - MIN) / (MAX - MIN)) * 100;
+
+  return (
+    <div>
+      <div className="flex justify-center mb-5">
+        <div className="bg-[#EA2523]/8 rounded-2xl px-8 py-3">
+          <p className="text-2xl font-black text-[#EA2523] text-center">
+            {value === 0 ? 'None / Paid Off' : fmt(value)}
+          </p>
+        </div>
+      </div>
+      <input
+        type="range"
+        min={MIN}
+        max={MAX}
+        step={STEP}
+        value={value}
+        onChange={e => onChange(Number(e.target.value))}
+        className="slider-input w-full"
+        style={{
+          background: `linear-gradient(to right, #EA2523 ${pct}%, #E5E7EB ${pct}%)`,
+        }}
+      />
+      <div className="flex justify-between mt-2">
+        <span className="text-xs text-gray-400">None</span>
+        <span className="text-xs text-gray-400">{fmt(MAX)}</span>
+      </div>
+    </div>
+  );
+}
+
 const reveal = {
   initial: { opacity: 0, y: 18 },
   animate: { opacity: 1, y: 0 },
@@ -40,100 +80,69 @@ const reveal = {
 
 export function StepTwo({ data, onChange, onNext }: StepTwoProps) {
   const { mortgageBalance, creditBand, useOfFunds } = data;
-  const canContinue = mortgageBalance !== null && creditBand !== null && useOfFunds !== null;
+  const canContinue = creditBand !== null && useOfFunds !== null;
 
   return (
     <div className="px-5 py-6 space-y-7">
 
-      {/* Q4: Mortgage balance */}
+      {/* Q4: Mortgage balance slider */}
       <div>
         <p className="text-[11px] font-bold text-[#EA2523] uppercase tracking-widest mb-1">Question 4</p>
-        <h2 className="text-lg font-black text-gray-900 mb-4">
+        <h2 className="text-lg font-black text-gray-900 mb-5">
           What's your remaining mortgage balance?
         </h2>
-        <div className="space-y-2">
-          {MORTGAGE_BALANCES.map(mb => {
-            const selected = mortgageBalance === mb.value;
+        <MortgageSlider
+          value={mortgageBalance ?? 0}
+          onChange={v => onChange({ mortgageBalance: v })}
+        />
+      </div>
+
+      {/* Q5: Credit score band — always visible alongside Q4 */}
+      <motion.div key="q5" {...reveal}>
+        <p className="text-[11px] font-bold text-[#EA2523] uppercase tracking-widest mb-1">Question 5</p>
+        <h2 className="text-lg font-black text-gray-900 mb-4">
+          What's your estimated credit score?
+        </h2>
+        <div className="grid grid-cols-2 gap-3">
+          {CREDIT_BANDS.map(cb => {
+            const selected = creditBand === cb.value;
             return (
               <motion.button
-                key={mb.value}
-                onClick={() => onChange({ mortgageBalance: mb.value, creditBand: null, useOfFunds: null })}
-                whileHover={{ scale: 1.01 }}
-                whileTap={{ scale: 0.98 }}
-                className={`w-full flex items-center justify-between px-4 py-3 rounded-xl border-2 text-left transition-all ${
+                key={cb.value}
+                onClick={() => onChange({ creditBand: cb.value, useOfFunds: null })}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.97 }}
+                className={`relative flex flex-col items-start p-4 rounded-2xl border-2 text-left transition-all ${
                   selected
-                    ? 'border-[#EA2523] bg-[#EA2523]/5 shadow-sm'
+                    ? 'border-[#EA2523] bg-[#EA2523]/5 shadow-md'
                     : 'border-gray-200 bg-white hover:border-gray-300'
                 }`}
               >
-                <span className={`text-sm font-semibold ${selected ? 'text-[#EA2523]' : 'text-gray-800'}`}>
-                  {mb.label}
-                </span>
                 {selected && (
                   <motion.div
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
-                    className="w-5 h-5 bg-[#EA2523] rounded-full flex items-center justify-center flex-shrink-0"
+                    className="absolute top-2 right-2 w-5 h-5 bg-[#EA2523] rounded-full flex items-center justify-center"
                   >
                     <Check size={11} className="text-white" strokeWidth={3} />
                   </motion.div>
                 )}
+                <span
+                  className="text-xs font-bold mb-1 px-2 py-0.5 rounded-full"
+                  style={{ color: cb.color, backgroundColor: cb.bg }}
+                >
+                  {cb.label}
+                </span>
+                <span className="text-sm font-semibold text-gray-700">{cb.sub}</span>
               </motion.button>
             );
           })}
         </div>
-      </div>
-
-      {/* Q5: Credit score band */}
-      <AnimatePresence>
-        {mortgageBalance !== null && (
-          <motion.div key="q5" {...reveal}>
-            <p className="text-[11px] font-bold text-[#EA2523] uppercase tracking-widest mb-1">Question 5</p>
-            <h2 className="text-lg font-black text-gray-900 mb-4">
-              What's your estimated credit score?
-            </h2>
-            <div className="grid grid-cols-2 gap-3">
-              {CREDIT_BANDS.map(cb => {
-                const selected = creditBand === cb.value;
-                return (
-                  <motion.button
-                    key={cb.value}
-                    onClick={() => onChange({ creditBand: cb.value, useOfFunds: null })}
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.97 }}
-                    className={`relative flex flex-col items-start p-4 rounded-2xl border-2 text-left transition-all ${
-                      selected
-                        ? 'border-[#EA2523] bg-[#EA2523]/5 shadow-md'
-                        : 'border-gray-200 bg-white hover:border-gray-300'
-                    }`}
-                  >
-                    {selected && (
-                      <motion.div
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1 }}
-                        className="absolute top-2 right-2 w-5 h-5 bg-[#EA2523] rounded-full flex items-center justify-center"
-                      >
-                        <Check size={11} className="text-white" strokeWidth={3} />
-                      </motion.div>
-                    )}
-                    <span
-                      className="text-xs font-bold mb-1 px-2 py-0.5 rounded-full"
-                      style={{ color: cb.color, backgroundColor: cb.bg }}
-                    >
-                      {cb.label}
-                    </span>
-                    <span className="text-sm font-semibold text-gray-700">{cb.sub}</span>
-                  </motion.button>
-                );
-              })}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      </motion.div>
 
       {/* Q6: Use of funds */}
       <AnimatePresence>
-        {mortgageBalance !== null && creditBand !== null && (
+        {creditBand !== null && (
           <motion.div key="q6" {...reveal}>
             <p className="text-[11px] font-bold text-[#EA2523] uppercase tracking-widest mb-1">Question 6</p>
             <h2 className="text-lg font-black text-gray-900 mb-4">
@@ -181,7 +190,7 @@ export function StepTwo({ data, onChange, onNext }: StepTwoProps) {
               onClick={onNext}
               whileHover={{ scale: 1.02, boxShadow: '0 8px 24px rgba(234,37,35,0.3)' }}
               whileTap={{ scale: 0.98 }}
-              className="w-full py-3.5 bg-[#EA2523] text-white font-bold text-sm rounded-xl shadow-lg shadow-[#EA2523]/20 transition-all flex items-center justify-center gap-2"
+              className="w-full py-3.5 bg-[#EA2523] text-white font-bold text-sm rounded-xl shadow-lg shadow-[#EA2523]/20 flex items-center justify-center gap-2"
             >
               Continue
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
