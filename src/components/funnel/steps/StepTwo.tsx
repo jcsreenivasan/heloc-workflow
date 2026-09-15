@@ -8,12 +8,12 @@ interface StepTwoProps {
   onNext: () => void;
 }
 
-const FUND_USES: { value: UseOfFunds; label: string; icon: string }[] = [
-  { value: 'home-improvement',   label: 'Home Improvement',   icon: '🔨' },
-  { value: 'debt-consolidation', label: 'Debt Consolidation', icon: '💳' },
-  { value: 'major-purchase',     label: 'Major Purchase',     icon: '🛒' },
-  { value: 'emergency-fund',     label: 'Emergency Fund',     icon: '🛡️' },
-  { value: 'other',              label: 'Other',              icon: '•••' },
+const FUND_USES: { value: UseOfFunds; label: string; img?: string; icon?: string }[] = [
+  { value: 'home-improvement',   label: 'Home Improvement',   img: '/home-improvement.png'   },
+  { value: 'debt-consolidation', label: 'Debt Consolidation', img: '/debt-consolidation.png' },
+  { value: 'major-purchase',     label: 'Major Purchase',     img: '/major-purchase.png'     },
+  { value: 'emergency-fund',     label: 'Emergency Fund',     img: '/emergency-fund.png'     },
+  { value: 'other',              label: 'Other',              icon: '•••'                    },
 ];
 
 function fmtCurrency(n: number) {
@@ -214,7 +214,10 @@ export function StepTwo({ data, onChange, onNext }: StepTwoProps) {
                     <Check size={9} className="text-white" strokeWidth={3} />
                   </motion.div>
                 )}
-                <span className="text-xl mb-1">{fu.icon}</span>
+                {fu.img
+                  ? <img src={fu.img} alt={fu.label} className="w-12 h-12 object-contain mb-1" />
+                  : <span className="text-xl mb-1">{fu.icon}</span>
+                }
                 <span className="text-xs font-bold text-gray-800">{fu.label}</span>
               </motion.button>
             );

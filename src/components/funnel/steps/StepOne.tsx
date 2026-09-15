@@ -121,7 +121,7 @@ export function StepOne({ data, onChange, onNext, onDisqualify }: StepOneProps) 
         {ownsHome === true && (
           <motion.div key="q2" {...reveal} className="border-t border-gray-100 pt-7 pb-7">
             <h2 className="text-lg font-black text-gray-900 mb-4">What type of property is it?</h2>
-            <div className="grid grid-cols-4 gap-2">
+            <div className="grid grid-cols-2 gap-3">
               {PROPERTY_TYPES.map(pt => {
                 const selected = propertyType === pt.value;
                 return (
@@ -130,7 +130,7 @@ export function StepOne({ data, onChange, onNext, onDisqualify }: StepOneProps) 
                     onClick={() => onChange({ propertyType: pt.value })}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.97 }}
-                    className={`relative flex flex-col items-center text-center p-2.5 rounded-xl border-2 transition-all ${
+                    className={`relative flex flex-col items-center text-center p-4 rounded-2xl border-2 transition-all ${
                       selected
                         ? 'border-[#EA2523] bg-[#EA2523]/5'
                         : 'border-gray-200 bg-white hover:border-gray-300'
@@ -140,17 +140,17 @@ export function StepOne({ data, onChange, onNext, onDisqualify }: StepOneProps) 
                       <motion.div
                         initial={{ scale: 0 }}
                         animate={{ scale: 1 }}
-                        className="absolute top-1.5 right-1.5 w-4 h-4 bg-[#EA2523] rounded-full flex items-center justify-center"
+                        className="absolute top-2 right-2 w-5 h-5 bg-[#EA2523] rounded-full flex items-center justify-center"
                       >
-                        <Check size={9} className="text-white" strokeWidth={3} />
+                        <Check size={11} className="text-white" strokeWidth={3} />
                       </motion.div>
                     )}
                     <img
                       src={pt.img}
                       alt={pt.label}
-                      className="w-10 h-10 object-contain mb-1.5"
+                      className="w-14 h-14 object-contain mb-2"
                     />
-                    <p className="text-xs font-bold text-gray-900 leading-tight">{pt.label}</p>
+                    <p className="text-sm font-bold text-gray-900 leading-tight">{pt.label}</p>
                   </motion.button>
                 );
               })}
