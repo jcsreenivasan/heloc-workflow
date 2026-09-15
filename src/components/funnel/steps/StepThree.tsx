@@ -71,35 +71,35 @@ export function StepThree({ data, onChange, onNext }: StepThreeProps) {
           <QLabel n={5} />
           <h2 className="text-base font-black text-gray-900">What do you plan to use the funds for?</h2>
         </div>
-        <div className="flex flex-col gap-2">
+        <div className="grid grid-cols-2 gap-2">
           {FUND_USES.map(fu => {
             const selected = useOfFunds === fu.value;
             return (
               <motion.button
                 key={fu.value}
                 onClick={() => onChange({ useOfFunds: fu.value })}
-                whileHover={{ scale: 1.01 }}
-                whileTap={{ scale: 0.98 }}
-                className={`relative flex items-center gap-3 px-4 py-3 rounded-xl border-2 transition-all text-left ${
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.97 }}
+                className={`relative flex flex-col items-center text-center p-3 rounded-xl border-2 transition-all ${
                   selected
                     ? 'border-[#EA2523] bg-[#EA2523]/5 shadow-md'
                     : 'border-gray-200 bg-white hover:border-gray-300'
-                }`}
+                } ${fu.value === 'other' ? 'col-span-2' : ''}`}
               >
-                {fu.img
-                  ? <img src={fu.img} alt={fu.label} className="w-9 h-9 object-contain flex-shrink-0" />
-                  : <span className="text-lg w-9 text-center flex-shrink-0">{fu.icon}</span>
-                }
-                <span className="text-sm font-bold text-gray-800">{fu.label}</span>
                 {selected && (
                   <motion.div
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
-                    className="ml-auto w-5 h-5 bg-[#EA2523] rounded-full flex items-center justify-center flex-shrink-0"
+                    className="absolute top-1.5 right-1.5 w-4 h-4 bg-[#EA2523] rounded-full flex items-center justify-center"
                   >
                     <Check size={9} className="text-white" strokeWidth={3} />
                   </motion.div>
                 )}
+                {fu.img
+                  ? <img src={fu.img} alt={fu.label} className="w-10 h-10 object-contain mb-1" />
+                  : <span className="text-lg mb-1">{fu.icon}</span>
+                }
+                <span className="text-xs font-bold text-gray-800">{fu.label}</span>
               </motion.button>
             );
           })}
@@ -121,38 +121,36 @@ export function StepThree({ data, onChange, onNext }: StepThreeProps) {
           <QLabel n={7} />
           <h2 className="text-base font-black text-gray-900">What's your employment status?</h2>
         </div>
-        <div className="flex flex-col gap-2">
+        <div className="grid grid-cols-2 gap-2.5">
           {EMPLOYMENT_STATUSES.map(es => {
             const selected = employmentStatus === es.value;
             return (
               <motion.button
                 key={es.value}
                 onClick={() => onChange({ employmentStatus: es.value })}
-                whileHover={{ scale: 1.01 }}
-                whileTap={{ scale: 0.98 }}
-                className={`relative flex items-center gap-3 px-4 py-3 rounded-xl border-2 transition-all text-left ${
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.97 }}
+                className={`relative flex flex-col items-center text-center p-3 rounded-xl border-2 transition-all ${
                   selected
                     ? 'border-[#EA2523] bg-[#EA2523]/5 shadow-md'
                     : 'border-gray-200 bg-white hover:border-gray-300'
                 }`}
               >
-                {es.img
-                  ? <img src={es.img} alt={es.label} className="w-10 h-10 object-contain flex-shrink-0" />
-                  : <span className="text-2xl w-10 text-center flex-shrink-0">{es.icon}</span>
-                }
-                <div>
-                  <p className="text-sm font-bold text-gray-900">{es.label}</p>
-                  <p className="text-xs" style={{ color: '#757575' }}>{es.sub}</p>
-                </div>
                 {selected && (
                   <motion.div
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
-                    className="ml-auto w-5 h-5 bg-[#EA2523] rounded-full flex items-center justify-center flex-shrink-0"
+                    className="absolute top-2 right-2 w-5 h-5 bg-[#EA2523] rounded-full flex items-center justify-center"
                   >
                     <Check size={11} className="text-white" strokeWidth={3} />
                   </motion.div>
                 )}
+                {es.img
+                  ? <img src={es.img} alt={es.label} className="w-12 h-12 object-contain mb-1.5" />
+                  : <span className="text-2xl mb-1.5">{es.icon}</span>
+                }
+                <p className="text-sm font-bold text-gray-900">{es.label}</p>
+                <p className="text-xs mt-0.5" style={{ color: '#757575' }}>{es.sub}</p>
               </motion.button>
             );
           })}

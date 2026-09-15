@@ -88,32 +88,32 @@ export function StepOne({ data, onChange, onNext }: StepOneProps) {
           <QLabel n={1} />
           <h2 className="text-base font-black text-gray-900">What is the property type?</h2>
         </div>
-        <div className="flex flex-col gap-2">
+        <div className="grid grid-cols-2 gap-2.5">
           {PROPERTY_TYPES.map(pt => {
             const selected = propertyType === pt.value;
             return (
               <motion.button
                 key={pt.value}
                 onClick={() => onChange({ propertyType: pt.value })}
-                whileHover={{ scale: 1.01 }}
-                whileTap={{ scale: 0.98 }}
-                className={`relative flex items-center gap-3 px-4 py-3 rounded-xl border-2 transition-all text-left ${
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.97 }}
+                className={`relative flex flex-col items-center text-center p-3 rounded-xl border-2 transition-all ${
                   selected
                     ? 'border-[#EA2523] bg-[#EA2523]/5'
                     : 'border-gray-200 bg-white hover:border-gray-300'
                 }`}
               >
-                <img src={pt.img} alt={pt.label} className="w-10 h-10 object-contain flex-shrink-0" />
-                <p className="text-sm font-bold text-gray-900 leading-tight">{pt.label}</p>
                 {selected && (
                   <motion.div
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
-                    className="ml-auto w-5 h-5 bg-[#EA2523] rounded-full flex items-center justify-center flex-shrink-0"
+                    className="absolute top-2 right-2 w-5 h-5 bg-[#EA2523] rounded-full flex items-center justify-center"
                   >
                     <Check size={11} className="text-white" strokeWidth={3} />
                   </motion.div>
                 )}
+                <img src={pt.img} alt={pt.label} className="w-16 h-16 object-contain mb-1.5" />
+                <p className="text-sm font-bold text-gray-900 leading-tight">{pt.label}</p>
               </motion.button>
             );
           })}
