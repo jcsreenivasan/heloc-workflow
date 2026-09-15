@@ -69,9 +69,9 @@ export function FunnelLayout({
         className={`relative z-10 w-full flex flex-col bg-white overflow-hidden
           shadow-[0_32px_80px_rgba(0,0,0,0.28)]
           rounded-t-3xl sm:rounded-2xl
-          ${isRates ? 'sm:max-w-3xl' : isLeadCapture ? 'sm:max-w-2xl' : 'sm:max-w-[700px]'}
+          ${isRates ? 'sm:max-w-3xl' : isLeadCapture ? 'sm:max-w-[900px]' : 'sm:max-w-[700px]'}
         `}
-        style={{ maxHeight: 'min(93vh, 860px)' }}
+        style={{ maxHeight: isLeadCapture ? 'min(95vh, 960px)' : 'min(93vh, 860px)' }}
         onClick={e => e.stopPropagation()}
       >
 

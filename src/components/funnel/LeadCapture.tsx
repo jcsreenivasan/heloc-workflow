@@ -32,6 +32,10 @@ const FAKE_ROWS = [
   { product: 'Home Equity Loan · 15yr Fixed',  rate: '9.75%', apr: '9.88%', payment: '$522/mo' },
   { product: 'HELOC · 10yr Draw / 20yr Repay', rate: '8.99%', apr: '9.04%', payment: '$601/mo' },
   { product: 'Home Equity Loan · 10yr Fixed',  rate: '9.25%', apr: '9.38%', payment: '$758/mo' },
+  { product: 'HELOC · 7yr Draw / 23yr Repay',  rate: '8.85%', apr: '8.91%', payment: '$595/mo' },
+  { product: 'Home Equity Loan · 20yr Fixed',  rate: '9.10%', apr: '9.22%', payment: '$498/mo' },
+  { product: 'HELOC · 10yr Draw / 20yr Repay', rate: '9.15%', apr: '9.21%', payment: '$620/mo' },
+  { product: 'Home Equity Loan · 30yr Fixed',  rate: '8.90%', apr: '9.03%', payment: '$445/mo' },
 ];
 
 export function LeadCapture({ data, onChange, onSubmit }: LeadCaptureProps) {
@@ -60,11 +64,11 @@ export function LeadCapture({ data, onChange, onSubmit }: LeadCaptureProps) {
 
   return (
     <div
-      className="flex min-h-[520px]"
-      style={{ background: 'linear-gradient(to right, #1A2B63 240px, white 240px)' }}
+      className="flex min-h-[700px]"
+      style={{ background: 'linear-gradient(to right, #1A2B63 260px, white 260px)' }}
     >
       {/* ── Left sidebar ──────────────────────────────── */}
-      <div className="w-60 flex-shrink-0 px-5 py-6 flex flex-col">
+      <div className="w-[260px] flex-shrink-0 px-6 py-7 flex flex-col">
         <p className="text-white font-bold text-base mb-5">Your selected details</p>
         <div className="space-y-0">
           {sidebarRows.map((row, i) => (
