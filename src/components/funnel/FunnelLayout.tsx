@@ -196,24 +196,30 @@ export function FunnelLayout({
 
         {/* ── TRUST FOOTER ─────────────────────────────────── */}
         {isQuestionStep && (
-          <div className="flex-shrink-0 bg-gray-50 border-t border-gray-100 px-5 py-5">
-            <div className="flex items-center justify-center gap-4 sm:gap-6 flex-wrap">
+          <div className="flex-shrink-0 bg-gray-50 border-t border-gray-100 px-5 py-4">
+            <div className="flex items-center justify-center">
               {[
-                { label: 'Google',         score: '4.9', reviews: '2,400+', logo: '/google-logo.png'     },
-                { label: 'Zillow',         score: '5.0', reviews: '180+',   logo: '/zillow-logo.png'     },
-                { label: 'Yelp',           score: '4.7', reviews: '90+',    logo: '/yelp-logo.png'       },
-                { label: 'Experience.com', score: '4.8', reviews: '500+',   logo: '/experience-logo.png' },
+                { label: 'Google',         score: '4.9', reviews: '2,400+ reviews', logo: '/google-logo.png'     },
+                { label: 'Zillow',         score: '5.0', reviews: '180+ reviews',   logo: '/zillow-logo.png'     },
+                { label: 'Yelp',           score: '4.7', reviews: '90+ reviews',    logo: '/yelp-logo.png'       },
+                { label: 'Experience.com', score: '4.8', reviews: '500+ reviews',   logo: '/experience-logo.png' },
               ].map((r, i) => (
-                <span key={r.label} className="flex items-center gap-1.5 text-sm">
-                  {i > 0 && <span className="text-gray-200 hidden sm:inline">|</span>}
-                  <img src={r.logo} alt={r.label} className="h-5 w-auto object-contain" />
-                  <span className="font-semibold text-gray-900">{r.label}</span>
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="#F59E0B">
-                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                  </svg>
-                  <span className="font-bold text-gray-700">{r.score}</span>
-                  <span className="text-gray-400 text-xs">({r.reviews})</span>
-                </span>
+                <div key={r.label} className="flex items-center">
+                  {i > 0 && <div className="w-px h-9 bg-gray-200 mx-4 flex-shrink-0" />}
+                  <div className="flex flex-col items-center gap-0.5">
+                    <div className="flex items-center gap-1.5">
+                      <img src={r.logo} alt={r.label} className="h-4 w-auto object-contain" />
+                      <span className="text-xs font-semibold text-gray-900">{r.label}</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <svg width="11" height="11" viewBox="0 0 24 24" fill="#F59E0B">
+                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                      </svg>
+                      <span className="text-sm font-bold text-gray-700">{r.score}</span>
+                    </div>
+                    <span className="text-[10px]" style={{ color: '#757575' }}>{r.reviews}</span>
+                  </div>
+                </div>
               ))}
             </div>
           </div>
