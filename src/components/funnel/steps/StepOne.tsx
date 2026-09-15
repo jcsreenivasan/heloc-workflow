@@ -23,10 +23,10 @@ function HomeValueSlider({ value, onChange }: { value: number; onChange: (v: num
   const MIN = 50000, MAX = 2000000, STEP = 10000;
   const pct = ((value - MIN) / (MAX - MIN)) * 100;
   return (
-    <div className="bg-white border border-gray-200 rounded-2xl px-5 py-4">
-      <div className="flex items-baseline justify-between mb-4">
+    <div className="bg-white border border-gray-200 rounded-xl px-4 py-3">
+      <div className="flex items-baseline justify-between mb-3">
         <span className="text-[11px] font-bold uppercase tracking-widest" style={{ color: '#757575' }}>Home Value</span>
-        <span className="text-2xl font-black text-[#1E3569]">{fmtCurrency(value)}</span>
+        <span className="text-xl font-black text-[#1E3569]">{fmtCurrency(value)}</span>
       </div>
       <input
         type="range" min={MIN} max={MAX} step={STEP} value={value}
@@ -34,7 +34,7 @@ function HomeValueSlider({ value, onChange }: { value: number; onChange: (v: num
         className="slider-input w-full"
         style={{ background: `linear-gradient(to right, #1E3569 ${pct}%, #E5E7EB ${pct}%)` }}
       />
-      <div className="flex justify-between mt-2.5">
+      <div className="flex justify-between mt-2">
         <span className="text-xs" style={{ color: '#757575' }}>$50K</span>
         <span className="text-xs" style={{ color: '#757575' }}>$2.0M</span>
       </div>
@@ -46,10 +46,10 @@ function MortgageSlider({ value, onChange }: { value: number; onChange: (v: numb
   const MIN = 0, MAX = 700000, STEP = 5000;
   const pct = ((value - MIN) / (MAX - MIN)) * 100;
   return (
-    <div className="bg-white border border-gray-200 rounded-2xl px-5 py-4">
-      <div className="flex items-baseline justify-between mb-4">
+    <div className="bg-white border border-gray-200 rounded-xl px-4 py-3">
+      <div className="flex items-baseline justify-between mb-3">
         <span className="text-[11px] font-bold uppercase tracking-widest" style={{ color: '#757575' }}>Mortgage Balance</span>
-        <span className="text-2xl font-black text-[#1E3569]">
+        <span className="text-xl font-black text-[#1E3569]">
           {value === 0 ? 'None / Paid Off' : fmtCurrency(value)}
         </span>
       </div>
@@ -59,7 +59,7 @@ function MortgageSlider({ value, onChange }: { value: number; onChange: (v: numb
         className="slider-input w-full"
         style={{ background: `linear-gradient(to right, #1E3569 ${pct}%, #E5E7EB ${pct}%)` }}
       />
-      <div className="flex justify-between mt-2.5">
+      <div className="flex justify-between mt-2">
         <span className="text-xs" style={{ color: '#757575' }}>None</span>
         <span className="text-xs" style={{ color: '#757575' }}>$700K</span>
       </div>
@@ -72,12 +72,12 @@ export function StepOne({ data, onChange, onNext }: StepOneProps) {
   const canContinue = propertyType !== null;
 
   return (
-    <div className="px-5 py-6">
+    <div className="px-5 py-4">
 
       {/* Q1: Property type */}
-      <div className="pb-7">
-        <h2 className="text-lg font-black text-gray-900 mb-4">What is the property type?</h2>
-        <div className="grid grid-cols-2 gap-3">
+      <div className="pb-5">
+        <h2 className="text-base font-black text-gray-900 mb-3">What is the property type?</h2>
+        <div className="grid grid-cols-2 gap-2.5">
           {PROPERTY_TYPES.map(pt => {
             const selected = propertyType === pt.value;
             return (
@@ -86,7 +86,7 @@ export function StepOne({ data, onChange, onNext }: StepOneProps) {
                 onClick={() => onChange({ propertyType: pt.value })}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.97 }}
-                className={`relative flex flex-col items-center text-center p-4 rounded-2xl border-2 transition-all ${
+                className={`relative flex flex-col items-center text-center p-3 rounded-xl border-2 transition-all ${
                   selected
                     ? 'border-[#EA2523] bg-[#EA2523]/5'
                     : 'border-gray-200 bg-white hover:border-gray-300'
@@ -101,7 +101,7 @@ export function StepOne({ data, onChange, onNext }: StepOneProps) {
                     <Check size={11} className="text-white" strokeWidth={3} />
                   </motion.div>
                 )}
-                <img src={pt.img} alt={pt.label} className="w-24 h-24 object-contain mb-2" />
+                <img src={pt.img} alt={pt.label} className="w-16 h-16 object-contain mb-1.5" />
                 <p className="text-sm font-bold text-gray-900 leading-tight">{pt.label}</p>
               </motion.button>
             );
@@ -110,9 +110,9 @@ export function StepOne({ data, onChange, onNext }: StepOneProps) {
       </div>
 
       {/* Q2: Home value */}
-      <div className="border-t border-gray-100 pt-7 pb-7">
-        <h2 className="text-lg font-black text-gray-900 mb-4">
-          What's the estimated current value of your home?
+      <div className="border-t border-gray-100 pt-5 pb-5">
+        <h2 className="text-base font-black text-gray-900 mb-3">
+          What's the estimated value of your home?
         </h2>
         <HomeValueSlider
           value={homeValue ?? 400000}
@@ -121,8 +121,8 @@ export function StepOne({ data, onChange, onNext }: StepOneProps) {
       </div>
 
       {/* Q3: Mortgage balance */}
-      <div className="border-t border-gray-100 pt-7 pb-4">
-        <h2 className="text-lg font-black text-gray-900 mb-4">
+      <div className="border-t border-gray-100 pt-5 pb-3">
+        <h2 className="text-base font-black text-gray-900 mb-3">
           What's your remaining mortgage balance?
         </h2>
         <MortgageSlider
@@ -139,7 +139,7 @@ export function StepOne({ data, onChange, onNext }: StepOneProps) {
               onClick={onNext}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="w-full py-3.5 bg-[#EA2523] text-white font-bold text-sm rounded-xl flex items-center justify-center gap-2"
+              className="w-full py-3 bg-[#EA2523] text-white font-bold text-sm rounded-xl flex items-center justify-center gap-2"
             >
               Continue
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
