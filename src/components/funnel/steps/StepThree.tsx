@@ -68,11 +68,10 @@ export function StepThree({ data, onChange, onNext }: StepThreeProps) {
   const canContinue = employmentStatus !== null;
 
   return (
-    <div className="px-5 py-6 space-y-7">
+    <div className="px-5 py-6">
 
       {/* Q7: Borrow amount slider */}
-      <div>
-        <p className="text-[11px] font-bold text-[#EA2523] uppercase tracking-widest mb-1">Question 7</p>
+      <div className="pb-7">
         <h2 className="text-lg font-black text-gray-900 mb-4">
           How much are you looking to borrow?
         </h2>
@@ -83,8 +82,7 @@ export function StepThree({ data, onChange, onNext }: StepThreeProps) {
       </div>
 
       {/* Q8: Employment status */}
-      <motion.div key="q8" {...reveal}>
-        <p className="text-[11px] font-bold text-[#EA2523] uppercase tracking-widest mb-1">Question 8</p>
+      <motion.div key="q8" {...reveal} className="border-t border-gray-100 pt-7">
         <h2 className="text-lg font-black text-gray-900 mb-4">
           What's your employment status?
         </h2>

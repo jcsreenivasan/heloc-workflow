@@ -75,16 +75,15 @@ export function StepOne({ data, onChange, onNext, onDisqualify }: StepOneProps) 
   const canContinue = ownsHome === true && propertyType !== null;
 
   return (
-    <div className="px-5 py-6 space-y-7">
+    <div className="px-5 py-6">
 
       {/* Q1: Own your home? */}
-      <div>
-        <p className="text-[11px] font-bold text-[#EA2523] uppercase tracking-widest mb-1">Question 1</p>
+      <div className="pb-7">
         <h2 className="text-lg font-black text-gray-900 mb-4">Do you currently own your home?</h2>
         <div className="grid grid-cols-2 gap-3">
           {[
-            { val: true,  label: 'Yes, I Own',  sub: "I'm a homeowner", icon: '🏡' },
-            { val: false, label: 'No, I Rent',   sub: 'I rent my home',  icon: '🔑' },
+            { val: true,  label: 'Yes, I Own', sub: "I'm a homeowner", img: '/own.png'  },
+            { val: false, label: 'No, I Rent',  sub: 'I rent my home',  img: '/rent.png' },
           ].map(opt => {
             const selected = ownsHome === opt.val;
             return (
@@ -95,7 +94,7 @@ export function StepOne({ data, onChange, onNext, onDisqualify }: StepOneProps) 
                 whileTap={{ scale: 0.97 }}
                 className={`relative flex flex-col items-center text-center p-4 rounded-2xl border-2 transition-all ${
                   selected
-                    ? 'border-[#EA2523] bg-[#EA2523]/5 shadow-md'
+                    ? 'border-[#EA2523] bg-[#EA2523]/5'
                     : 'border-gray-200 bg-white hover:border-gray-300'
                 }`}
               >
@@ -108,7 +107,7 @@ export function StepOne({ data, onChange, onNext, onDisqualify }: StepOneProps) 
                     <Check size={11} className="text-white" strokeWidth={3} />
                   </motion.div>
                 )}
-                <span className="text-2xl mb-2">{opt.icon}</span>
+                <img src={opt.img} alt={opt.label} className="w-20 h-20 object-contain mb-2" />
                 <p className="text-sm font-bold text-gray-900">{opt.label}</p>
                 <p className="text-xs text-gray-400 mt-0.5">{opt.sub}</p>
               </motion.button>
@@ -120,8 +119,7 @@ export function StepOne({ data, onChange, onNext, onDisqualify }: StepOneProps) 
       {/* Q2: Property type */}
       <AnimatePresence>
         {ownsHome === true && (
-          <motion.div key="q2" {...reveal}>
-            <p className="text-[11px] font-bold text-[#EA2523] uppercase tracking-widest mb-1">Question 2</p>
+          <motion.div key="q2" {...reveal} className="border-t border-gray-100 pt-7 pb-7">
             <h2 className="text-lg font-black text-gray-900 mb-4">What type of property is it?</h2>
             <div className="grid grid-cols-4 gap-2">
               {PROPERTY_TYPES.map(pt => {
@@ -164,8 +162,7 @@ export function StepOne({ data, onChange, onNext, onDisqualify }: StepOneProps) 
       {/* Q3: Home value slider */}
       <AnimatePresence>
         {ownsHome === true && propertyType !== null && (
-          <motion.div key="q3" {...reveal}>
-            <p className="text-[11px] font-bold text-[#EA2523] uppercase tracking-widest mb-1">Question 3</p>
+          <motion.div key="q3" {...reveal} className="border-t border-gray-100 pt-7 pb-4">
             <h2 className="text-lg font-black text-gray-900 mb-4">
               What's the estimated current value of your home?
             </h2>
@@ -180,7 +177,7 @@ export function StepOne({ data, onChange, onNext, onDisqualify }: StepOneProps) 
       {/* Continue */}
       <AnimatePresence>
         {canContinue && (
-          <motion.div key="continue" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
+          <motion.div key="continue" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="mt-2">
             <motion.button
               onClick={onNext}
               whileHover={{ scale: 1.02 }}

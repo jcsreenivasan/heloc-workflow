@@ -69,7 +69,7 @@ export function FunnelLayout({
         className={`relative z-10 w-full flex flex-col bg-white overflow-hidden
           shadow-[0_32px_80px_rgba(0,0,0,0.28)]
           rounded-t-3xl sm:rounded-2xl
-          ${isRates ? 'sm:max-w-3xl' : isLeadCapture ? 'sm:max-w-2xl' : 'sm:max-w-[620px]'}
+          ${isRates ? 'sm:max-w-3xl' : isLeadCapture ? 'sm:max-w-2xl' : 'sm:max-w-[700px]'}
         `}
         style={{ maxHeight: 'min(93vh, 860px)' }}
         onClick={e => e.stopPropagation()}
@@ -196,12 +196,13 @@ export function FunnelLayout({
 
         {/* ── TRUST FOOTER ─────────────────────────────────── */}
         {isQuestionStep && (
-          <div className="flex-shrink-0 bg-gray-50 border-t border-gray-100 px-5 py-3">
-            <div className="flex items-center justify-center gap-4 sm:gap-6 flex-wrap">
+          <div className="flex-shrink-0 bg-gray-50 border-t border-gray-100 px-5 py-5">
+            <div className="flex items-center justify-center gap-4 sm:gap-5 flex-wrap">
               {[
-                { label: 'Google', score: '4.9', reviews: '2,400+' },
-                { label: 'Zillow', score: '5.0', reviews: '180+' },
-                { label: 'Yelp',   score: '4.7', reviews: '90+' },
+                { label: 'Google',         score: '4.9', reviews: '2,400+' },
+                { label: 'Zillow',         score: '5.0', reviews: '180+' },
+                { label: 'Yelp',           score: '4.7', reviews: '90+' },
+                { label: 'Experience.com', score: '4.8', reviews: '500+' },
               ].map((r, i) => (
                 <span key={r.label} className="flex items-center gap-1.5 text-sm">
                   {i > 0 && <span className="text-gray-300 text-sm mx-0.5 hidden sm:inline">·</span>}

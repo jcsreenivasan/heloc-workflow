@@ -161,11 +161,10 @@ export function StepTwo({ data, onChange, onNext }: StepTwoProps) {
   const canContinue = useOfFunds !== null;
 
   return (
-    <div className="px-5 py-6 space-y-7">
+    <div className="px-5 py-6">
 
       {/* Q4: Mortgage balance slider */}
-      <div>
-        <p className="text-[11px] font-bold text-[#EA2523] uppercase tracking-widest mb-1">Question 4</p>
+      <div className="pb-7">
         <h2 className="text-lg font-black text-gray-900 mb-4">
           What's your remaining mortgage balance?
         </h2>
@@ -176,8 +175,7 @@ export function StepTwo({ data, onChange, onNext }: StepTwoProps) {
       </div>
 
       {/* Q5: Credit score slider */}
-      <motion.div key="q5" {...reveal}>
-        <p className="text-[11px] font-bold text-[#EA2523] uppercase tracking-widest mb-1">Question 5</p>
+      <motion.div key="q5" {...reveal} className="border-t border-gray-100 pt-7 pb-7">
         <h2 className="text-lg font-black text-gray-900 mb-4">
           What's your credit score?
         </h2>
@@ -188,8 +186,7 @@ export function StepTwo({ data, onChange, onNext }: StepTwoProps) {
       </motion.div>
 
       {/* Q6: Use of funds */}
-      <motion.div key="q6" {...reveal}>
-        <p className="text-[11px] font-bold text-[#EA2523] uppercase tracking-widest mb-1">Question 6</p>
+      <motion.div key="q6" {...reveal} className="border-t border-gray-100 pt-7">
         <h2 className="text-lg font-black text-gray-900 mb-4">
           What do you plan to use the funds for?
         </h2>
