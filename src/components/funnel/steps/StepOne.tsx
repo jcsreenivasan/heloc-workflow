@@ -16,12 +16,8 @@ const PROPERTY_TYPES: { value: PropertyType; label: string; img: string }[] = [
   { value: 'multi-unit',    label: 'Multi-Unit',         img: '/icons/multi-unit.png'     },
 ];
 
-function fmt(n: number): string {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    maximumFractionDigits: 0,
-  }).format(n);
+function fmtCurrency(n: number) {
+  return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(n);
 }
 
 function HomeValueSlider({
@@ -37,11 +33,10 @@ function HomeValueSlider({
   const pct = ((value - MIN) / (MAX - MIN)) * 100;
 
   return (
-    <div>
-      <div className="flex justify-center mb-5">
-        <div className="bg-[#EA2523]/8 rounded-2xl px-8 py-3">
-          <p className="text-2xl font-black text-[#EA2523] text-center">{fmt(value)}</p>
-        </div>
+    <div className="bg-white border border-gray-200 rounded-2xl px-5 py-4">
+      <div className="flex items-baseline justify-between mb-4">
+        <span className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Home Value</span>
+        <span className="text-2xl font-black text-[#1E3569]">{fmtCurrency(value)}</span>
       </div>
       <input
         type="range"
@@ -52,12 +47,12 @@ function HomeValueSlider({
         onChange={e => onChange(Number(e.target.value))}
         className="slider-input w-full"
         style={{
-          background: `linear-gradient(to right, #EA2523 ${pct}%, #E5E7EB ${pct}%)`,
+          background: `linear-gradient(to right, #1E3569 ${pct}%, #E5E7EB ${pct}%)`,
         }}
       />
-      <div className="flex justify-between mt-2">
-        <span className="text-xs text-gray-400">{fmt(MIN)}</span>
-        <span className="text-xs text-gray-400">{fmt(MAX)}</span>
+      <div className="flex justify-between mt-2.5">
+        <span className="text-xs text-gray-400">$50K</span>
+        <span className="text-xs text-gray-400">$2.0M</span>
       </div>
     </div>
   );
@@ -77,7 +72,6 @@ export function StepOne({ data, onChange, onNext, onDisqualify }: StepOneProps) 
     if (!val) setTimeout(onDisqualify, 200);
   };
 
-  // Continue once Q1=yes + Q2 answered (Q3 slider always has a value)
   const canContinue = ownsHome === true && propertyType !== null;
 
   return (
@@ -123,7 +117,7 @@ export function StepOne({ data, onChange, onNext, onDisqualify }: StepOneProps) 
         </div>
       </div>
 
-      {/* Q2: Property type with custom icons */}
+      {/* Q2: Property type */}
       <AnimatePresence>
         {ownsHome === true && (
           <motion.div key="q2" {...reveal}>
@@ -172,7 +166,7 @@ export function StepOne({ data, onChange, onNext, onDisqualify }: StepOneProps) 
         {ownsHome === true && propertyType !== null && (
           <motion.div key="q3" {...reveal}>
             <p className="text-[11px] font-bold text-[#EA2523] uppercase tracking-widest mb-1">Question 3</p>
-            <h2 className="text-lg font-black text-gray-900 mb-5">
+            <h2 className="text-lg font-black text-gray-900 mb-4">
               What's the estimated current value of your home?
             </h2>
             <HomeValueSlider
@@ -189,7 +183,7 @@ export function StepOne({ data, onChange, onNext, onDisqualify }: StepOneProps) 
           <motion.div key="continue" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
             <motion.button
               onClick={onNext}
-              whileHover={{ scale: 1.02, boxShadow: '0 8px 24px rgba(234,37,35,0.3)' }}
+              whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               className="w-full py-3.5 bg-[#EA2523] text-white font-bold text-sm rounded-xl flex items-center justify-center gap-2"
             >

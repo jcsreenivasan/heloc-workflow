@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Download, Phone, Check, ChevronDown, ChevronUp, TrendingDown } from 'lucide-react';
 import type { FunnelData, RateData } from '../../types/funnel';
-import { calculateRates, creditBandLabel } from '../../utils/rateCalculator';
+import { calculateRates, creditScoreLabel } from '../../utils/rateCalculator';
 import { generateRatePDF } from '../../utils/pdfGenerator';
 
 interface RatesDisplayProps {
@@ -208,11 +208,10 @@ function HELOCSummary({ data, equity, maxLine }: { data: FunnelData; equity: num
     { label: 'Mortgage Balance', value: data.mortgageBalance === 0 ? 'None / Paid Off' : data.mortgageBalance ? fmtCurrency(data.mortgageBalance) : '—' },
     { label: 'Est. Available Equity', value: fmtCurrency(equity) },
     { label: 'Max Credit Line (85% CLTV)', value: fmtCurrency(maxLine) },
-    { label: 'Credit Profile', value: data.creditBand ? creditBandLabel(data.creditBand) : '—' },
+    { label: 'Credit Score', value: data.creditScore ? creditScoreLabel(data.creditScore) : '—' },
     { label: 'Use of Funds', value: data.useOfFunds ? humanize(data.useOfFunds) : '—' },
     { label: 'Amount Requested', value: data.borrowAmount ? fmtCurrency(data.borrowAmount) : '—' },
     { label: 'Employment', value: data.employmentStatus ? humanize(data.employmentStatus) : '—' },
-    { label: 'Property ZIP', value: data.zipCode ?? '—' },
   ];
 
   return (

@@ -25,7 +25,6 @@ const STEP_LABELS: Partial<Record<FunnelStep, string>> = {
   'step1':        'Your Property',
   'step2':        'Financial Profile',
   'step3':        'Loan Details',
-  'step4':        'Your Location',
   'lead-capture': 'Almost There',
   'disqualified': 'Not Eligible',
 };
@@ -46,8 +45,9 @@ export function FunnelLayout({
     return () => { document.body.style.overflow = ''; };
   }, []);
 
-  const isLoading = currentStep === 'loading';
-  const isRates   = currentStep === 'rates';
+  const isLoading     = currentStep === 'loading';
+  const isRates       = currentStep === 'rates';
+  const isLeadCapture = currentStep === 'lead-capture';
 
   return (
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center sm:p-6">
@@ -69,7 +69,7 @@ export function FunnelLayout({
         className={`relative z-10 w-full flex flex-col bg-white overflow-hidden
           shadow-[0_32px_80px_rgba(0,0,0,0.28)]
           rounded-t-3xl sm:rounded-2xl
-          ${isRates ? 'sm:max-w-3xl' : 'sm:max-w-[620px]'}
+          ${isRates ? 'sm:max-w-3xl' : isLeadCapture ? 'sm:max-w-2xl' : 'sm:max-w-[620px]'}
         `}
         style={{ maxHeight: 'min(93vh, 860px)' }}
         onClick={e => e.stopPropagation()}
@@ -116,21 +116,13 @@ export function FunnelLayout({
               </div>
 
               {/* Center — logo */}
-              <div className="flex-1 flex items-center justify-center gap-2.5 min-w-0">
+              <div className="flex-1 flex items-center justify-center min-w-0">
                 <img
                   src="/texas-united-logo.webp"
                   alt="Texas United Mortgage"
                   className="h-7 w-auto object-contain flex-shrink-0"
                   style={isRates ? { filter: 'brightness(0) invert(1)' } : {}}
                 />
-                {isQuestionStep && (
-                  <>
-                    <span className="text-gray-200 text-sm hidden sm:inline">|</span>
-                    <span className="text-gray-400 text-sm font-medium hidden sm:inline truncate">
-                      {STEP_LABELS[currentStep]}
-                    </span>
-                  </>
-                )}
               </div>
 
               {/* Right — close */}
@@ -203,7 +195,7 @@ export function FunnelLayout({
         </div>
 
         {/* ── TRUST FOOTER ─────────────────────────────────── */}
-        {(isQuestionStep || currentStep === 'lead-capture') && (
+        {isQuestionStep && (
           <div className="flex-shrink-0 bg-gray-50 border-t border-gray-100 px-5 py-3">
             <div className="flex items-center justify-center gap-3 sm:gap-5 flex-wrap">
               {[

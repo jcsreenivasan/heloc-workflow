@@ -1,4 +1,3 @@
-export type CreditBand = 'excellent' | 'good' | 'fair' | 'poor';
 export type UseOfFunds =
   | 'home-improvement'
   | 'debt-consolidation'
@@ -13,11 +12,10 @@ export interface FunnelData {
   propertyType: PropertyType | null;
   homeValue: number | null;       // slider: $50k–$2M
   mortgageBalance: number | null; // slider: $0–$700k
-  creditBand: CreditBand | null;
+  creditScore: number | null;     // slider: 500–850
   useOfFunds: UseOfFunds | null;
   borrowAmount: number | null;    // slider: $10k–$350k
   employmentStatus: EmploymentStatus | null;
-  zipCode: string | null;
   lead: {
     name: string;
     email: string;
@@ -42,7 +40,6 @@ export type FunnelStep =
   | 'step1'
   | 'step2'
   | 'step3'
-  | 'step4'
   | 'disqualified'
   | 'lead-capture'
   | 'loading'
@@ -52,10 +49,9 @@ export const STEP_ORDER: FunnelStep[] = [
   'step1',
   'step2',
   'step3',
-  'step4',
   'lead-capture',
   'loading',
   'rates',
 ];
 
-export const QUESTION_STEPS: FunnelStep[] = ['step1', 'step2', 'step3', 'step4'];
+export const QUESTION_STEPS: FunnelStep[] = ['step1', 'step2', 'step3'];

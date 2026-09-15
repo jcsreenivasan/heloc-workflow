@@ -7,11 +7,10 @@ const DEFAULT_DATA: FunnelData = {
   propertyType: null,
   homeValue: 400000,
   mortgageBalance: 150000,
-  creditBand: null,
+  creditScore: 700,
   useOfFunds: null,
   borrowAmount: 75000,
   employmentStatus: null,
-  zipCode: null,
   lead: { name: '', email: '', phone: '' },
 };
 

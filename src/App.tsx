@@ -150,7 +150,7 @@ export default function App() {
               onClick={() => setIsOpen(true)}
               whileHover={{ scale: 1.04, boxShadow: '0 16px 48px rgba(234,37,35,0.35)' }}
               whileTap={{ scale: 0.97 }}
-              className="px-10 py-4 bg-[#EA2523] text-white font-bold text-base rounded-2xl shadow-xl shadow-[#EA2523]/25 transition-all inline-flex items-center gap-3"
+              className="px-10 py-4 bg-[#EA2523] text-white font-bold text-base rounded-2xl transition-all inline-flex items-center gap-3"
             >
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
                 <path d="M3 12L12 3L21 12V20C21 20.5523 20.5523 21 20 21H15V15H9V21H4C3.44772 21 3 20.5523 3 20V12Z" strokeLinecap="round" strokeLinejoin="round" />
@@ -208,7 +208,7 @@ export default function App() {
             onClick={() => setIsOpen(true)}
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
-            className="px-8 py-3.5 bg-[#EA2523] text-white font-bold text-sm rounded-xl shadow-lg shadow-[#EA2523]/25 hover:bg-[#C41E1C] transition-colors"
+            className="px-8 py-3.5 bg-[#EA2523] text-white font-bold text-sm rounded-xl hover:bg-[#C41E1C] transition-colors"
           >
             Check My HELOC Rate
           </motion.button>

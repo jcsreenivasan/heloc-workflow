@@ -1,25 +1,34 @@
-import type { FunnelData, RateData, CreditBand } from '../types/funnel';
+import type { FunnelData, RateData } from '../types/funnel';
 
 const PRIME_RATE = 8.5;
 
-function helocSpread(creditBand: CreditBand): number {
+type CreditBand = 'excellent' | 'good' | 'fair' | 'poor';
+
+function scoreToBand(score: number): CreditBand {
+  if (score >= 740) return 'excellent';
+  if (score >= 670) return 'good';
+  if (score >= 580) return 'fair';
+  return 'poor';
+}
+
+function helocSpread(band: CreditBand): number {
   const map: Record<CreditBand, number> = {
     excellent: 0.25,
     good: 0.75,
     fair: 1.5,
     poor: 2.75,
   };
-  return map[creditBand];
+  return map[band];
 }
 
-function homeEquityLoanRate(creditBand: CreditBand): number {
+function homeEquityLoanRate(band: CreditBand): number {
   const map: Record<CreditBand, number> = {
     excellent: 8.99,
     good: 9.49,
     fair: 10.24,
     poor: 11.49,
   };
-  return map[creditBand];
+  return map[band];
 }
 
 function calcMonthlyPayment(principal: number, annualRate: number, termYears: number): number {
@@ -42,15 +51,15 @@ export function calculateRates(data: FunnelData): RateCalculationResult {
   const homeVal = data.homeValue ?? 400000;
   const mortgageAmt = data.mortgageBalance ?? 0;
   const requestedAmt = data.borrowAmount ?? 75000;
-  const creditBand = data.creditBand ?? 'good';
+  const band = scoreToBand(data.creditScore ?? 700);
 
   const equity = homeVal - mortgageAmt;
   const maxCLTV = homeVal * 0.85;
   const maxLineAmount = Math.max(0, maxCLTV - mortgageAmt);
   const loanAmount = Math.min(requestedAmt, maxLineAmount);
 
-  const helocRate = PRIME_RATE + helocSpread(creditBand);
-  const helRate = homeEquityLoanRate(creditBand);
+  const helocRate = PRIME_RATE + helocSpread(band);
+  const helRate = homeEquityLoanRate(band);
 
   // HELOC: interest-only draw period
   const helocMonthly = (loanAmount * (helocRate / 100)) / 12;
@@ -91,12 +100,13 @@ export function calculateRates(data: FunnelData): RateCalculationResult {
   };
 }
 
-export function creditBandLabel(band: CreditBand): string {
-  const map: Record<CreditBand, string> = {
-    excellent: 'Excellent (720+)',
-    good: 'Good (660–719)',
-    fair: 'Fair (600–659)',
-    poor: 'Poor (below 600)',
+export function creditScoreLabel(score: number): string {
+  const band = scoreToBand(score);
+  const labels: Record<CreditBand, string> = {
+    excellent: `Excellent (${score})`,
+    good: `Good (${score})`,
+    fair: `Fair (${score})`,
+    poor: `Poor (${score})`,
   };
-  return map[band];
+  return labels[band];
 }

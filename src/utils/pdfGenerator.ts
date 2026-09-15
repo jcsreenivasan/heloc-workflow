@@ -1,6 +1,6 @@
 import jsPDF from 'jspdf';
 import type { FunnelData, RateData } from '../types/funnel';
-import { creditBandLabel } from './rateCalculator';
+import { creditScoreLabel } from './rateCalculator';
 
 function fmt(amount: number): string {
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(amount);
@@ -95,9 +95,8 @@ export function generateRatePDF(data: FunnelData, rates: RateData[]): void {
     ['Est. Equity', fmt(equity)],
     ['Max Credit Line (85% CLTV)', fmt(maxLine)],
     ['Amount Requested', data.borrowAmount ? fmt(data.borrowAmount) : 'N/A'],
-    ['Credit Profile', data.creditBand ? creditBandLabel(data.creditBand) : 'N/A'],
+    ['Credit Score', data.creditScore ? creditScoreLabel(data.creditScore) : 'N/A'],
     ['Use of Funds', data.useOfFunds ? humanize(data.useOfFunds) : 'N/A'],
-    ['Property ZIP', data.zipCode ?? 'N/A'],
   ];
 
   doc.setFontSize(10);

@@ -15,12 +15,8 @@ const EMPLOYMENT_STATUSES: { value: EmploymentStatus; label: string; sub: string
   { value: 'other',         label: 'Other',           sub: 'Not listed above',       icon: '•••' },
 ];
 
-function fmt(n: number): string {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    maximumFractionDigits: 0,
-  }).format(n);
+function fmtCurrency(n: number) {
+  return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(n);
 }
 
 function BorrowSlider({
@@ -36,11 +32,10 @@ function BorrowSlider({
   const pct = ((value - MIN) / (MAX - MIN)) * 100;
 
   return (
-    <div>
-      <div className="flex justify-center mb-5">
-        <div className="bg-[#EA2523]/8 rounded-2xl px-8 py-3">
-          <p className="text-2xl font-black text-[#EA2523] text-center">{fmt(value)}</p>
-        </div>
+    <div className="bg-white border border-gray-200 rounded-2xl px-5 py-4">
+      <div className="flex items-baseline justify-between mb-4">
+        <span className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Borrow Amount</span>
+        <span className="text-2xl font-black text-[#1E3569]">{fmtCurrency(value)}</span>
       </div>
       <input
         type="range"
@@ -51,12 +46,12 @@ function BorrowSlider({
         onChange={e => onChange(Number(e.target.value))}
         className="slider-input w-full"
         style={{
-          background: `linear-gradient(to right, #EA2523 ${pct}%, #E5E7EB ${pct}%)`,
+          background: `linear-gradient(to right, #1E3569 ${pct}%, #E5E7EB ${pct}%)`,
         }}
       />
-      <div className="flex justify-between mt-2">
-        <span className="text-xs text-gray-400">{fmt(MIN)}</span>
-        <span className="text-xs text-gray-400">{fmt(MAX)}</span>
+      <div className="flex justify-between mt-2.5">
+        <span className="text-xs text-gray-400">$10K</span>
+        <span className="text-xs text-gray-400">$350K</span>
       </div>
     </div>
   );
@@ -78,7 +73,7 @@ export function StepThree({ data, onChange, onNext }: StepThreeProps) {
       {/* Q7: Borrow amount slider */}
       <div>
         <p className="text-[11px] font-bold text-[#EA2523] uppercase tracking-widest mb-1">Question 7</p>
-        <h2 className="text-lg font-black text-gray-900 mb-5">
+        <h2 className="text-lg font-black text-gray-900 mb-4">
           How much are you looking to borrow?
         </h2>
         <BorrowSlider
@@ -87,7 +82,7 @@ export function StepThree({ data, onChange, onNext }: StepThreeProps) {
         />
       </div>
 
-      {/* Q8: Employment status — always visible alongside Q7 */}
+      {/* Q8: Employment status */}
       <motion.div key="q8" {...reveal}>
         <p className="text-[11px] font-bold text-[#EA2523] uppercase tracking-widest mb-1">Question 8</p>
         <h2 className="text-lg font-black text-gray-900 mb-4">
@@ -132,7 +127,7 @@ export function StepThree({ data, onChange, onNext }: StepThreeProps) {
           <motion.div key="continue" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
             <motion.button
               onClick={onNext}
-              whileHover={{ scale: 1.02, boxShadow: '0 8px 24px rgba(234,37,35,0.3)' }}
+              whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               className="w-full py-3.5 bg-[#EA2523] text-white font-bold text-sm rounded-xl flex items-center justify-center gap-2"
             >

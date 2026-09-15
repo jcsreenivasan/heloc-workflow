@@ -39,36 +39,36 @@ body {
 .slider-input::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 26px;
-  height: 26px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
-  background: #EA2523;
+  background: #1E3569;
   border: 3px solid white;
-  box-shadow: 0 2px 8px rgba(234, 37, 35, 0.4);
+  box-shadow: 0 0 0 6px rgba(35, 59, 134, 0.18);
   cursor: grab;
   transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .slider-input::-webkit-slider-thumb:active {
   cursor: grabbing;
-  transform: scale(1.15);
-  box-shadow: 0 4px 16px rgba(234, 37, 35, 0.6);
+  transform: scale(1.1);
+  box-shadow: 0 0 0 8px rgba(35, 59, 134, 0.22);
 }
 
 .slider-input::-moz-range-thumb {
-  width: 26px;
-  height: 26px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
-  background: #EA2523;
+  background: #1E3569;
   border: 3px solid white;
-  box-shadow: 0 2px 8px rgba(234, 37, 35, 0.4);
+  box-shadow: 0 0 0 6px rgba(35, 59, 134, 0.18);
   cursor: grab;
   transition: transform 0.15s ease;
 }
 
 .slider-input::-moz-range-thumb:active {
   cursor: grabbing;
-  transform: scale(1.15);
+  transform: scale(1.1);
 }
 
 /* Glass morphism utility */
