@@ -112,7 +112,7 @@ export function StepOne({ data, onChange, onNext }: StepOneProps) {
                     <Check size={9} className="text-white" strokeWidth={3} />
                   </motion.div>
                 )}
-                <img src={pt.img} alt={pt.label} className="w-10 h-10 object-contain flex-shrink-0" />
+                <img src={pt.img} alt={pt.label} className="w-[52px] h-[52px] object-contain flex-shrink-0" />
                 <p className="text-sm font-bold text-gray-900 leading-tight text-left">{pt.label}</p>
               </motion.button>
             );
