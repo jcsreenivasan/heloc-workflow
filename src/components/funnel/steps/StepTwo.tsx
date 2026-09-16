@@ -89,7 +89,7 @@ export function StepTwo({ data, onChange, onNext }: StepTwoProps) {
                 onClick={() => onChange({ useOfFunds: fu.value })}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.97 }}
-                className={`relative flex flex-col items-center text-center p-3 rounded-xl border-2 transition-all ${
+                className={`relative flex items-center gap-3 px-3 py-2.5 rounded-xl border-2 transition-all ${
                   selected
                     ? 'border-[#EA2523] bg-[#EA2523]/5 shadow-md'
                     : 'border-gray-200 bg-white hover:border-gray-300'
@@ -99,16 +99,16 @@ export function StepTwo({ data, onChange, onNext }: StepTwoProps) {
                   <motion.div
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
-                    className="absolute top-1.5 right-1.5 w-4 h-4 bg-[#EA2523] rounded-full flex items-center justify-center"
+                    className="absolute top-2 right-2 w-4 h-4 bg-[#EA2523] rounded-full flex items-center justify-center"
                   >
                     <Check size={9} className="text-white" strokeWidth={3} />
                   </motion.div>
                 )}
                 {fu.img
-                  ? <img src={fu.img} alt={fu.label} className="w-10 h-10 object-contain mb-1" />
-                  : <span className="text-lg mb-1">{fu.icon}</span>
+                  ? <img src={fu.img} alt={fu.label} className="w-10 h-10 object-contain flex-shrink-0" />
+                  : <span className="text-lg flex-shrink-0">{fu.icon}</span>
                 }
-                <span className="text-xs font-bold text-gray-800">{fu.label}</span>
+                <span className="text-sm font-bold text-gray-800 text-left">{fu.label}</span>
               </motion.button>
             );
           })}
@@ -121,7 +121,7 @@ export function StepTwo({ data, onChange, onNext }: StepTwoProps) {
           <QLabel n={6} />
           <h2 className="text-base font-black text-gray-900">What's your employment status?</h2>
         </div>
-        <div className="grid grid-cols-2 gap-2.5">
+        <div className="grid grid-cols-2 gap-2">
           {EMPLOYMENT_STATUSES.map(es => {
             const selected = employmentStatus === es.value;
             return (
@@ -130,7 +130,7 @@ export function StepTwo({ data, onChange, onNext }: StepTwoProps) {
                 onClick={() => onChange({ employmentStatus: es.value })}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.97 }}
-                className={`relative flex flex-col items-center text-center p-3 rounded-xl border-2 transition-all ${
+                className={`relative flex items-center gap-3 px-3 py-2.5 rounded-xl border-2 transition-all ${
                   selected
                     ? 'border-[#EA2523] bg-[#EA2523]/5 shadow-md'
                     : 'border-gray-200 bg-white hover:border-gray-300'
@@ -140,16 +140,16 @@ export function StepTwo({ data, onChange, onNext }: StepTwoProps) {
                   <motion.div
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
-                    className="absolute top-2 right-2 w-5 h-5 bg-[#EA2523] rounded-full flex items-center justify-center"
+                    className="absolute top-2 right-2 w-4 h-4 bg-[#EA2523] rounded-full flex items-center justify-center"
                   >
-                    <Check size={11} className="text-white" strokeWidth={3} />
+                    <Check size={9} className="text-white" strokeWidth={3} />
                   </motion.div>
                 )}
                 {es.img
-                  ? <img src={es.img} alt={es.label} className="w-12 h-12 object-contain mb-1.5" />
-                  : <span className="text-2xl mb-1.5">{es.icon}</span>
+                  ? <img src={es.img} alt={es.label} className="w-10 h-10 object-contain flex-shrink-0" />
+                  : <span className="text-lg flex-shrink-0">{es.icon}</span>
                 }
-                <p className="text-xs font-bold text-gray-900">{es.label}</p>
+                <p className="text-sm font-bold text-gray-900 text-left">{es.label}</p>
               </motion.button>
             );
           })}

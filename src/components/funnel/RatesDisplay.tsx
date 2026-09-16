@@ -252,41 +252,41 @@ export function RatesDisplay({ data }: RatesDisplayProps) {
     <div className="px-4 py-5 bg-gray-50">
       {!isLowCredit && <ConfettiEffect />}
 
-      {/* Title */}
-      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mb-4">
-        {!isLowCredit && (
-          <div className="flex items-center gap-2 mb-1">
-            <motion.div
-              animate={{ scale: [1, 1.3, 1] }}
-              transition={{ repeat: Infinity, duration: 1.8 }}
-              className="w-2 h-2 rounded-full bg-[#EA2523]"
-            />
-            <span className="text-xs font-bold uppercase tracking-widest text-[#EA2523]">
-              Live Estimates · Updated Today
-            </span>
-          </div>
-        )}
-        <h2 className="text-xl font-black text-gray-900">Your Personalized HELOC Options</h2>
-        {data.lead.name && (
-          <p className="text-sm text-gray-500 mt-0.5">
-            Hi {data.lead.name.split(' ')[0]}!{' '}
-            {isLowCredit
-              ? 'A specialist will review your profile and reach out shortly.'
-              : "Here's your estimated HELOC breakdown:"}
-          </p>
-        )}
-      </motion.div>
-
-      {/* HELOC profile */}
-      <div className="mb-4">
-        <HELOCSummary data={data} equity={equity} maxLine={maxLineAmount} alwaysOpen={isLowCredit} />
-      </div>
-
       {isLowCredit ? (
-        /* Low credit — no rate cards, show "You're all set" */
-        <LowCreditCard />
+        /* Low credit — "You're all set" first, then profile, no rate cards */
+        <>
+          <LowCreditCard />
+          <div className="mt-4">
+            <HELOCSummary data={data} equity={equity} maxLine={maxLineAmount} alwaysOpen />
+          </div>
+        </>
       ) : (
         <>
+          {/* Title — normal flow only */}
+          <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mb-4">
+            <div className="flex items-center gap-2 mb-1">
+              <motion.div
+                animate={{ scale: [1, 1.3, 1] }}
+                transition={{ repeat: Infinity, duration: 1.8 }}
+                className="w-2 h-2 rounded-full bg-[#EA2523]"
+              />
+              <span className="text-xs font-bold uppercase tracking-widest text-[#EA2523]">
+                Live Estimates · Updated Today
+              </span>
+            </div>
+            <h2 className="text-xl font-black text-gray-900">Your Personalized HELOC Options</h2>
+            {data.lead.name && (
+              <p className="text-sm text-gray-500 mt-0.5">
+                Hi {data.lead.name.split(' ')[0]}! Here's your estimated HELOC breakdown:
+              </p>
+            )}
+          </motion.div>
+
+          {/* HELOC profile */}
+          <div className="mb-4">
+            <HELOCSummary data={data} equity={equity} maxLine={maxLineAmount} />
+          </div>
+
           {/* Rate cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
             {rates.map((rate, i) => (
