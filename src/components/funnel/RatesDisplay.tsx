@@ -140,8 +140,18 @@ function HELOCRateCard({
   );
 }
 
-function HELOCSummary({ data, equity, maxLine }: { data: FunnelData; equity: number; maxLine: number }) {
-  const [open, setOpen] = useState(false);
+function HELOCSummary({
+  data,
+  equity,
+  maxLine,
+  alwaysOpen = false,
+}: {
+  data: FunnelData;
+  equity: number;
+  maxLine: number;
+  alwaysOpen?: boolean;
+}) {
+  const [open, setOpen] = useState(alwaysOpen);
 
   function humanize(val: string): string {
     return val.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
@@ -166,20 +176,27 @@ function HELOCSummary({ data, equity, maxLine }: { data: FunnelData; equity: num
       transition={{ delay: 0.15 }}
       className="bg-[#EEF1FB] rounded-xl overflow-hidden"
     >
-      <button
-        onClick={() => setOpen(o => !o)}
-        className="w-full flex items-center justify-between px-4 py-3"
-      >
-        <div className="flex items-center gap-2">
+      {alwaysOpen ? (
+        <div className="flex items-center gap-2 px-4 py-3">
           <Check size={15} className="text-[#233B86]" />
           <span className="text-sm font-bold text-[#233B86]">Your HELOC Profile</span>
         </div>
-        {open ? <ChevronUp size={15} className="text-[#233B86]" /> : <ChevronDown size={15} className="text-[#233B86]" />}
-      </button>
+      ) : (
+        <button
+          onClick={() => setOpen(o => !o)}
+          className="w-full flex items-center justify-between px-4 py-3"
+        >
+          <div className="flex items-center gap-2">
+            <Check size={15} className="text-[#233B86]" />
+            <span className="text-sm font-bold text-[#233B86]">Your HELOC Profile</span>
+          </div>
+          {open ? <ChevronUp size={15} className="text-[#233B86]" /> : <ChevronDown size={15} className="text-[#233B86]" />}
+        </button>
+      )}
 
       <motion.div
         initial={false}
-        animate={{ height: open ? 'auto' : 0 }}
+        animate={{ height: (alwaysOpen || open) ? 'auto' : 0 }}
         className="overflow-hidden"
       >
         <div className="px-4 pb-4 space-y-2">
@@ -195,54 +212,95 @@ function HELOCSummary({ data, equity, maxLine }: { data: FunnelData; equity: num
   );
 }
 
+function LowCreditCard() {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.3, type: 'spring', stiffness: 260, damping: 24 }}
+      className="bg-white rounded-xl border border-gray-100 shadow-sm px-6 py-8 text-center"
+    >
+      {/* Green check circle */}
+      <div className="flex justify-center mb-4">
+        <div className="w-14 h-14 rounded-full border-2 border-green-500 flex items-center justify-center">
+          <Check size={28} className="text-green-500" strokeWidth={2.5} />
+        </div>
+      </div>
+
+      <h3 className="text-xl font-black text-gray-900 mb-2">You're all set!</h3>
+      <p className="text-sm text-gray-500 leading-relaxed mb-6">
+        Thanks for submitting your info. A home equity specialist will reach out shortly to help with your next steps.
+      </p>
+
+      <p className="text-sm font-semibold text-gray-900 mb-3">Ready to make an application?</p>
+      <motion.button
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.98 }}
+        className="px-10 py-2.5 rounded-xl font-bold text-white text-sm bg-[#233B86] hover:bg-[#1A2B63] transition-colors"
+      >
+        Apply Now
+      </motion.button>
+    </motion.div>
+  );
+}
+
 export function RatesDisplay({ data }: RatesDisplayProps) {
   const { rates, equity, maxLineAmount } = calculateRates(data);
+  const isLowCredit = (data.creditScore ?? 700) < 600;
 
   return (
     <div className="px-4 py-5 bg-gray-50">
-      <ConfettiEffect />
+      {!isLowCredit && <ConfettiEffect />}
 
       {/* Title */}
       <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mb-4">
-        <div className="flex items-center gap-2 mb-1">
-          <motion.div
-            animate={{ scale: [1, 1.3, 1] }}
-            transition={{ repeat: Infinity, duration: 1.8 }}
-            className="w-2 h-2 rounded-full bg-[#EA2523]"
-          />
-          <span className="text-xs font-bold uppercase tracking-widest text-[#EA2523]">
-            Live Estimates · Updated Today
-          </span>
-        </div>
+        {!isLowCredit && (
+          <div className="flex items-center gap-2 mb-1">
+            <motion.div
+              animate={{ scale: [1, 1.3, 1] }}
+              transition={{ repeat: Infinity, duration: 1.8 }}
+              className="w-2 h-2 rounded-full bg-[#EA2523]"
+            />
+            <span className="text-xs font-bold uppercase tracking-widest text-[#EA2523]">
+              Live Estimates · Updated Today
+            </span>
+          </div>
+        )}
         <h2 className="text-xl font-black text-gray-900">Your Personalized HELOC Options</h2>
         {data.lead.name && (
           <p className="text-sm text-gray-500 mt-0.5">
-            Hi {data.lead.name.split(' ')[0]}! Here's your estimated HELOC breakdown:
+            Hi {data.lead.name.split(' ')[0]}!{' '}
+            {isLowCredit
+              ? 'A specialist will review your profile and reach out shortly.'
+              : "Here's your estimated HELOC breakdown:"}
           </p>
         )}
       </motion.div>
 
-      {/* HELOC summary accordion */}
+      {/* HELOC profile */}
       <div className="mb-4">
-        <HELOCSummary data={data} equity={equity} maxLine={maxLineAmount} />
+        <HELOCSummary data={data} equity={equity} maxLine={maxLineAmount} alwaysOpen={isLowCredit} />
       </div>
 
-      {/* Rate cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
-        {rates.map((rate, i) => (
-          <HELOCRateCard
-            key={rate.type}
-            rate={rate}
-            index={i}
-          />
-        ))}
-      </div>
+      {isLowCredit ? (
+        /* Low credit — no rate cards, show "You're all set" */
+        <LowCreditCard />
+      ) : (
+        <>
+          {/* Rate cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+            {rates.map((rate, i) => (
+              <HELOCRateCard key={rate.type} rate={rate} index={i} />
+            ))}
+          </div>
 
-      {/* Disclaimer */}
-      <p className="text-xs text-gray-400 text-center leading-relaxed">
-        Estimates only. Not a commitment to lend. Rates and credit lines subject to credit verification,
-        appraisal, and underwriting approval. Texas United Mortgage — NMLS #46749.
-      </p>
+          {/* Disclaimer */}
+          <p className="text-xs text-gray-400 text-center leading-relaxed">
+            Estimates only. Not a commitment to lend. Rates and credit lines subject to credit verification,
+            appraisal, and underwriting approval. Texas United Mortgage — NMLS #46749.
+          </p>
+        </>
+      )}
     </div>
   );
 }
