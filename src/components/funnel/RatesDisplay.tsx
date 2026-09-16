@@ -203,9 +203,9 @@ function HELOCSummary({
           {rows.map((r, i) => (
             <div
               key={r.label}
-              className={`flex justify-between items-center px-2 py-1.5 rounded-md ${i % 2 === 0 ? 'bg-white/60' : ''}`}
+              className={`flex justify-between items-center px-2 py-2.5 rounded-md ${i % 2 === 0 ? 'bg-white/60' : ''}`}
             >
-              <span className="text-xs text-gray-400 shrink-0">{r.label}</span>
+              <span className="text-sm text-gray-900 shrink-0">{r.label}</span>
               <span className="text-xs font-bold text-[#1E3569] text-right ml-4">{r.value}</span>
             </div>
           ))}
