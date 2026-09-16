@@ -215,34 +215,85 @@ function HELOCSummary({
   );
 }
 
-function LowCreditCard() {
+const LOW_CREDIT_STEPS = [
+  {
+    num: '1',
+    title: 'Profile Review',
+    desc: 'Our team reviews your submission and credit profile in detail.',
+  },
+  {
+    num: '2',
+    title: 'Specialist Outreach',
+    desc: 'A dedicated home equity specialist contacts you within 1 business day.',
+  },
+  {
+    num: '3',
+    title: 'Personalized Plan',
+    desc: 'We build a strategy tailored to your home equity goals and timeline.',
+  },
+];
+
+function LowCreditCard({ data }: { data: FunnelData }) {
+  const firstName = data.lead.name ? data.lead.name.split(' ')[0] : null;
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.3, type: 'spring', stiffness: 260, damping: 24 }}
-      className="bg-white rounded-xl border border-gray-100 shadow-sm px-6 py-8 text-center"
+      transition={{ delay: 0.2, type: 'spring', stiffness: 260, damping: 24 }}
+      className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden"
     >
-      {/* Green check circle */}
-      <div className="flex justify-center mb-4">
-        <div className="w-14 h-14 rounded-full border-2 border-green-500 flex items-center justify-center">
-          <Check size={28} className="text-green-500" strokeWidth={2.5} />
+      {/* Header */}
+      <div className="px-6 pt-7 pb-5 text-center border-b border-gray-100">
+        <div className="flex justify-center mb-3">
+          <div className="w-14 h-14 rounded-full border-2 border-green-500 flex items-center justify-center">
+            <Check size={28} className="text-green-500" strokeWidth={2.5} />
+          </div>
+        </div>
+        <h3 className="text-xl font-black text-gray-900 mb-2">
+          {firstName ? `You're all set, ${firstName}!` : "You're all set!"}
+        </h3>
+        <p className="text-sm leading-relaxed" style={{ color: '#757575' }}>
+          Our team will review your profile and a home equity specialist
+          will reach out within{' '}
+          <span className="font-semibold text-gray-800">1 business day</span>.
+        </p>
+      </div>
+
+      {/* What happens next */}
+      <div className="px-6 py-5">
+        <p className="text-[11px] font-black uppercase tracking-widest mb-4" style={{ color: '#757575' }}>
+          What happens next
+        </p>
+        <div className="space-y-4">
+          {LOW_CREDIT_STEPS.map(s => (
+            <div key={s.num} className="flex items-start gap-3">
+              <div className="w-7 h-7 rounded-full bg-[#1E3569] flex items-center justify-center flex-shrink-0 mt-0.5">
+                <span className="text-[11px] font-black text-white">{s.num}</span>
+              </div>
+              <div>
+                <p className="text-sm font-bold text-gray-900 leading-tight">{s.title}</p>
+                <p className="text-xs mt-0.5 leading-snug" style={{ color: '#757575' }}>{s.desc}</p>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
 
-      <h3 className="text-xl font-black text-gray-900 mb-2">You're all set!</h3>
-      <p className="text-base text-gray-500 leading-relaxed mb-6">
-        Thanks for submitting your info. A home equity specialist will reach out shortly to help with your next steps.
-      </p>
-
-      <p className="text-base font-semibold text-gray-900 mb-3">Ready to make an application?</p>
-      <motion.button
-        whileHover={{ scale: 1.02 }}
-        whileTap={{ scale: 0.98 }}
-        className="px-10 py-2.5 rounded-xl font-bold text-white text-base bg-[#233B86] hover:bg-[#1A2B63] transition-colors"
-      >
-        Apply Now
-      </motion.button>
+      {/* CTA */}
+      <div className="px-6 pb-6">
+        <div className="h-px bg-gray-100 mb-5" />
+        <p className="text-sm font-semibold text-gray-900 mb-3 text-center">
+          Ready to start your application now?
+        </p>
+        <motion.button
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          className="w-full py-3 rounded-xl font-bold text-white text-base bg-[#233B86] hover:bg-[#1A2B63] transition-colors"
+        >
+          Apply Now
+        </motion.button>
+      </div>
     </motion.div>
   );
 }
@@ -258,7 +309,7 @@ export function RatesDisplay({ data }: RatesDisplayProps) {
       {isLowCredit ? (
         /* Low credit — "You're all set" first, then profile, no rate cards */
         <>
-          <LowCreditCard />
+          <LowCreditCard data={data} />
           <div className="mt-4">
             <HELOCSummary data={data} equity={equity} maxLine={maxLineAmount} alwaysOpen />
           </div>
