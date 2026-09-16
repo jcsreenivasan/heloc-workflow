@@ -199,11 +199,14 @@ function HELOCSummary({
         animate={{ height: (alwaysOpen || open) ? 'auto' : 0 }}
         className="overflow-hidden"
       >
-        <div className="px-4 pb-4 space-y-2">
-          {rows.map(r => (
-            <div key={r.label} className="flex justify-between items-center">
-              <span className="text-xs text-gray-500">{r.label}</span>
-              <span className="text-xs font-semibold text-gray-700 text-right ml-4">{r.value}</span>
+        <div className="px-4 pb-3">
+          {rows.map((r, i) => (
+            <div
+              key={r.label}
+              className={`flex justify-between items-center px-2 py-1.5 rounded-md ${i % 2 === 0 ? 'bg-white/60' : ''}`}
+            >
+              <span className="text-xs text-gray-400 shrink-0">{r.label}</span>
+              <span className="text-xs font-bold text-[#1E3569] text-right ml-4">{r.value}</span>
             </div>
           ))}
         </div>
@@ -228,15 +231,15 @@ function LowCreditCard() {
       </div>
 
       <h3 className="text-xl font-black text-gray-900 mb-2">You're all set!</h3>
-      <p className="text-sm text-gray-500 leading-relaxed mb-6">
+      <p className="text-base text-gray-500 leading-relaxed mb-6">
         Thanks for submitting your info. A home equity specialist will reach out shortly to help with your next steps.
       </p>
 
-      <p className="text-sm font-semibold text-gray-900 mb-3">Ready to make an application?</p>
+      <p className="text-base font-semibold text-gray-900 mb-3">Ready to make an application?</p>
       <motion.button
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
-        className="px-10 py-2.5 rounded-xl font-bold text-white text-sm bg-[#233B86] hover:bg-[#1A2B63] transition-colors"
+        className="px-10 py-2.5 rounded-xl font-bold text-white text-base bg-[#233B86] hover:bg-[#1A2B63] transition-colors"
       >
         Apply Now
       </motion.button>

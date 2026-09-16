@@ -105,8 +105,8 @@ export function StepTwo({ data, onChange, onNext }: StepTwoProps) {
                   </motion.div>
                 )}
                 {fu.img
-                  ? <img src={fu.img} alt={fu.label} className="w-10 h-10 object-contain flex-shrink-0" />
-                  : <span className="text-lg flex-shrink-0">{fu.icon}</span>
+                  ? <img src={fu.img} alt={fu.label} className="w-7 h-7 object-contain flex-shrink-0" />
+                  : <span className="text-sm flex-shrink-0">{fu.icon}</span>
                 }
                 <span className="text-sm font-bold text-gray-800 text-left">{fu.label}</span>
               </motion.button>
@@ -146,8 +146,8 @@ export function StepTwo({ data, onChange, onNext }: StepTwoProps) {
                   </motion.div>
                 )}
                 {es.img
-                  ? <img src={es.img} alt={es.label} className="w-10 h-10 object-contain flex-shrink-0" />
-                  : <span className="text-lg flex-shrink-0">{es.icon}</span>
+                  ? <img src={es.img} alt={es.label} className="w-7 h-7 object-contain flex-shrink-0" />
+                  : <span className="text-sm flex-shrink-0">{es.icon}</span>
                 }
                 <p className="text-sm font-bold text-gray-900 text-left">{es.label}</p>
               </motion.button>
